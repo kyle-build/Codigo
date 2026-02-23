@@ -1,6 +1,6 @@
 {
   "name": "codigo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "config": {
@@ -9,6 +9,8 @@
     }
   },
   "scripts": {
+    "prepare": "husky install",
+    "release": "standard-version",
     "run:client": "pnpm --filter client run dev",
     "run:server": "pnpm --filter server run start:dev",
     "run:share": "pnpm --filter share run dev",
@@ -33,6 +35,8 @@
     "@types/react-dom": "^19.2.3",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7",
+    "standard-version": "^9.5.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
