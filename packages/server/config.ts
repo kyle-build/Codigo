@@ -1,4 +1,5 @@
 import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { RedisOptions } from 'ioredis';
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -10,4 +11,9 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   entities: ['dist/**/*.entityf.ts,.js}'],
   autoLoadEntities: true,
   synchronize: true,
+};
+
+export const redisConfig: RedisOptions = {
+  host: '192.168.231.128',
+  port: 6379,
 };

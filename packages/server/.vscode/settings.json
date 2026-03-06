@@ -1,0 +1,12 @@
+{
+  "editor.fontSize": 14,
+  "window.zoomLevel": 1.0,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.wordWrap": "on",
+  "git.enableSmartCommit": true,
+  "workbench.colorTheme": "Default Dark+",
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "editor.suggest.snippetsPreventQuickSuggestions": false
+}

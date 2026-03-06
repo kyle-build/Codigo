@@ -10,33 +10,31 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
+import { GetUserIP, GetUserAgent } from '../utils/GetUserMessageTool';
+import { CaptchaDto } from './dto/CaptchaDto';
+import { SecretTool } from 'src/utils/secretTool';
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly secrectTool: SecretTool,
+  ) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
+  // 查找用户
   @Get()
   findAll() {
     return this.userService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  // 图形验证码接口
+  @Post('captcha')
+  async getCaptcha(
+    @Body() body: CaptchaDto,
+    @GetUserIP() ip: string,
+    @GetUserAgent() agent: string,
+  ) {
+    const { type } = body;
+    const key = this.secrectTool.getSecret(ip + agent);
+    return this.userService.getCaptcha(type, key);
   }
 }
