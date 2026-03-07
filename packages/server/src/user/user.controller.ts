@@ -8,13 +8,15 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { SendCodeDto } from './dto/SendSmsDto';
+import { SendCodeDto } from './dto/sendSms.dto';
 import { GetUserIP, GetUserAgent } from '../utils/GetUserMessageTool';
-import { CaptchaDto } from './dto/CaptchaDto';
+import { CaptchaDto } from './dto/captcha.dto';
 import { SecretTool } from 'src/utils/secretTool';
 import { RandomTool } from 'src/utils/RandomTool';
 import { RedisModule } from 'src/utils/modules/redis.module';
 import { TextMessageTool } from 'src/utils/TextMessageTool';
+import { RegisterDto } from './dto/register.dto';
+import { PhoneLoginDto, PasswordLoginDto } from './dto/login.dto';
 @Controller('user')
 export class UserController {
   constructor(
@@ -22,14 +24,8 @@ export class UserController {
     private readonly userService: UserService,
     private readonly secrectTool: SecretTool,
     private readonly textMessageTool: TextMessageTool,
-    private readonly randomCode: RandomTool,
+    private readonly randomTool: RandomTool,
   ) {}
-
-  // 查找用户
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
 
   // 图形验证码接口
   @Post('captcha')
@@ -55,4 +51,47 @@ export class UserController {
   //   );
   //   return codeRes;
   // }
+
+  // 发送短信验证码接口
+  @Post('send_code')
+  async sendCode(
+    @Body() body: SendCodeDto,
+    @GetUserAgent() agent: string,
+    @GetUserIP() ip: string,
+  ) {
+    const { phone, captcha, type } = body;
+    const key = this.secrectTool.getSecret(ip + agent);
+    return this.userService.sendCode(
+      phone,
+      captcha,
+      type,
+      key,
+      this.randomTool.randomCode(),
+    );
+  }
+
+  // 注册接口
+  @Post('register')
+  register(@Body() body: RegisterDto) {
+    const { phone, sendCode, password, confirm } = body;
+    return this.userService.register(phone, sendCode, password, confirm);
+  }
+
+  /**
+   * 账号密码登录控制器
+   */
+  @Post('password_login')
+  passwordLogin(@Body() body: PasswordLoginDto) {
+    return this.userService.passwordLogin(body);
+  }
+
+  /**
+   * 手机验证码登录控制器
+   */
+  @Post('phone_login')
+  phoneLogin(@Body() body: PhoneLoginDto) {
+    return this.userService.phoneLogin(body);
+  }
+
+  // to-do: 微信扫码登录接口
 }

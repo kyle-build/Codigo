@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@codigo/share": "workspace:*",
+    "ahooks": "^3.9.6",
     "antd": "^6.2.2",
     "autoprefixer": "^10.4.27",
     "axios": "^1.6.2",
+    "mobx": "^6.15.0",
     "postcss": "^8.5.8",
+    "react-router-dom": "^7.13.1",
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {

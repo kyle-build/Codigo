@@ -1,23 +1,9 @@
-import { create } from "zustand";
+import { makeAutoObservable } from "mobx";
 
-interface AuthState {
-  token: string | null;
-  user: any;
-  login: (token: string, user: any) => void;
-  logout: () => void;
+export function createStoreAuth() {
+  // mobx 导出makeAutoObservable 接受一个对象返回可观察的对象，该对象是响应式的
+  return makeAutoObservable({
+    token: localStorage.getItem("token") ?? "",
+    details: null,
+  });
 }
-
-export const useAuthStore = create<AuthState>((set) => ({
-  token: localStorage.getItem("token"),
-  user: null,
-
-  login: (token, user) => {
-    localStorage.setItem("token", token);
-    set({ token, user });
-  },
-
-  logout: () => {
-    localStorage.removeItem("token");
-    set({ token: null, user: null });
-  },
-}));

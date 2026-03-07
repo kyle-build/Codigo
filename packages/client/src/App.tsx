@@ -1,11 +1,11 @@
 // import { test } from "@codigo/share";
-// import { Button } from "antd";
+import { RouterProvider } from "react-router-dom";
 import "./assets/base.css";
-import LoginPage from "./pages/LoginPage.tsx";
+import { router } from "./router";
 function App() {
   return (
     <>
-      <LoginPage />
+      <RouterProvider router={router} />
     </>
   );
 }
