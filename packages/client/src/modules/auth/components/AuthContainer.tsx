@@ -1,12 +1,12 @@
 import { useAuthMode } from "../hooks/useAuthMode";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
+import LoginForm from "./Login/LoginForm";
+import RegisterForm from "./register/RegisterForm";
 
 export default function AuthContainer() {
   const { mode, toggle } = useAuthMode();
   return mode === "login" ? (
-    <LoginForm switchMode={toogle} />
+    <LoginForm switchMode={toggle} />
   ) : (
-    <RegisterForm switchMode={toogle} />
+    <RegisterForm switchMode={toggle} />
   );
 }

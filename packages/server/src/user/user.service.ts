@@ -10,6 +10,14 @@ import { RandomTool } from '../utils/RandomTool';
 import { SecretTool } from '../utils/SecretTool';
 import { JwtService } from '@nestjs/jwt';
 
+interface Ipasswordlogin {
+  phone: string;
+  password: string;
+}
+interface IphoneLogin {
+  phone: string;
+  sendCode: string;
+}
 /**
  * 用户服务，处理与用户相关的业务逻辑
  * 包括图形验证码生成、短信验证码发送、用户注册和登录等功能
@@ -149,18 +157,15 @@ export class UserService {
    * @description 处理账号密码登录逻辑，包括用户查找、密码验证和 JWT token 生成
    * @throws BadRequestException 当账号不存在或密码错误时抛出异常
    */
-  async passwordLogin({ phone, password }) {
-    // 查找用户是否注册
+
+  async passwordLogin({ phone, password }: Ipasswordlogin) {
     const foundUser = await this.userRepository.findOneBy({ phone });
     if (!foundUser) throw new BadRequestException('账号不存在');
-    // 检查密码是否正确
     const isPasswordValid =
       foundUser.password === this.secretTool.getSecret(password);
     if (!isPasswordValid) {
       throw new BadRequestException('密码错误');
     }
-
-    console.log('用户登录成功，生成 JWT token，用户 ID：', foundUser.id);
     return {
       data: this.jwtService.sign({ id: foundUser.id }),
       msg: '登录成功',
@@ -175,21 +180,15 @@ export class UserService {
    * @description 处理验证码登录逻辑，包括用户查找、短信验证码验证和 JWT token 生成
    * @throws BadRequestException 当账号不存在、未获取验证码或验证码错误时抛出异常
    */
-  async phoneLogin({ phone, sendCode }) {
-    // 查找用户是否注册
+  async phoneLogin({ phone, sendCode }: IphoneLogin) {
     const foundUser = await this.userRepository.findOneBy({ phone });
     if (!foundUser) throw new BadRequestException('账号不存在');
-
-    // 检查手机验证码是否正确
     const codeExist = await this.redis.exists(`login:code:${phone}`);
     if (!codeExist) throw new BadRequestException('请先获取手机验证码');
-
-    // 对比手机验证码是否正确
     const codeRes = (await this.redis.get(`login:code:${phone}`))!.split(
       '_',
     )[1];
     if (codeRes !== sendCode) throw new BadRequestException('验证码错误');
-
     return {
       data: this.jwtService.sign({ id: foundUser.id }),
       msg: '登录成功',
