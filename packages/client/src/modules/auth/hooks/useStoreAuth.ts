@@ -8,11 +8,8 @@ export function useStoreAuth() {
 
   // 登录
   const login = action(async (token: string) => {
-    console.log("进入login");
     storeAuth.token = `Bearer ${token}`;
     localStorage.setItem("token", storeAuth.token);
-    console.log("editor");
   });
   return { login, isLogin };
 }
-s;

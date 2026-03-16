@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRequest } from "ahooks";
 import type { IComponent } from "@codigo/share";
 import ComponentDatas from "./components/ComponentDatas";
-import { getQuestionComponents } from "@/shared/api/low-code";
+import { getQuestionComponents } from "@/modules/editor/api/low-code";
 import DataSource from "./DataSource";
 import ComponentSelect from "./components/ComponentSelect";
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ConfigProvider, theme } from "antd";
-import Register from "./components/Register";
-import Login from "./components/Login";
+import Register from "./components/register/Register";
+import Login from "./components/login/Login";
 import { ParticleBackground } from "./components/background/ParticleBackground";
 
 export default function LoginOrRegister() {

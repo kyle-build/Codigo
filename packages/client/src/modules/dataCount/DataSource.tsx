@@ -2,7 +2,7 @@ import type { IComponent } from "@codigo/share";
 import { useRequest } from "ahooks";
 import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
-import { getQuestionDataByTypeRequest } from "@/shared/api/low-code";
+import { getQuestionDataByTypeRequest } from "@/modules/editor/api/low-code";
 import { useStorePage } from "../../shared/hooks/useStorePage";
 interface DataSourceProps {
   currentSelected?: IComponent;

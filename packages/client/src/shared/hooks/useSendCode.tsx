@@ -2,7 +2,7 @@ import type { FormInstance } from "antd";
 import { Button, Form, Input } from "antd";
 import { useEffect, useState } from "react";
 import { useRequest } from "ahooks";
-import { getCaptcha, sendCode } from "@/shared/api/user";
+import { getCaptcha, sendCode } from "@/modules/auth/api/user";
 /**
  * 使用useSendCode函数
  *
@@ -35,7 +35,7 @@ export function useSendCode(form: FormInstance, type: string) {
       onSuccess: (result) => {
         setCaptchaSrc(result.data);
       },
-    },
+    }
   );
 
   /**
@@ -50,7 +50,7 @@ export function useSendCode(form: FormInstance, type: string) {
       onSuccess: () => {
         setStartedCountDown(true);
       },
-    },
+    }
   );
 
   /**
@@ -121,8 +121,8 @@ export function useSendCode(form: FormInstance, type: string) {
             {loadingWithGetSendCode
               ? "加载中"
               : isDisable
-                ? `${countDown}秒后重发`
-                : "获取验证码"}
+              ? `${countDown}秒后重发`
+              : "获取验证码"}
           </Button>
         </div>
       </Form.Item>

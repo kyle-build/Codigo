@@ -7,7 +7,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { trackUndo } from "mobx-shallow-undo";
 import { message } from "antd";
 import type { TStoreComponents } from "@/shared/stores";
-import { getLowCodePage } from "@/shared/api/low-code";
+import { getLowCodePage } from "@/modules/editor/api/low-code";
 import { useStorePage } from ".";
 
 const storeComponents = createStoreComponents();

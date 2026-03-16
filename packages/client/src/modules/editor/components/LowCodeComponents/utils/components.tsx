@@ -28,7 +28,7 @@ import {
   deleteResource,
   getResources,
   uploadFile,
-} from "@/shared/api/resource";
+} from "@/modules/editor/api/resource";
 
 // Form表单的子项二次封装判断是否该隐藏
 interface IFormPropLabelProps extends FormItemProps {

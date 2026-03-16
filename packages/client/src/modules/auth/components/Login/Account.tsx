@@ -1,25 +1,8 @@
 import { Button, Form, Input } from "antd";
-import { useRequest } from "ahooks";
-import { createStoreAuth } from "../../../../shared/stores";
-import { getLoginWithPassword } from "@/shared/api/user";
-import { useStoreAuth } from "../../../../shared/hooks/useStoreAuth";
-import { useNavigate } from "react-router-dom";
+import { useLogin } from "@/modules/auth/hooks/useLogin";
 export default function Account() {
-  const { login } = useStoreAuth();
-  const storeAuth = createStoreAuth();
-  const nav = useNavigate();
   //  账号密码登录请求
-  const { run, loading } = useRequest(
-    async (values) => await getLoginWithPassword(values),
-    {
-      manual: true,
-      onSuccess: ({ data }) => {
-        login(data);
-        nav("/editor");
-        console.log(storeAuth.token);
-      },
-    }
-  );
+  const { run, loading } = useLogin();
 
   return (
     <div className="space-y-4">

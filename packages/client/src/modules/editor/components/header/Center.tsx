@@ -7,7 +7,7 @@ import type { IComponent, PostReleaseRequest } from "@codigo/share";
 import { useRequest } from "ahooks";
 import { Button, Space, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { postRelease } from "@/shared/api/low-code";
+import { postRelease } from "@/modules/editor/api/low-code";
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
 
 export default function Center() {

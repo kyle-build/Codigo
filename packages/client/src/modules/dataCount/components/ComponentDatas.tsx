@@ -3,7 +3,7 @@ import { Button, Space, Table, message } from "antd";
 import { useRequest } from "ahooks";
 import type { IComponent } from "@codigo/share";
 import { useMemo, useState } from "react";
-import { getQuestionData } from "@/shared/api/low-code";
+import { getQuestionData } from "@/modules/editor/api/low-code";
 import { useStorePage } from "@/shared/hooks/useStorePage";
 import { excelToZip, jsonToExcel } from "@/shared/utils/excel";
 
