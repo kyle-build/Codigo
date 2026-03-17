@@ -8,10 +8,16 @@ import LoginOrRegister from "@/modules/auth/loginOrRegister";
 // import Form from "@/modules/form/form";
 import Flow from "@/modules/flow/flow";
 import Report from "@/modules/report/reportDesigner";
+import DevDoc from "@/modules/devDocument/DevDoc";
+
 export const router = createHashRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/doc",
+    element: <DevDoc />,
   },
   {
     path: "/login",

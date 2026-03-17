@@ -14,18 +14,17 @@ export default function LoginOrRegister() {
   return (
     <ConfigProvider
       theme={{
-        algorithm: theme.darkAlgorithm,
         token: {
           colorPrimary: "#10b981", // emerald-500
-          colorBgContainer: "rgba(255, 255, 255, 0.05)",
-          colorBorder: "rgba(255, 255, 255, 0.1)",
-          colorText: "#ffffff",
-          colorTextSecondary: "#9ca3af", // gray-400
+          colorBgContainer: "#ffffff",
+          colorBorder: "#e2e8f0", // slate-200
+          colorText: "#0f172a", // slate-900
+          colorTextSecondary: "#64748b", // slate-500
           borderRadius: 8,
         },
         components: {
           Input: {
-            colorBgContainer: "rgba(255, 255, 255, 0.05)",
+            colorBgContainer: "#ffffff",
             activeBorderColor: "#10b981",
             hoverBorderColor: "#34d399",
           },
@@ -35,12 +34,12 @@ export default function LoginOrRegister() {
         },
       }}
     >
-      <div className="relative flex h-full min-h-screen items-center justify-center overflow-hidden bg-[#07090f] font-sans text-white">
+      <div className="relative flex h-full min-h-screen items-center justify-center overflow-hidden bg-slate-50 font-sans text-slate-900">
         <ParticleBackground />
 
         {/* Background Gradient Orbs */}
-        <div className="pointer-events-none absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-emerald-500/10 blur-[100px]" />
-        <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-cyan-500/10 blur-[100px]" />
+        <div className="pointer-events-none absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-emerald-500/5 blur-[100px]" />
+        <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-cyan-500/5 blur-[100px]" />
 
         <div className="relative z-10">
           {loginOrRegister ? (
@@ -51,7 +50,7 @@ export default function LoginOrRegister() {
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-6 text-center text-xs text-gray-600 font-mono z-10">
+        <div className="absolute bottom-6 text-center text-xs text-slate-400 font-mono z-10">
           © 2024 Codigo System. All rights reserved.
         </div>
       </div>

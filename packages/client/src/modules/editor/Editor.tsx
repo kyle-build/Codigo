@@ -60,13 +60,12 @@ function Editor() {
   return (
     <ConfigProvider
       theme={{
-        algorithm: theme.darkAlgorithm,
         token: {
           colorPrimary: "#10b981", // emerald-500
-          colorBgContainer: "rgba(255, 255, 255, 0.05)",
-          colorBorder: "rgba(255, 255, 255, 0.1)",
-          colorText: "#ffffff",
-          colorTextSecondary: "#9ca3af", // gray-400
+          colorBgContainer: "#ffffff",
+          colorBorder: "#e2e8f0", // slate-200
+          colorText: "#0f172a", // slate-900
+          colorTextSecondary: "#64748b", // slate-500
           borderRadius: 8,
         },
         components: {
@@ -74,38 +73,43 @@ function Editor() {
             primaryShadow: "0 4px 14px 0 rgba(16, 185, 129, 0.39)",
           },
           Layout: {
-            bodyBg: "#07090f",
-            headerBg: "rgba(10, 12, 20, 0.8)",
-            siderBg: "rgba(10, 12, 20, 0.5)",
+            bodyBg: "#f8fafc", // slate-50
+            headerBg: "rgba(255, 255, 255, 0.8)",
+            siderBg: "rgba(255, 255, 255, 0.5)",
           },
+          Tabs: {
+            itemColor: "#64748b",
+            itemSelectedColor: "#10b981",
+            itemHoverColor: "#10b981",
+          }
         },
       }}
     >
-      <div className="flex flex-col h-full bg-[#07090f] text-white overflow-hidden font-sans">
+      <div className="flex flex-col h-full bg-slate-50 text-slate-900 overflow-hidden font-sans">
         {/* Background Grid */}
-        <div className="fixed inset-0 pointer-events-none z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]"></div>
+        <div className="fixed inset-0 pointer-events-none z-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]"></div>
 
         {/* 头部组件 */}
-        <header className="relative z-20 border-b border-white/10 bg-[#0A0C14]/80 backdrop-blur-xl px-4 py-3">
+        <header className="relative z-20 border-b border-slate-200 bg-white/80 backdrop-blur-xl px-4 py-3">
           <EditorHeader />
         </header>
 
         <main className="relative z-10 flex flex-1 overflow-hidden">
           {/* 左侧编辑组件 */}
           <div
-            className={`w-80 border-r border-white/10 bg-[#0A0C14]/60 backdrop-blur-md px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent`}
+            className={`w-80 border-r border-slate-200 bg-white/60 backdrop-blur-md px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent`}
           >
             <EditorLeftPanel />
           </div>
 
           {/* 中间编辑组件 */}
-          <div className="flex-auto flex items-center justify-center bg-[#07090f] relative">
+          <div className="flex-auto flex items-center justify-center bg-slate-100/50 relative">
             {/* Canvas Glow Effect */}
             <div className="absolute w-[400px] h-[720px] bg-emerald-500/5 blur-3xl rounded-full pointer-events-none"></div>
 
             <div
               ref={canvasContainerRef}
-              className="editor-canvas-container relative z-10 w-[380px] h-[700px] bg-white text-left overflow-y-auto overflow-x-hidden rounded-[30px] border-[8px] border-[#1a1d26] shadow-2xl scrollbar-hide"
+              className="editor-canvas-container relative z-10 w-[380px] h-[700px] bg-white text-left overflow-y-auto overflow-x-hidden rounded-[30px] border-[8px] border-slate-800 shadow-2xl scrollbar-hide"
             >
               {/* Mobile Status Bar Simulation */}
               <div className="sticky top-0 z-50 h-6 bg-black/90 text-white text-[10px] flex items-center justify-between px-4 font-mono">
@@ -121,7 +125,7 @@ function Editor() {
 
           {/* 右侧编辑组件 */}
           <div
-            className={`w-80 border-l border-white/10 bg-[#0A0C14]/60 backdrop-blur-md px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent`}
+            className={`w-80 border-l border-slate-200 bg-white/60 backdrop-blur-md px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent`}
           >
             <EditorRightPanel />
           </div>

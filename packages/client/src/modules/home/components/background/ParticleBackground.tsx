@@ -69,7 +69,7 @@ export function ParticleBackground() {
         if (!ctx) return;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(16, 185, 129, 0.5)"; // Emerald color
+        ctx.fillStyle = "rgba(16, 185, 129, 0.4)";
         ctx.fill();
       }
     }
@@ -83,7 +83,7 @@ export function ParticleBackground() {
 
     const drawGrid = () => {
       if (!ctx) return;
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+      ctx.strokeStyle = "rgba(100, 116, 139, 0.05)";
       ctx.lineWidth = 1;
       const gridSize = 50;
 
@@ -113,8 +113,8 @@ export function ParticleBackground() {
           if (distance < connectionDistance) {
             ctx.beginPath();
             ctx.strokeStyle = `rgba(16, 185, 129, ${
-              1 - distance / connectionDistance
-            })`;
+              (1 - distance / connectionDistance) * 0.4
+            })`; // Emerald-500 with adjusted opacity
             ctx.lineWidth = 1;
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -161,7 +161,7 @@ export function ParticleBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none opacity-60"
+      className="fixed inset-0 pointer-events-none opacity-90"
     />
   );
 }

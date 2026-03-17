@@ -28,8 +28,8 @@ export default function Preview() {
   const nav = useNavigate();
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center overflow-hidden bg-[#f1f2f4]">
-      <div className="w-[380px] h-[700px] bg-white text-left overflow-y-auto overflow-x-hidden">
+    <div className="w-screen h-screen flex items-center justify-center overflow-hidden bg-slate-50">
+      <div className="w-[380px] h-[700px] bg-white text-left overflow-y-auto overflow-x-hidden shadow-2xl rounded-[30px] border-[8px] border-slate-800">
         {/* 预览的组件页面 */}
         <PreviewCanvas />
         {/* 返回按钮 */}

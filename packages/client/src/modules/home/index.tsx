@@ -7,10 +7,10 @@ import { Outlet } from "react-router-dom";
 export default function Home() {
   return (
     <>
-      <div className="relative min-h-screen overflow-hidden bg-[#07090f] text-white font-sans">
+      <div className="relative min-h-screen overflow-hidden bg-white text-slate-900 font-sans">
         <HomeHeader />
         <ParticleBackground />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.18),transparent_45%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.05),transparent_45%)]" />
         <main className="relative z-10 pt-28">
           <HomeCenter />
         </main>

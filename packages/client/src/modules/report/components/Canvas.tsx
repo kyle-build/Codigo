@@ -6,7 +6,7 @@ import { TableWidget } from "./TableWidget";
 
 export const Canvas = observer(() => {
   return (
-    <div className="rd-grid">
+    <div className="grid grid-cols-12 auto-rows-[100px] gap-4 p-6 w-full h-full overflow-y-auto relative z-10">
       {reportStore.widgets.map((w) => {
         const style = {
           gridColumn: `${w.gridPos.x + 1}/span ${w.gridPos.w}`,
@@ -14,7 +14,14 @@ export const Canvas = observer(() => {
         };
 
         return (
-          <div key={w.id} style={style} className="rd-widget">
+          <div
+            key={w.id}
+            style={style}
+            className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 overflow-hidden relative group"
+          >
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              {/* Actions could go here */}
+            </div>
             {w.type === "kpi" && <KPIWidget widget={w} />}
 
             {w.type === "table" && <TableWidget widget={w} />}

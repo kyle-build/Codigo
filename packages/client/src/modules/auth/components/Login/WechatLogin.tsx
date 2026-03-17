@@ -4,7 +4,7 @@ import ClassNames from "classnames";
 import { useRequest } from "ahooks";
 import { useEffect, useMemo, useState } from "react";
 import { useStoreAuth } from "../../../../shared/hooks/useStoreAuth";
-import { getWechatLogin, checkScan } from "@/shared/api/wechat-login";
+import { getWechatLogin, checkScan } from "@/modules/auth/api/wechat-login";
 
 export default function WechatLogin() {
   const [ticket, setTicket] = useState("");

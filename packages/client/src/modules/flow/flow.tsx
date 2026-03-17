@@ -180,15 +180,22 @@ export default observer(() => {
   }, [movingNode, drawingEdge]);
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between border-b h-12 px-4">
-        <div className="text-sm font-semibold">Flow</div>
+    <div className="flex flex-col h-full bg-slate-50 font-sans">
+      <div className="flex items-center justify-between border-b border-slate-200 h-14 px-6 bg-white/80 backdrop-blur-md">
+        <div className="flex items-center gap-2">
+          <div className="flex h-6 w-6 items-center justify-center rounded bg-emerald-500 text-white font-mono text-xs font-bold shadow-sm">
+            F
+          </div>
+          <span className="text-sm font-bold text-slate-900 tracking-tight">
+            流程设计器
+          </span>
+        </div>
 
         <div className="flex gap-2">
           {Object.entries(NODE_TYPES).map(([key, t]) => (
             <button
               key={key}
-              className="text-xs border px-2 py-1 rounded hover:bg-gray-100"
+              className="text-xs font-medium border border-slate-200 bg-white px-3 py-1.5 rounded-md hover:bg-slate-50 hover:text-emerald-600 hover:border-emerald-200 transition-all shadow-sm"
               onClick={() =>
                 flowStore.addNode(
                   key as NodeType,
@@ -206,20 +213,26 @@ export default observer(() => {
 
       <div className="flex flex-1 overflow-hidden">
         <div
-          className="flex-1 relative bg-gray-50"
+          className="flex-1 relative bg-slate-50"
           onClick={() => {
             flowStore.selectedNodeId = "";
             flowStore.selectedEdgeId = null;
           }}
         >
-          <svg ref={svgRef} className="absolute inset-0 w-full h-full">
+          {/* Grid Background */}
+          <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+
+          <svg
+            ref={svgRef}
+            className="absolute inset-0 w-full h-full pointer-events-none"
+          >
             {flowStore.edges.map((edge) => (
               <path
                 key={edge.id}
                 d={edgePath(edge)}
                 fill="none"
-                stroke="#d1d5db"
-                strokeWidth="1.5"
+                stroke="#cbd5e1"
+                strokeWidth="2"
               />
             ))}
           </svg>
@@ -230,7 +243,7 @@ export default observer(() => {
             return (
               <div
                 key={node.id}
-                className="absolute flex items-center justify-center border rounded bg-white text-xs cursor-move"
+                className="absolute flex items-center justify-center border border-slate-200 rounded-lg bg-white text-xs font-medium text-slate-700 cursor-move shadow-sm hover:shadow-md hover:border-emerald-400 transition-all"
                 style={{
                   left: node.x,
                   top: node.y,
@@ -243,10 +256,10 @@ export default observer(() => {
                   flowStore.selectedNodeId = node.id;
                 }}
               >
-                {node.label}
+                {t.label}
 
                 <div
-                  className="absolute right-[-6px] top-1/2 w-2 h-2 bg-black rounded-full cursor-crosshair"
+                  className="absolute right-[-4px] top-1/2 -mt-1 w-2 h-2 bg-emerald-500 rounded-full cursor-crosshair hover:scale-125 transition-transform"
                   onMouseDown={(e) => startDrawEdge(e, node.id)}
                 />
               </div>

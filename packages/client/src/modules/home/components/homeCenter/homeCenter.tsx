@@ -73,31 +73,29 @@ export function HomeCenter() {
     <section className="mx-auto w-full max-w-7xl px-6 pb-20 pt-10">
       <div className="grid gap-14 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div>
-          <div className="inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 backdrop-blur-md">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse mr-2"></span>
-            <span className="text-xs font-mono font-medium text-emerald-300 tracking-wider">
+          <div className="inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-50 text-emerald-600 px-4 py-1.5 backdrop-blur-md">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse mr-2"></span>
+            <span className="text-xs font-mono font-medium tracking-wider">
               CODIGO SYSTEM v1.0
             </span>
           </div>
 
-          <h1 className="mt-8 text-5xl font-bold leading-tight text-white md:text-7xl tracking-tight">
-            <span className="bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent">
-              让业务页面构建
-            </span>
+          <h1 className="mt-8 text-5xl font-bold leading-tight text-slate-900 md:text-7xl tracking-tight">
+            <span className="text-slate-900">让业务页面构建</span>
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-500">
               像搭积木一样简单
             </span>
           </h1>
 
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-400 font-light">
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 font-light">
             从页面搭建、组件配置、数据统计到最终发布，Codigo
             提供统一的可视化平台，帮助团队更快验证想法并持续优化业务转化。
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-5">
             <button
-              className="group relative inline-flex items-center justify-center rounded-xl bg-emerald-500 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-emerald-400 hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-[#07090f]"
+              className="group relative inline-flex items-center justify-center rounded-xl bg-emerald-500 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
               onClick={() => navigate("/editor")}
             >
               <span className="mr-2">进入编辑器</span>
@@ -125,7 +123,6 @@ export function HomeCenter() {
         </div>
 
         <div className="relative">
-          {/* Decorative background glow */}
           <div className="absolute -inset-4 bg-emerald-500/20 blur-3xl rounded-full opacity-20"></div>
 
           <div className="relative rounded-2xl border border-white/10 bg-[#0A0C14]/80 p-8 backdrop-blur-xl shadow-2xl">
@@ -173,7 +170,7 @@ export function HomeCenter() {
         {features.map((feature, index) => (
           <article
             key={feature.title}
-            className="group relative rounded-2xl border border-white/10 bg-[#0A0C14]/50 p-8 transition-all hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/10"
+            className="group relative rounded-2xl border border-white/10 bg-[#0A0C14]/80 p-8 transition-all hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/10"
           >
             <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100 rounded-2xl"></div>
 
