@@ -1,15 +1,24 @@
+import { useEffect } from "react";
+import { observer } from "mobx-react-lite";
 import { Canvas } from "./components/Canvas";
+import { PropsPanel } from "./components/PropsPanel";
 import { Toolbar } from "./components/Toolbar";
+import { reportStore } from "./stores/reportStore";
 
-export default function ReportDesigner() {
+const ReportDesigner = observer(() => {
+  useEffect(() => {
+    reportStore.initDefaultWidgets();
+  }, []);
+
   return (
-    <div className="flex flex-col h-screen bg-slate-50 font-sans">
+    <div className="flex flex-col h-screen">
       <Toolbar />
-      <div className="flex-1 overflow-hidden relative">
-        {/* Grid Background */}
-        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+      <div className="flex-1 overflow-hidden flex">
         <Canvas />
+        <PropsPanel />
       </div>
     </div>
   );
-}
+});
+
+export default ReportDesigner;

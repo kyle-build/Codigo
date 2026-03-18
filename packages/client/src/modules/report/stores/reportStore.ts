@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import type { Widget } from "../types/index";
+import { chartTemplates } from "../types/widgetTemplates";
 
 class ReportStore {
   widgets: Widget[] = [];
@@ -59,12 +60,22 @@ class ReportStore {
     return id;
   }
 
+  initDefaultWidgets() {
+    if (this.widgets.length) return;
+    this.addWidget(chartTemplates[0]);
+    this.addWidget(chartTemplates[1]);
+  }
+
   removeWidget(id: string) {
     this.widgets = this.widgets.filter((w) => w.id !== id);
+    if (this.selectedId === id) {
+      this.selectedId = null;
+    }
   }
 
   clearAll() {
     this.widgets = [];
+    this.selectedId = null;
   }
 
   calcKpi(config: any) {
@@ -73,6 +84,12 @@ class ReportStore {
     const field = config.field;
 
     const arr = ds.map((r) => (r as any)[field]);
+
+    if (config.agg === "count_gt") {
+      return arr.filter((v) => Number(v) > 100).length;
+    }
+
+    if (!arr.length) return 0;
 
     if (config.agg === "avg")
       return arr.reduce((a, b) => a + b, 0) / arr.length;

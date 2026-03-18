@@ -15,5 +15,5 @@ export const ChartWidget = observer(({ widget }: Props) => {
 
   const ref = useEChart(option);
 
-  return <div className="chart-el" ref={ref} />;
+  return <div className="h-full w-full" ref={ref} />;
 });

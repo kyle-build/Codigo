@@ -9,10 +9,13 @@ export function useEChart(option: any) {
     if (!ref.current) return;
 
     if (!chartRef.current) {
-      chartRef.current = echarts.init(ref.current);
+      chartRef.current = echarts.init(ref.current, undefined, {
+        renderer: "canvas",
+      });
     }
 
-    chartRef.current.setOption(option);
+    chartRef.current.setOption(option, true);
+    chartRef.current.resize();
 
     const resize = () => chartRef.current?.resize();
     window.addEventListener("resize", resize);
@@ -21,6 +24,13 @@ export function useEChart(option: any) {
       window.removeEventListener("resize", resize);
     };
   }, [option]);
+
+  useEffect(() => {
+    return () => {
+      chartRef.current?.dispose();
+      chartRef.current = null;
+    };
+  }, []);
 
   return ref;
 }

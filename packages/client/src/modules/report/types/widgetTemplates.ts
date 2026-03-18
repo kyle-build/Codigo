@@ -35,6 +35,30 @@ export const chartTemplates = [
     },
   },
   {
+    type: "hbar",
+    label: "条形图",
+    config: {
+      dsId: "ds_dept",
+      title: "部门业绩",
+      xField: "dept",
+      yField: "value",
+      color: "#7c3aed",
+      gridPos: { x: 0, y: 0, w: 10, h: 8 },
+    },
+  },
+  {
+    type: "area",
+    label: "面积图",
+    config: {
+      dsId: "ds_sales",
+      title: "销售趋势",
+      xField: "month",
+      yField: "sales",
+      color: "#0891b2",
+      gridPos: { x: 0, y: 0, w: 12, h: 8 },
+    },
+  },
+  {
     type: "kpi",
     label: "KPI",
     config: {
