@@ -3,10 +3,12 @@ import {
   AppstoreOutlined,
   SettingOutlined,
   CodeOutlined,
+  RobotOutlined,
 } from "@ant-design/icons";
 import ComponentFields from "./components/rightPanel/ComponentFields";
 import GlobalFields from "./components/rightPanel/GlobalFields";
 import CodeSyncPanel from "./components/rightPanel/CodeSyncPanel";
+import AIChatPanel from "./components/rightPanel/AIChatPanel";
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
 
 export default function EditorRightPanel() {
@@ -45,6 +47,16 @@ export default function EditorRightPanel() {
         </>
       ),
       children: <CodeSyncPanel />,
+    },
+    {
+      key: "ai-chat",
+      label: (
+        <>
+          <RobotOutlined />
+          <span>AI生成</span>
+        </>
+      ),
+      children: <AIChatPanel />,
     },
   ];
 
