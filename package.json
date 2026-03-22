@@ -28,6 +28,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.28.2",
   "devDependencies": {
+    "@babel/preset-react": "^7.28.5",
     "@commitlint/cli": "^20.4.2",
     "@commitlint/config-conventional": "^20.4.2",
     "@types/lodash": "^4.17.23",

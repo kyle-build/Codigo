@@ -82,7 +82,7 @@ class FlowStore {
       (value) => {
         this.nodes = value.nodes;
         this.edges = value.edges;
-      }
+      },
     );
   }
 
@@ -123,7 +123,7 @@ class FlowStore {
 
   addEdge(sourceId: string, targetId: string): void {
     const exists = this.edges.some(
-      (e) => e.source === sourceId && e.target === targetId
+      (e) => e.source === sourceId && e.target === targetId,
     );
 
     if (!exists) {
@@ -147,7 +147,8 @@ class FlowStore {
       const toRemove = this.edges
         .filter(
           (e) =>
-            e.source === this.selectedNodeId || e.target === this.selectedNodeId
+            e.source === this.selectedNodeId ||
+            e.target === this.selectedNodeId,
         )
         .map((e) => e.id);
 

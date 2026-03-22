@@ -24,7 +24,6 @@ export default function ComponentDatas(props: {
     });
   }, [props.components]);
 
-  // 请求问卷组件问卷数据处理成 table 需要的格式
   const { loading } = useRequest(getQuestionData, {
     onSuccess: ({ data }) => {
       if (data.length === 0) {
@@ -51,13 +50,13 @@ export default function ComponentDatas(props: {
                     .map(
                       (v) =>
                         item.options!.find((option: any) => option.id === v)
-                          ?.value
+                          ?.value,
                     )
                     .join(",");
                 // 如果value是数字，则将其转换为对应选项的value
                 else
                   value = item.options!.find(
-                    (option: any) => option.id === value
+                    (option: any) => option.id === value,
                   )?.value;
               }
             }
@@ -81,7 +80,6 @@ export default function ComponentDatas(props: {
 
   const { store } = useStorePage();
 
-  // 生成 excel 文件下载
   async function handleExportExcel(isWriteFile?: boolean) {
     return jsonToExcel({
       columns,
@@ -91,7 +89,6 @@ export default function ComponentDatas(props: {
     });
   }
 
-  // 生成 excel 压缩包文件下载
   async function handleExportZip() {
     const excel = await jsonToExcel({
       columns,
@@ -111,7 +108,6 @@ export default function ComponentDatas(props: {
         loading={loading}
       ></Table>
       <div className="absolute z-10 right-2 bottom-[-40px]">
-        {/* 导出压缩包+导出Excel  */}
         <Space>
           <Button onClick={handleExportZip}>导出压缩包</Button>
           <Button type="primary" onClick={() => handleExportExcel()}>

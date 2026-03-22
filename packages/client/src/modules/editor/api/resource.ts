@@ -1,7 +1,6 @@
 import type { UploadType } from "@codigo/share";
 import request from "@/shared/utils/request";
 
-// 上传接口
 export async function uploadFile(formData: FormData) {
   return request("/resources/upload", {
     data: formData,
@@ -12,7 +11,6 @@ export async function uploadFile(formData: FormData) {
   });
 }
 
-// 资源获取接口
 export async function getResources(type: UploadType) {
   return request("/resources", {
     params: { type },

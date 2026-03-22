@@ -67,7 +67,6 @@ export default function Statistics() {
           disable && "opacity-50 select-none pointer-events-none"
         } flex flex-1 p-6 gap-6 overflow-hidden`}
       >
-        {/* 用户问卷提交信息统计表格组件 */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex-grow overflow-hidden flex flex-col">
           <ComponentDatas
             components={components}

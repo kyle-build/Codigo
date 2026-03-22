@@ -20,7 +20,6 @@ export default function ComponentSelect({
   currentSelected,
   setCurrnetSelected: setCurrnetSelectedComponent,
 }: ComponentSelectProps) {
-  // 动态表格表头
   const columns: ColumnsType<DataType> = [
     {
       title: "标题",
@@ -49,7 +48,6 @@ export default function ComponentSelect({
     },
   ];
 
-  // 整理成 table 需要的数据格式
   const dataSource: DataType[] = components.map((item) => {
     return {
       key: item.id,

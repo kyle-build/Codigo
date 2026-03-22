@@ -1,5 +1,4 @@
 import { registerTheme } from "echarts";
-// 定义 funnel tooltip 参数类型
 interface FunnelTooltipParams {
   name: string;
   value: number;
@@ -65,14 +64,12 @@ const codigoTheme = {
     distance: 8,
   },
   tooltip: {
-    // 减少参数数量，使用对象解构，同时明确参数类型
-    // eslint-disable-next-line @typescript-eslint/max-params
     position(
       point: [number, number],
       _params: undefined,
       _dom: unknown,
       _rect: unknown,
-      size: TooltipSize
+      size: TooltipSize,
     ) {
       return [point[0], point[1] - (size.contentSize[1] ?? 0)];
     },
@@ -86,7 +83,6 @@ const codigoTheme = {
     itemWidth: 8,
     itemHeight: 8,
     formatter(name: unknown) {
-      // 确保 name 是字符串类型，避免 any 类型
       const safeName = typeof name === "string" ? name : String(name);
       return safeName.length > 8 ? `${safeName.substring(0, 8)}...` : safeName;
     },
@@ -316,7 +312,7 @@ const codigoTheme = {
       padding: [10, 15],
       formatter: (params: FunnelTooltipParams) =>
         `${params.name}<br/>数量：${String(
-          params.value
+          params.value,
         )}<br/>转化率：${params.percent.toFixed(2)}%`,
     },
     label: {
