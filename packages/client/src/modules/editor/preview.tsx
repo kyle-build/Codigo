@@ -15,11 +15,30 @@ const PreviewCanvas = observer(() => {
   }, []);
 
   return (
-    <>
-      {store.sortableCompConfig
-        .map((id) => getComponentById(id))
-        .map((conf) => generateComponent(conf))}
-    </>
+    <div
+      className="relative"
+      style={{
+        minHeight: `${Math.max(700, store.sortableCompConfig.length * 220)}px`,
+      }}
+    >
+      {store.sortableCompConfig.map((id) => {
+        const conf = getComponentById(id);
+        if (!conf) return null;
+
+        return (
+          <div
+            key={id}
+            className="absolute"
+            style={{
+              left: conf.styles?.left as string | number | undefined,
+              top: conf.styles?.top as string | number | undefined,
+            }}
+          >
+            {generateComponent(conf)}
+          </div>
+        );
+      })}
+    </div>
   );
 });
 

@@ -48,6 +48,9 @@ export interface TBasicComponentConfig<
   id: string;
   props: Partial<P>;
   styles?: {
+    position?: "absolute" | "relative";
+    left?: number | string;
+    top?: number | string;
     width?: number | string;
     height?: number | string;
     marginTop?: number;

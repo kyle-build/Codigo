@@ -76,6 +76,18 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
               initialValues={initialValues}
               onValuesChange={handleStyleChange}
             >
+              <Divider className="my-2" plain>
+                位置 (Position)
+              </Divider>
+              <div className="grid grid-cols-2 gap-2">
+                <Form.Item label="X 坐标" name="left">
+                  <InputNumber className="w-full" placeholder="px" />
+                </Form.Item>
+                <Form.Item label="Y 坐标" name="top">
+                  <InputNumber className="w-full" placeholder="px" />
+                </Form.Item>
+              </div>
+
               <div className="grid grid-cols-2 gap-2">
                 <Form.Item label="宽度" name="width">
                   <InputNumber className="w-full" placeholder="默认 100%" />

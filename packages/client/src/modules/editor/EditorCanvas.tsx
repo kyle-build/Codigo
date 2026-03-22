@@ -1,13 +1,14 @@
 import ClassNames from "classnames";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
-import type { FC, ReactNode } from "react";
+import type { CSSProperties, FC, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 import {
-  useMemo,
-  useState,
+  createRef,
   useEffect,
   useImperativeHandle,
-  createRef,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 import { getComponentByType } from "@codigo/share";
 import type {
@@ -16,22 +17,17 @@ import type {
   TComponentTypes,
 } from "@codigo/share";
 import {
-  useStoreComponents,
   useComponentKeyPress,
+  useStoreComponents,
   useStorePermission,
 } from "@/shared/hooks";
 import type { TStoreComponents } from "@/shared/stores";
-import SortableContainer from "@/modules/editor/components/dragSortable/SortableContainer";
-import SortableItem from "@/modules/editor/components/dragSortable/SortableItem";
-import type { DragStartEvent } from "@dnd-kit/core";
 import { components } from "./components/leftPanel/ComponentList";
-import { DeleteOutlined, UpOutlined, DownOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 
-// 获取公共组件
 export function generateComponent(conf: TBasicComponentConfig) {
   const Component = getComponentByType(conf.type);
 
-  // toJS将mobx装饰过的对象转成普通对象
   return (
     <div
       style={{
@@ -45,7 +41,7 @@ export function generateComponent(conf: TBasicComponentConfig) {
         paddingBottom: conf.styles?.paddingBottom,
         paddingLeft: conf.styles?.paddingLeft,
         paddingRight: conf.styles?.paddingRight,
-        overflow: "hidden", // 防止内容溢出
+        overflow: "hidden",
       }}
     >
       <Component {...toJS(conf.props)} key={conf.id} />
@@ -57,19 +53,23 @@ interface ComponentWrapperProps {
   id: string;
   children: ReactNode;
   isDragable: boolean;
+  canDrag: boolean;
   onClick: () => void;
+  onMouseDown: (event: ReactMouseEvent) => void;
   isCurrentComponent: boolean;
+  style?: CSSProperties;
 }
 
-// 公共组件的布局样式组件
 const ComponentWrapper: FC<ComponentWrapperProps> = ({
   id,
   children,
   isDragable,
+  canDrag,
   isCurrentComponent,
   onClick,
+  onMouseDown,
+  style,
 }) => {
-  // 设置选中的组件样式和鼠标hover的样式
   const classNames = useMemo(() => {
     return ClassNames({
       "absolute left-0 top-0 w-full h-full z-[999] transition-all duration-200": true,
@@ -82,21 +82,18 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
 
   return (
     <div
-      className="relative cursor-pointer component-warpper"
+      className={`absolute component-warpper ${canDrag ? "cursor-move" : "cursor-pointer"}`}
       onClick={onClick}
-      data-id={id} // 绑定 id，方便工具栏位置的控制
+      onMouseDown={onMouseDown}
+      style={style}
+      data-id={id}
     >
       <div className={classNames} />
-      <div
-        className="pointer-events-none" //屏蔽鼠标和键盘操作
-      >
-        {children}
-      </div>
+      <div className="pointer-events-none">{children}</div>
     </div>
   );
 };
 
-// 每个工具的样式组件
 const EditorChooiseToolbarIconContainer: FC<{
   children: ReactNode;
   onClick: () => void;
@@ -111,18 +108,12 @@ const EditorChooiseToolbarIconContainer: FC<{
   );
 };
 
-// 组件的工具栏
 const EditorChooiseToolbar: FC<{
   hidden: boolean;
   onRef: any;
 }> = observer(({ hidden, onRef }) => {
-  const {
-    store,
-    moveUpComponent,
-    moveDownComponent,
-    removeCurrentComponent,
-    getCurrentComponentConfig,
-  } = useStoreComponents();
+  const { store, removeCurrentComponent, getCurrentComponentConfig } =
+    useStoreComponents();
   const { can } = useStorePermission();
   const canEditStructure = can("edit_structure");
   const [currentComponentRect, setCurrentComponentRect] =
@@ -132,7 +123,6 @@ const EditorChooiseToolbar: FC<{
   const [refrash, setRefrash] = useState(false);
   const [localHidden, setLocalHidden] = useState(false);
 
-  // 滚动控制的 hidden 和是否可见控制的 localHidden 去控制工具栏是否展示
   const classNames = useMemo(() => {
     return ClassNames({
       hidden: hidden || localHidden,
@@ -142,7 +132,6 @@ const EditorChooiseToolbar: FC<{
 
   useImperativeHandle(onRef, () => ({ setRefrash }));
 
-  // 循环遍历所有组件的配置数组，找到当前默认组件的名字
   const componentName = useMemo(() => {
     return (
       components.find(
@@ -151,7 +140,6 @@ const EditorChooiseToolbar: FC<{
     );
   }, [getCurrentComponentConfig.get()]);
 
-  // 获取当前默认选中的组件 DOM 元素
   function getCurrentCompConfig() {
     const componentWarppers = document.querySelectorAll(".component-warpper");
     let currentCompConfig = null;
@@ -164,7 +152,6 @@ const EditorChooiseToolbar: FC<{
     return currentCompConfig as HTMLDivElement | null;
   }
 
-  // 获取默认选中的 DMO 元素在浏览器的坐标和宽高
   function resizeComponent() {
     const currentComponent = getCurrentCompConfig();
     if (currentComponent) {
@@ -173,71 +160,49 @@ const EditorChooiseToolbar: FC<{
     }
   }
 
-  // 来观察当前组件是否可见，去展示或者隐藏工具栏
-  // 并根据可见性设置全局变量hidden的值
   useEffect(() => {
-    // 获取canvas容器元素
     const oCanvasContainer = document.querySelector(".editor-canvas-container");
-    // 获取当前组件的配置信息
     const currentComponent = getCurrentCompConfig();
 
-    // 创建一个Intersection Observer实例
-    // 用于观察某个组件元素是否进入或离开视口
     const _observer = new IntersectionObserver(
       (entries) => {
-        // 遍历entries数组
         entries.forEach((entry) => {
-          // 如果当前元素不是当前组件，则直接返回
           if (entry.target !== currentComponent) return;
 
-          // 如果元素是可见的，则将全局变量localHidden设置为false
           entry.isIntersecting ? setLocalHidden(false) : setLocalHidden(true);
         });
       },
-      // Intersection Observer的配置选项
       {
-        // 定义观察的可见性阈值，当元素完全进入或离开视口时触发回调
         threshold: 0.9,
-        // 将根元素设置为canvas容器元素
         root: oCanvasContainer,
       },
     );
 
-    // 如果当前组件和canvas容器元素都存在，则将当前组件添加到观察列表中
     if (currentComponent && oCanvasContainer)
       _observer.observe(currentComponent);
 
-    // 在组件卸载时，清除Intersection Observer的监听
     return () => {
       _observer.disconnect();
     };
-    // getCurrentComponentConfig.get()默认选中变化重新执行, 滚动触发hidden变化重新执行
   }, [getCurrentComponentConfig.get(), hidden]);
 
-  // 使用useEffect钩子函数来处理一些只在组件挂载时执行的逻辑
   useEffect(() => {
-    // 如果不是第一次渲染，则直接返回
     if (!isFirst) {
-      // 将isFirst标记设置为true
       setIsFirst(true);
-      // 因为这个时候，组件可能还没有完全挂载完成，所以需要延迟一段时间
       setTimeout(() => {
         resizeComponent();
       }, 500);
       return;
     }
 
-    // refrash hook，用于强制刷新一次组件
     if (refrash) {
       setRefrash(false);
       return;
     }
 
-    // 调用resizeComponent函数
     resizeComponent();
   }, [hidden, localHidden, isFirst, refrash, getCurrentComponentConfig.get()]);
 
-  // 工具栏的按钮点击
   function handleOnClick(fn: () => void) {
     setRefrash(true);
     fn();
@@ -248,11 +213,10 @@ const EditorChooiseToolbar: FC<{
       <div
         className={classNames}
         style={{
-          left: `${currentComponentRect?.right}px`, // 设置工具栏定位的 left 等于当前组件的 right，左手坐标系定位
-          top: `${currentComponentRect && currentComponentRect.bottom - 36}px`, // 设置工具栏定位的 top 等于当前组件的 bottom-工具栏高度，左手坐标系定位
+          left: `${currentComponentRect?.right}px`,
+          top: `${currentComponentRect && currentComponentRect.bottom - 36}px`,
         }}
       >
-        {/* 组件名字 */}
         <span className="mr-1">{componentName}</span>
         <div className="w-px h-3 bg-white/30 mx-1"></div>
 
@@ -263,16 +227,6 @@ const EditorChooiseToolbar: FC<{
             >
               <DeleteOutlined />
             </EditorChooiseToolbarIconContainer>
-            <EditorChooiseToolbarIconContainer
-              onClick={() => handleOnClick(moveUpComponent)}
-            >
-              <UpOutlined />
-            </EditorChooiseToolbarIconContainer>
-            <EditorChooiseToolbarIconContainer
-              onClick={() => handleOnClick(moveDownComponent)}
-            >
-              <DownOutlined />
-            </EditorChooiseToolbarIconContainer>
           </>
         ) : (
           <span className="text-[11px] text-white/80">只读</span>
@@ -282,7 +236,23 @@ const EditorChooiseToolbar: FC<{
   );
 });
 
-// 低代码视图组件
+interface MovingComponentState {
+  id: string;
+  startX: number;
+  startY: number;
+  origLeft: number;
+  origTop: number;
+}
+
+function toNumber(value: string | number | undefined, fallback: number = 0) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    const parsed = Number.parseFloat(value);
+    return Number.isNaN(parsed) ? fallback : parsed;
+  }
+  return fallback;
+}
+
 const EditorCanvas: FC<{
   store: TStoreComponents;
   onRef: any;
@@ -291,40 +261,69 @@ const EditorCanvas: FC<{
     getComponentById,
     isCurrentComponent,
     setCurrentComponent,
-    moveComponent,
+    updateComponentPosition,
     push,
   } = useStoreComponents();
   const { can } = useStorePermission();
   const canEditStructure = can("edit_structure");
 
-  // 控制是否有拖拽
   const [isDragable, setIsDragable] = useState(false);
-  // 控制工具栏的显示隐藏，定义在当前组件，方便抛出给父组件滚动事件调用
   const [showToolbar, setShowToolbar] = useState(true);
+  const [movingComponent, setMovingComponent] =
+    useState<MovingComponentState | null>(null);
   const toolbarRef = createRef<any>();
+  const canvasRef = useRef<HTMLDivElement>(null);
 
-  // 点击组件设置成选中组件，已选中则不做操作
   function handleComponentClick(conf: TComponentPropsUnion) {
     if (isCurrentComponent(conf)) return;
     setCurrentComponent(conf.id);
   }
 
-  // 拖拽结束 要移动的和被替换的元素下标索引，传入移动组件的函数
-  function handleDragEnd(oldIndex: number, newIndex: number) {
-    if (!canEditStructure) return;
-    moveComponent({ oldIndex, newIndex });
-    setIsDragable(false);
-    toolbarRef.current?.setRefrash(true);
-  }
+  function handleDragComponentStart(event: ReactMouseEvent, id: string) {
+    if (!canEditStructure || event.button !== 0) return;
+    const component = getComponentById(id) as TBasicComponentConfig;
+    if (!component) return;
 
-  // 拖拽开始，设置当前选中的为默认组件
-  function handleDragStart(event: DragStartEvent) {
-    if (!canEditStructure) return;
-    setCurrentComponent(event.active.id.toString());
+    setCurrentComponent(id);
+    setMovingComponent({
+      id,
+      startX: event.clientX,
+      startY: event.clientY,
+      origLeft: toNumber(component.styles?.left, 0),
+      origTop: toNumber(component.styles?.top, 0),
+    });
     setIsDragable(true);
+    event.preventDefault();
+    event.stopPropagation();
   }
 
-  // HTML5 Drag and Drop for adding new components from sidebar
+  useEffect(() => {
+    if (!movingComponent || !canEditStructure) return;
+
+    const onMouseMove = (event: MouseEvent) => {
+      const left = movingComponent.origLeft + event.clientX - movingComponent.startX;
+      const top = movingComponent.origTop + event.clientY - movingComponent.startY;
+      updateComponentPosition(movingComponent.id, left, top, true);
+    };
+
+    const onMouseUp = (event: MouseEvent) => {
+      const left = movingComponent.origLeft + event.clientX - movingComponent.startX;
+      const top = movingComponent.origTop + event.clientY - movingComponent.startY;
+      updateComponentPosition(movingComponent.id, left, top, false);
+      setMovingComponent(null);
+      setIsDragable(false);
+      toolbarRef.current?.setRefrash(true);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [canEditStructure, movingComponent, updateComponentPosition]);
+
   function handleDragOver(e: React.DragEvent) {
     e.preventDefault();
     e.dataTransfer.dropEffect = "copy";
@@ -334,55 +333,57 @@ const EditorCanvas: FC<{
     e.preventDefault();
     if (!canEditStructure) return;
     const type = e.dataTransfer.getData("componentType");
+    const rect = canvasRef.current?.getBoundingClientRect();
     if (type) {
-      push(type as TComponentTypes);
+      push(type as TComponentTypes, {
+        left: rect ? e.clientX - rect.left : 32,
+        top: rect ? e.clientY - rect.top : 24,
+      });
     }
   }
 
-  // 键盘操作数组的监听事件
   useComponentKeyPress();
 
-  // 提供父组件调用自身的函数，控制工具栏的展示隐藏
   useImperativeHandle(onRef, () => ({
     setShowToolbar,
   }));
 
   return (
     <div
-      className="min-h-[700px] bg-white pb-20"
+      ref={canvasRef}
+      className="relative min-h-[700px] bg-white"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
+      style={{
+        minHeight: `${Math.max(700, store.sortableCompConfig.length * 220)}px`,
+      }}
     >
       <EditorChooiseToolbar
         onRef={toolbarRef}
         hidden={!showToolbar || isDragable}
       />
-      <SortableContainer
-        items={store.sortableCompConfig}
-        onDragEnd={handleDragEnd}
-        onDragStart={handleDragStart}
-      >
-        {store.sortableCompConfig.map((item) => (
-          <SortableItem key={item} id={item} disabled={!canEditStructure}>
-            <ComponentWrapper
-              isDragable={isDragable}
-              onClick={() =>
-                handleComponentClick(
-                  getComponentById(item) as TComponentPropsUnion,
-                )
-              }
-              isCurrentComponent={isCurrentComponent(
-                getComponentById(item) as TComponentPropsUnion,
-              )}
-              id={item}
-            >
-              {generateComponent(
-                getComponentById(item) as TBasicComponentConfig,
-              )}
-            </ComponentWrapper>
-          </SortableItem>
-        ))}
-      </SortableContainer>
+      {store.sortableCompConfig.map((item) => {
+        const component = getComponentById(item) as TBasicComponentConfig;
+        if (!component) return null;
+        return (
+          <ComponentWrapper
+            key={item}
+            isDragable={isDragable}
+            canDrag={canEditStructure}
+            onMouseDown={(event) => handleDragComponentStart(event, item)}
+            onClick={() => handleComponentClick(component as TComponentPropsUnion)}
+            isCurrentComponent={isCurrentComponent(component as TComponentPropsUnion)}
+            id={item}
+            style={{
+              left: component.styles?.left as string | number | undefined,
+              top: component.styles?.top as string | number | undefined,
+              position: "absolute",
+            }}
+          >
+            {generateComponent(component)}
+          </ComponentWrapper>
+        );
+      })}
     </div>
   );
 });

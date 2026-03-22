@@ -34,6 +34,63 @@ const codeSupportedTypes: TComponentTypes[] = [
   "alert",
 ];
 
+const layoutGapX = 380;
+const layoutGapY = 200;
+const layoutStartX = 32;
+const layoutStartY = 24;
+
+function getDefaultWidthByType(type: TComponentTypes): string {
+  switch (type) {
+    case "card":
+    case "list":
+    case "image":
+    case "video":
+    case "swiper":
+    case "richText":
+      return "420px";
+    case "input":
+    case "textArea":
+    case "radio":
+    case "checkbox":
+      return "360px";
+    case "split":
+      return "520px";
+    default:
+      return "320px";
+  }
+}
+
+function getDefaultPosition(index: number) {
+  return {
+    left: `${layoutStartX + (index % 3) * layoutGapX}px`,
+    top: `${layoutStartY + Math.floor(index / 3) * layoutGapY}px`,
+  };
+}
+
+function normalizeLayout(
+  compConfigs: Record<string, TComponentPropsUnion>,
+  order: string[],
+) {
+  order.forEach((id, index) => {
+    const comp = compConfigs[id];
+    if (!comp) return;
+    const nextStyles = { ...(comp.styles ?? {}) };
+    const hasPosition =
+      nextStyles.left !== undefined && nextStyles.top !== undefined;
+    const fallbackPosition = getDefaultPosition(index);
+
+    nextStyles.position = "absolute";
+    nextStyles.left = hasPosition ? nextStyles.left : fallbackPosition.left;
+    nextStyles.top = hasPosition ? nextStyles.top : fallbackPosition.top;
+    nextStyles.width =
+      nextStyles.width === "100%" && !hasPosition
+        ? getDefaultWidthByType(comp.type)
+        : (nextStyles.width ?? getDefaultWidthByType(comp.type));
+
+    comp.styles = nextStyles;
+  });
+}
+
 // 撤销前进的插件
 const sotreComponentsUndoer = trackUndo(
   () => toJS(storeComponents),
@@ -52,24 +109,41 @@ export function useStoreComponents() {
   });
 
   // 定义添加组件的函数
-  const push = action((type: TComponentTypes) => {
-    if (!ensurePermission("edit_structure", "当前角色不能新增组件")) return;
-    if (!storeComponents.compConfigs) {
-      storeComponents.compConfigs = {};
-    }
+  const push = action(
+    (type: TComponentTypes, position?: { left: number; top: number }) => {
+      if (!ensurePermission("edit_structure", "当前角色不能新增组件")) return;
+      if (!storeComponents.compConfigs) {
+        storeComponents.compConfigs = {};
+      }
 
-    const comp: TComponentPropsUnion = {
-      id: ulid(),
-      type,
-      props: {},
-    };
+      const defaultPosition = getDefaultPosition(
+        storeComponents.sortableCompConfig.length,
+      );
+      const comp: TComponentPropsUnion = {
+        id: ulid(),
+        type,
+        props: {},
+        styles: {
+          position: "absolute",
+          left:
+            position?.left !== undefined
+              ? `${Math.max(0, Math.round(position.left))}px`
+              : defaultPosition.left,
+          top:
+            position?.top !== undefined
+              ? `${Math.max(0, Math.round(position.top))}px`
+              : defaultPosition.top,
+          width: getDefaultWidthByType(type),
+        },
+      };
 
-    storeComponents.compConfigs[comp.id] = comp;
-    storeComponents.sortableCompConfig.push(comp.id);
+      storeComponents.compConfigs[comp.id] = comp;
+      storeComponents.sortableCompConfig.push(comp.id);
 
-    setCurrentComponent(comp.id);
-    addOperationLog("add_component", type);
-  });
+      setCurrentComponent(comp.id);
+      addOperationLog("add_component", type);
+    },
+  );
 
   // 定义根据id获取组件配置的函数
   const getComponentById = action((id: string) => {
@@ -121,6 +195,28 @@ export function useStoreComponents() {
     }
     addOperationLog("update_style", curCompConfig.type);
   });
+
+  const updateComponentPosition = action(
+    (id: string, left: number, top: number, silent: boolean = false) => {
+      if (!ensurePermission("edit_structure", "当前角色不能拖拽组件")) return;
+      const curCompConfig = storeComponents.compConfigs[id];
+      if (!curCompConfig) return;
+
+      if (!curCompConfig.styles) {
+        curCompConfig.styles = {};
+      }
+
+      curCompConfig.styles.position = "absolute";
+      curCompConfig.styles.left = `${Math.max(0, Math.round(left))}px`;
+      curCompConfig.styles.top = `${Math.max(0, Math.round(top))}px`;
+      curCompConfig.styles.width =
+        curCompConfig.styles.width ?? getDefaultWidthByType(curCompConfig.type);
+
+      if (!silent) {
+        addOperationLog("move_component", curCompConfig.type);
+      }
+    },
+  );
 
   // 定义带有数组参数的更新当前组件配置的函数
   type TUpdateCurrentCompConfigWithArray = (args: {
@@ -242,6 +338,16 @@ export function useStoreComponents() {
       id: ulid(),
     };
 
+    const left = Number.parseInt(String(comp.styles?.left ?? "0"), 10);
+    const top = Number.parseInt(String(comp.styles?.top ?? "0"), 10);
+    comp.styles = {
+      ...(comp.styles ?? {}),
+      position: "absolute",
+      left: `${Number.isNaN(left) ? 24 : left + 24}px`,
+      top: `${Number.isNaN(top) ? 24 : top + 24}px`,
+      width: comp.styles?.width ?? getDefaultWidthByType(comp.type),
+    };
+
     // 将新的组件配置添加到storeComponents.compConfigs中
     storeComponents.compConfigs[comp.id] = comp;
     // 将新的组件配置id添加到storeComponents.sortableCompConfig中
@@ -276,6 +382,10 @@ export function useStoreComponents() {
     storeComponents.compConfigs = value.compConfigs;
     storeComponents.currentCompConfig = value.currentCompConfig;
     storeComponents.sortableCompConfig = value.sortableCompConfig;
+    normalizeLayout(
+      storeComponents.compConfigs,
+      storeComponents.sortableCompConfig,
+    );
   });
 
   const replaceByCode = action(
@@ -309,6 +419,7 @@ export function useStoreComponents() {
         nextSortableCompConfig.push(nextId);
       }
 
+      normalizeLayout(nextCompConfigs, nextSortableCompConfig);
       storeComponents.compConfigs = nextCompConfigs;
       storeComponents.sortableCompConfig = nextSortableCompConfig;
       storeComponents.currentCompConfig =
@@ -383,6 +494,10 @@ export function useStoreComponents() {
         storeComponents.compConfigs = JSON.parse(compConfig);
         storeComponents.sortableCompConfig = JSON.parse(sortableCompConfig!);
         storeComponents.currentCompConfig = JSON.parse(currentCompConfig!);
+        normalizeLayout(
+          storeComponents.compConfigs,
+          storeComponents.sortableCompConfig,
+        );
 
         // Restore page settings
         if (pageSettings) {
@@ -427,11 +542,16 @@ export function useStoreComponents() {
           id: cur.id,
           type: cur.type,
           props: cur.options ?? {},
+          styles: cur.styles ?? cur.options?.styles,
         };
         return acc;
       }, {});
     storeComponents.sortableCompConfig = Object.keys(
       storeComponents.compConfigs || {},
+    );
+    normalizeLayout(
+      storeComponents.compConfigs,
+      storeComponents.sortableCompConfig,
     );
     // 设置当前组件配置为可排序组件配置的第一个组件配置
     storeComponents.currentCompConfig = storeComponents.sortableCompConfig[0];
@@ -456,6 +576,7 @@ export function useStoreComponents() {
     store: storeComponents,
     updateCurrentComponent,
     updateCurrentComponentStyles,
+    updateComponentPosition,
     updateCurrentCompConfigWithArray,
     setItemsExpandIndex,
     // 导出撤销操作的函数
