@@ -1,9 +1,14 @@
-import type { SandboxRuntimeEnvelope, SandboxTarget } from "./types";
+import type {
+  SandboxRuntimeEnvelope,
+  SandboxSchemaNode,
+  SandboxTarget,
+} from "./types";
 
 export const SANDBOX_CHANNEL = "codigo:sandbox";
 export const SANDBOX_EVENT_SCHEMA_UPDATE = "schema:update";
 export const SANDBOX_EVENT_LOGIC_RESULT = "logic:result";
 export const SANDBOX_EVENT_UI_READY = "ui:ready";
+export const SANDBOX_EVENT_BUNDLE_UPDATE = "bundle:update";
 
 export function createRuntimeEnvelope<TPayload>(
   target: SandboxTarget,
@@ -50,8 +55,10 @@ export function createIframeSandboxSrcdoc() {
       const channel = "${SANDBOX_CHANNEL}";
       const uiReady = "${SANDBOX_EVENT_UI_READY}";
       const schemaUpdate = "${SANDBOX_EVENT_SCHEMA_UPDATE}";
+      const bundleUpdate = "${SANDBOX_EVENT_BUNDLE_UPDATE}";
 
       const root = document.getElementById("root");
+      let runtimeScript;
 
       function renderSchema(schema) {
         root.innerHTML = "";
@@ -85,6 +92,16 @@ export function createIframeSandboxSrcdoc() {
         if (!data || data.channel !== channel || data.target !== "iframe-ui") return;
         if (data.event === schemaUpdate) {
           renderSchema(data.payload);
+          return;
+        }
+        if (data.event === bundleUpdate) {
+          if (runtimeScript) {
+            runtimeScript.remove();
+            runtimeScript = null;
+          }
+          runtimeScript = document.createElement("script");
+          runtimeScript.textContent = String(data.payload || "");
+          document.body.appendChild(runtimeScript);
         }
       });
 
@@ -123,5 +140,39 @@ self.onmessage = (event) => {
     payload: result
   });
 };
+`;
+}
+
+export function createBundleEntrySource(schema: SandboxSchemaNode[]) {
+  const schemaText = JSON.stringify(schema);
+  return `
+const pageSchema = ${schemaText};
+const root = document.getElementById("root");
+if (root) {
+  root.innerHTML = "";
+  if (!Array.isArray(pageSchema) || pageSchema.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "card";
+    empty.textContent = "暂无组件";
+    root.appendChild(empty);
+  } else {
+    for (const node of pageSchema) {
+      const card = document.createElement("div");
+      card.className = "card";
+      if (node && node.styles && typeof node.styles === "object") {
+        Object.assign(card.style, node.styles);
+      }
+      const type = document.createElement("div");
+      type.className = "type";
+      type.textContent = String(node && node.type ? node.type : "unknown");
+      const props = document.createElement("div");
+      props.className = "props";
+      props.textContent = JSON.stringify((node && node.props) || {}, null, 2);
+      card.appendChild(type);
+      card.appendChild(props);
+      root.appendChild(card);
+    }
+  }
+}
 `;
 }
