@@ -1,15 +1,15 @@
 import { createHashRouter } from "react-router-dom";
 import Editor from "@/modules/editor";
 import Home from "@/modules/home/index";
-import DataCount from "@/modules/dataCount/dataCount";
+import DataCount from "@/modules/dataCount";
 import Release from "@/modules/release";
 import Preview from "@/modules/preview";
-import LoginOrRegister from "@/modules/auth/loginOrRegister";
+import LoginOrRegister from "@/modules/auth";
 // import Form from "@/modules/form/form";
-import Flow from "@/modules/flow/flow";
-import Report from "@/modules/report/reportDesigner";
-import DevDoc from "@/modules/devDocument/DevDoc";
-import TemplateSelect from "@/modules/home/TemplateSelect";
+import Flow from "@/modules/flow";
+import Report from "@/modules/report";
+import DevDoc from "@/modules/devDocument";
+import TemplateSelect from "@/modules/home/components/TemplateSelect";
 import { StudioLayout } from "@/app/layouts/StudioLayout";
 
 export const router = createHashRouter([

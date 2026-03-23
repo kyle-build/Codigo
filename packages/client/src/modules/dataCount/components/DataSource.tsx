@@ -1,9 +1,9 @@
-﻿import type { TBasicComponentConfig as IComponent } from "@codigo/materials-react";
+import type { TBasicComponentConfig as IComponent } from "@codigo/materials-react";
 import { useRequest } from "ahooks";
 import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { getQuestionDataByTypeRequest } from "@/modules/editor/api/low-code";
-import { useStorePage } from "../../shared/hooks/useStorePage";
+import { useStorePage } from "@/shared/hooks/useStorePage";
 interface DataSourceProps {
   currentSelected?: IComponent;
 }
