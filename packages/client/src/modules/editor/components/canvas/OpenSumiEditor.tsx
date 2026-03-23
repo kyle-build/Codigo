@@ -9,12 +9,14 @@ interface Props {
   value: string;
   onChange: (value: string) => void;
   language?: string;
+  readOnly?: boolean;
 }
 
 export default function OpenSumiEditor({
   value,
   onChange,
   language = "typescript",
+  readOnly = false,
 }: Props) {
   const bridge = useMemo(() => resolveOpenSumiBridge(), []);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,6 +29,7 @@ export default function OpenSumiEditor({
       container: containerRef.current,
       value,
       language,
+      readOnly,
       onChange,
     });
     handleRef.current = handle;
@@ -36,7 +39,7 @@ export default function OpenSumiEditor({
       handle.dispose();
       handleRef.current = null;
     };
-  }, [bridge, language, onChange]);
+  }, [bridge, language, onChange, readOnly]);
 
   useEffect(() => {
     if (!bridge || !handleRef.current) return;
@@ -48,6 +51,7 @@ export default function OpenSumiEditor({
       <Input.TextArea
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        readOnly={readOnly}
         autoSize={false}
         className="font-mono text-xs flex-1 h-full rounded-none border-0"
       />

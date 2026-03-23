@@ -1,4 +1,4 @@
-﻿import { action } from "mobx";
+import { action } from "mobx";
 import { message } from "antd";
 import { ulid } from "ulid";
 import {
@@ -41,6 +41,9 @@ const eventLabelMap: Record<string, string> = {
   save_draft: "保存草稿",
   publish: "发布页面",
   ai_replace: "AI替换组件",
+  sandbox_sync: "沙箱同步画布",
+  sandbox_bundle: "沙箱编译更新",
+  sandbox_runtime_error: "沙箱运行异常",
   invite_member: "邀请协作者",
   update_role: "修改角色",
   remove_member: "移除成员",

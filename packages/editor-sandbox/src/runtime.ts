@@ -9,6 +9,7 @@ export const SANDBOX_EVENT_SCHEMA_UPDATE = "schema:update";
 export const SANDBOX_EVENT_LOGIC_RESULT = "logic:result";
 export const SANDBOX_EVENT_UI_READY = "ui:ready";
 export const SANDBOX_EVENT_BUNDLE_UPDATE = "bundle:update";
+export const SANDBOX_EVENT_RUNTIME_ERROR = "runtime:error";
 
 export function createRuntimeEnvelope<TPayload>(
   target: SandboxTarget,
@@ -56,6 +57,7 @@ export function createIframeSandboxSrcdoc() {
       const uiReady = "${SANDBOX_EVENT_UI_READY}";
       const schemaUpdate = "${SANDBOX_EVENT_SCHEMA_UPDATE}";
       const bundleUpdate = "${SANDBOX_EVENT_BUNDLE_UPDATE}";
+      const runtimeError = "${SANDBOX_EVENT_RUNTIME_ERROR}";
 
       const root = document.getElementById("root");
       let runtimeScript;
@@ -105,6 +107,38 @@ export function createIframeSandboxSrcdoc() {
         }
       });
 
+      window.addEventListener("error", (event) => {
+        parent.postMessage(
+          {
+            channel,
+            target: "iframe-ui",
+            event: runtimeError,
+            payload: {
+              source: "iframe",
+              message: event.message || "未知运行时错误"
+            }
+          },
+          "*"
+        );
+      });
+
+      window.addEventListener("unhandledrejection", (event) => {
+        const reason = event.reason;
+        const message = typeof reason === "string" ? reason : reason?.message || "Promise 未处理异常";
+        parent.postMessage(
+          {
+            channel,
+            target: "iframe-ui",
+            event: runtimeError,
+            payload: {
+              source: "iframe",
+              message
+            }
+          },
+          "*"
+        );
+      });
+
       parent.postMessage(
         { channel, target: "iframe-ui", event: uiReady, payload: null },
         "*"
@@ -119,28 +153,65 @@ export function createWorkerSandboxScript() {
 const channel = "${SANDBOX_CHANNEL}";
 const schemaUpdate = "${SANDBOX_EVENT_SCHEMA_UPDATE}";
 const logicResult = "${SANDBOX_EVENT_LOGIC_RESULT}";
+const runtimeError = "${SANDBOX_EVENT_RUNTIME_ERROR}";
 
 self.onmessage = (event) => {
-  const data = event.data;
-  if (!data || data.channel !== channel || data.target !== "worker-logic") return;
-  if (data.event !== schemaUpdate) return;
+  try {
+    const data = event.data;
+    if (!data || data.channel !== channel || data.target !== "worker-logic") return;
+    if (data.event !== schemaUpdate) return;
 
-  const schema = data.payload;
-  const list = Array.isArray(schema) ? schema : [];
-  const result = {
-    componentCount: list.length,
-    types: [...new Set(list.map((item) => item && item.type).filter(Boolean))],
-    timestamp: Date.now()
-  };
+    const schema = data.payload;
+    const list = Array.isArray(schema) ? schema : [];
+    const result = {
+      componentCount: list.length,
+      types: [...new Set(list.map((item) => item && item.type).filter(Boolean))],
+      timestamp: Date.now()
+    };
 
-  self.postMessage({
-    channel,
-    target: "worker-logic",
-    event: logicResult,
-    payload: result
-  });
+    self.postMessage({
+      channel,
+      target: "worker-logic",
+      event: logicResult,
+      payload: result
+    });
+  } catch (error) {
+    self.postMessage({
+      channel,
+      target: "worker-logic",
+      event: runtimeError,
+      payload: {
+        source: "worker",
+        message: error instanceof Error ? error.message : "Worker 运行异常"
+      }
+    });
+  }
 };
 `;
+}
+
+export function collectImportSpecifiers(source: string) {
+  const importReg = /\bimport\s+(?:[^"'()]+from\s+)?["']([^"']+)["']/g;
+  const dynamicImportReg = /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g;
+  const imports = new Set<string>();
+  let match: RegExpExecArray | null;
+
+  while ((match = importReg.exec(source))) {
+    imports.add(match[1]);
+  }
+  while ((match = dynamicImportReg.exec(source))) {
+    imports.add(match[1]);
+  }
+
+  return [...imports];
+}
+
+export function enforceImportWhitelist(source: string, whitelist: string[]) {
+  const imports = collectImportSpecifiers(source);
+  const disallowed = imports.filter((item) => !whitelist.includes(item));
+  if (disallowed.length > 0) {
+    throw new Error(`检测到未授权依赖: ${disallowed.join(", ")}`);
+  }
 }
 
 export function createBundleEntrySource(schema: SandboxSchemaNode[]) {

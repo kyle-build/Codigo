@@ -8,6 +8,7 @@ export interface OpenSumiEditorBridge {
     container: HTMLElement;
     value: string;
     language: string;
+    readOnly?: boolean;
     onChange: (value: string) => void;
   }) => OpenSumiEditorBridgeHandle;
 }
