@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+﻿import { makeAutoObservable } from "mobx";
 import type { Field } from "../types/formSchema";
 import { genId, deepClone } from "../utils/index";
 import { History } from "../hostory/hostory";
@@ -118,3 +118,15 @@ export class FormStore {
     a.click();
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import type { IComponent } from "@codigo/share";
+﻿import type { TBasicComponentConfig as IComponent } from "@codigo/materials-react";
 import { useRequest } from "ahooks";
 import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
@@ -246,3 +246,15 @@ export default function DataSource({ currentSelected }: DataSourceProps) {
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

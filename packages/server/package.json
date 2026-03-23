@@ -20,8 +20,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@codigo/share": "workspace:*",
+    "@codigo/schema": "workspace:*",
     "@nestjs/common": "^11.0.1",
+    "bcryptjs": "^3.0.0",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/mapped-types": "*",

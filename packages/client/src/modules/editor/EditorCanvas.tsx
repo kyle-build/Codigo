@@ -1,4 +1,4 @@
-import ClassNames from "classnames";
+﻿import ClassNames from "classnames";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import type { CSSProperties, FC, MouseEvent as ReactMouseEvent, ReactNode } from "react";
@@ -10,12 +10,12 @@ import {
   useRef,
   useState,
 } from "react";
-import { getComponentByType } from "@codigo/share";
+import { getComponentByType } from "@codigo/schema";
 import type {
   TBasicComponentConfig,
   TComponentPropsUnion,
   TComponentTypes,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import {
   useComponentKeyPress,
   useStoreComponents,
@@ -389,3 +389,15 @@ const EditorCanvas: FC<{
 });
 
 export default EditorCanvas;
+
+
+
+
+
+
+
+
+
+
+
+

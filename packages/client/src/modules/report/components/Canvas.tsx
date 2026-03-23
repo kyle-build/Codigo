@@ -1,4 +1,4 @@
-import { observer } from "mobx-react-lite";
+﻿import { observer } from "mobx-react-lite";
 import { reportStore } from "../stores/reportStore";
 import { ChartWidget } from "./ChartWidget";
 import { KPIWidget } from "./KPIWidget";
@@ -58,3 +58,15 @@ export const Canvas = observer(() => {
     </div>
   );
 });
+
+
+
+
+
+
+
+
+
+
+
+

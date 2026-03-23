@@ -1,4 +1,4 @@
-import { createStoreAuth } from "../stores";
+﻿import { createStoreAuth } from "../stores";
 import { computed, action } from "mobx";
 
 export const storeAuth = createStoreAuth();
@@ -18,3 +18,15 @@ export function useStoreAuth() {
   });
   return { login, logout, isLogin, store: storeAuth };
 }
+
+
+
+
+
+
+
+
+
+
+
+

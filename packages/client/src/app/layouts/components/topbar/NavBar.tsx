@@ -1,4 +1,4 @@
-import { studioModules } from "@/app/studio/modules";
+﻿import { studioModules } from "@/app/studio/modules";
 import { NavButton } from "./NavButton";
 
 export function NavBar() {
@@ -10,3 +10,15 @@ export function NavBar() {
     </nav>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import type { DynamicModule, Provider } from '@nestjs/common';
+﻿import type { DynamicModule, Provider } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 import Redis from 'ioredis';
 import type { RedisOptions } from 'ioredis';

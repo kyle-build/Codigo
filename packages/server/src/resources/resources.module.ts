@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+﻿import { Module } from '@nestjs/common';
 import { ResourcesService } from './resources.service';
 import { ResourcesController } from './resources.controller';
 import { MulterModule } from '@nestjs/platform-express';

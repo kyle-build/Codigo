@@ -1,12 +1,12 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 
 import { Input, Segmented } from "antd";
 import type { SegmentedLabeledOption } from "antd/es/segmented";
-import type { ISplitComponentProps } from "@codigo/share";
+import type { ISplitComponentProps } from "@codigo/schema";
 import {
   fillComponentPropsByConfig,
   splitComponentDefaultConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import { FormContainer, FormPropLabel } from "..";
 
 export default function SplitComponentProps(_props: ISplitComponentProps) {
@@ -49,3 +49,15 @@ export default function SplitComponentProps(_props: ISplitComponentProps) {
     </FormContainer>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import { observer } from "mobx-react-lite";
+﻿import { observer } from "mobx-react-lite";
 import { useFormStore } from "./components/storeProvider";
 
 export const FieldList = observer(() => {
@@ -12,3 +12,15 @@ export const FieldList = observer(() => {
     </div>
   );
 });
+
+
+
+
+
+
+
+
+
+
+
+

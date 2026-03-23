@@ -1,4 +1,4 @@
-import { useSendCode } from "@/shared/hooks";
+﻿import { useSendCode } from "@/shared/hooks";
 import type { FormInstance } from "antd";
 import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
 import { useRequest } from "ahooks";
@@ -17,3 +17,15 @@ export function useRegister(form: FormInstance) {
     },
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+

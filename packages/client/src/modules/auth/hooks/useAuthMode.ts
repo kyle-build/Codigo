@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 type loginOrRegister = "login" | "register";
 
 export function useAuthMode() {
@@ -12,3 +12,15 @@ export function useAuthMode() {
     toggle,
   };
 }
+
+
+
+
+
+
+
+
+
+
+
+

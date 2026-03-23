@@ -1,10 +1,10 @@
-import { Input } from "antd";
+﻿import { Input } from "antd";
 import { useMemo } from "react";
 import {
   type ICardComponentProps,
   cardComponentDefaultConfig,
   fillComponentPropsByConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import { FormContainer, FormPropLabel, UploadEditOrChooiseInput } from "..";
 
 export default function CardComponentProps(_props: ICardComponentProps) {
@@ -26,3 +26,15 @@ export default function CardComponentProps(_props: ICardComponentProps) {
     </FormContainer>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

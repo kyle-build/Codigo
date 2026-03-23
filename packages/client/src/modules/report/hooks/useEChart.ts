@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+﻿import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 
 export function useEChart(option: any) {
@@ -34,3 +34,15 @@ export function useEChart(option: any) {
 
   return ref;
 }
+
+
+
+
+
+
+
+
+
+
+
+

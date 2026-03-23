@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 interface AuthInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -31,3 +31,15 @@ export function AuthInput({ label, error, icon, className, ...props }: AuthInput
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

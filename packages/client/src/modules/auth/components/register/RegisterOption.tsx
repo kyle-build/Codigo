@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input } from "antd";
+﻿import { Button, Checkbox, Form, Input } from "antd";
 import { useSendCode } from "@/shared/hooks/useSendCode";
 import { useRegister } from "@/modules/auth/hooks/useRegister";
 
@@ -63,3 +63,15 @@ export default function RegisterCaptcha() {
     </Form>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

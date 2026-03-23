@@ -1,4 +1,4 @@
-export const chartTemplates = [
+﻿export const chartTemplates = [
   {
     type: "bar",
     label: "柱状图",
@@ -80,3 +80,15 @@ export const chartTemplates = [
     },
   },
 ];
+
+
+
+
+
+
+
+
+
+
+
+

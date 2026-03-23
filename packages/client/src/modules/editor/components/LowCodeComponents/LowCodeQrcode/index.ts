@@ -1,1 +1,13 @@
-export { default as QrcodeComponentProps } from './QrcodeComponentProps'
+﻿export { default as QrcodeComponentProps } from './QrcodeComponentProps'
+
+
+
+
+
+
+
+
+
+
+
+

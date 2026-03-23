@@ -1,4 +1,4 @@
-import type { UploadType } from "@codigo/share";
+﻿import type { UploadType } from "@codigo/schema";
 import request from "@/shared/utils/request";
 
 export async function uploadFile(formData: FormData) {
@@ -25,3 +25,15 @@ export async function deleteResource(id: number) {
     method: "DELETE",
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+

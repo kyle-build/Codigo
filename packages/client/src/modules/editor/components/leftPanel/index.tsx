@@ -1,4 +1,4 @@
-import { Tabs } from "antd";
+﻿import { Tabs } from "antd";
 import { AppstoreOutlined } from "@ant-design/icons";
 import ComponentList from "./componentsList";
 
@@ -17,3 +17,15 @@ export default function EditorLeftPanel() {
 
   return <Tabs defaultActiveKey="component-list" items={items} />;
 }
+
+
+
+
+
+
+
+
+
+
+
+

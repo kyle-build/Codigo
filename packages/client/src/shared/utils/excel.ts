@@ -1,4 +1,4 @@
-import ExcelJs from "exceljs";
+﻿import ExcelJs from "exceljs";
 import JSZip from "jszip";
 
 // 生成表格的表头
@@ -85,3 +85,15 @@ export async function excelToZip(params: { buffer: any; title: string }) {
   // 保存ZIP文件
   saveFileWithBlob(blob, `${title}.zip`);
 }
+
+
+
+
+
+
+
+
+
+
+
+

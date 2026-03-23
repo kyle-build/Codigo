@@ -1,9 +1,28 @@
 {
   "name": "@codigo/render-react",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
-  "scripts": {},
-  "dependencies": {},
-  "devDependencies": {}
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild"
+  },
+  "dependencies": {
+    "@codigo/runtime-core": "workspace:*",
+    "@codigo/schema": "workspace:*"
+  },
+  "devDependencies": {
+    "unbuild": "^2.0.0"
+  }
 }

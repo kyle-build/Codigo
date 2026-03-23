@@ -1,4 +1,4 @@
-import { CheckOutlined, EditOutlined } from "@ant-design/icons";
+﻿import { CheckOutlined, EditOutlined } from "@ant-design/icons";
 import { Input, Space, Menu, Dropdown } from "antd";
 import { useState } from "react";
 import type { ChangeEvent } from "react";
@@ -73,3 +73,15 @@ export default function Left(props: { title: string }) {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import { useStorePage } from "@/shared/hooks/useStorePage";
+﻿import { useStorePage } from "@/shared/hooks/useStorePage";
 import Left from "./components/header/Left";
 import { observer } from "mobx-react-lite";
 import Center from "./components/header/Center";
@@ -22,3 +22,15 @@ const Header = observer(({}) => {
 });
 
 export default Header;
+
+
+
+
+
+
+
+
+
+
+
+

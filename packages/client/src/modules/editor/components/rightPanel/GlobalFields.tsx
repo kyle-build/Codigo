@@ -1,4 +1,4 @@
-import { Form, Input } from "antd";
+﻿import { Form, Input } from "antd";
 import { observer } from "mobx-react-lite";
 import type { FC } from "react";
 
@@ -35,3 +35,15 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
 });
 
 export default GlobalFields;
+
+
+
+
+
+
+
+
+
+
+
+

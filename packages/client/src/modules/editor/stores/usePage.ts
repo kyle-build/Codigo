@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+﻿import { makeAutoObservable } from "mobx";
 
 export interface NodeStyle {
   width?: number;
@@ -112,3 +112,15 @@ export class PageStore {
 }
 
 export const pageStore = new PageStore();
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-export function getDefaultLocale() {
+﻿export function getDefaultLocale() {
   const saved = localStorage.getItem("user-locale");
   if (saved) return saved;
 
@@ -16,3 +16,15 @@ export function getDefaultLocale() {
 
   return matched || "zh-CN";
 }
+
+
+
+
+
+
+
+
+
+
+
+

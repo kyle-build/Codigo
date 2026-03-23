@@ -1,4 +1,4 @@
-import { createHashRouter } from "react-router-dom";
+﻿import { createHashRouter } from "react-router-dom";
 import Editor from "@/modules/editor/Editor";
 import Home from "@/modules/home/index";
 import DataCount from "@/modules/dataCount/dataCount";
@@ -57,3 +57,15 @@ export const router = createHashRouter([
     element: <Report />,
   },
 ]);
+
+
+
+
+
+
+
+
+
+
+
+

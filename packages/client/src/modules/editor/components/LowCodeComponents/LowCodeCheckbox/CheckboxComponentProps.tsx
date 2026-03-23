@@ -1,10 +1,10 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 import { Checkbox, Form, Input } from "antd";
-import type { ICheckboxComponentProps } from "@codigo/share";
+import type { ICheckboxComponentProps } from "@codigo/schema";
 import {
   checkboxComponentDefaultConfig,
   fillComponentPropsByConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import { FormContainer, FormContainerWithList, FormPropLabel } from "..";
 
 export default function CheckboxComponentProps(
@@ -55,3 +55,15 @@ export default function CheckboxComponentProps(
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

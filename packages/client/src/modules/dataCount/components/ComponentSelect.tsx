@@ -1,4 +1,4 @@
-import type { IComponent } from "@codigo/share";
+﻿import type { TBasicComponentConfig as IComponent } from "@codigo/materials-react";
 import { Button, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
@@ -59,3 +59,15 @@ export default function ComponentSelect({
 
   return <Table dataSource={dataSource} columns={columns}></Table>;
 }
+
+
+
+
+
+
+
+
+
+
+
+

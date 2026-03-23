@@ -1,4 +1,4 @@
-import type { FC, ReactNode } from "react";
+﻿import type { FC, ReactNode } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -31,3 +31,15 @@ const SortableItem: FC<PropsType> = ({ id, children, disabled = false }) => {
 };
 
 export default SortableItem;
+
+
+
+
+
+
+
+
+
+
+
+

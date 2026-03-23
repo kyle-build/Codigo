@@ -1,11 +1,11 @@
-import { Form, Input, Select, Switch } from "antd";
+﻿import { Form, Input, Select, Switch } from "antd";
 import { useMemo } from "react";
-import type { ISwiperComponentProps } from "@codigo/share";
+import type { ISwiperComponentProps } from "@codigo/schema";
 import {
   defaultImageInfo,
   fillComponentPropsByConfig,
   swiperComponentDefaultConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import {
   FormContainer,
   FormContainerWithList,
@@ -132,3 +132,15 @@ export default function SwiperComponentProps(_props: ISwiperComponentProps) {
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-export type WidgetType =
+﻿export type WidgetType =
   | "bar"
   | "line"
   | "pie"
@@ -37,3 +37,15 @@ export interface Widget {
   config: WidgetConfig;
   gridPos: GridPos;
 }
+
+
+
+
+
+
+
+
+
+
+
+

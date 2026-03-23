@@ -1,4 +1,4 @@
-export interface StudioModule {
+﻿export interface StudioModule {
   name: string;
   label: string;
   path: string;
@@ -10,3 +10,15 @@ export const studioModules: StudioModule[] = [
   { name: "flow", label: "Flow", path: "/flow" },
   { name: "report", label: "Report", path: "/report" },
 ];
+
+
+
+
+
+
+
+
+
+
+
+

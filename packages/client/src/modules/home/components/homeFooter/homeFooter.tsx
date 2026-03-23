@@ -1,4 +1,4 @@
-export function HomeFooter() {
+﻿export function HomeFooter() {
   return (
     <footer className="relative z-10 border-t border-slate-200 bg-slate-50 overflow-hidden">
       {/* Decorative Grid */}
@@ -44,3 +44,15 @@ export function HomeFooter() {
     </footer>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

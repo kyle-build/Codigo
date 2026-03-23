@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+﻿import { BadRequestException, Injectable } from '@nestjs/common';
 import { AliOssModule } from 'src/utils/modules/ali-oss.module';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Resources } from './entities/resources.entity';
-import type { UploadType } from '@codigo/share';
+import type { UploadType } from '@codigo/schema';
 
 @Injectable()
 export class ResourcesService {

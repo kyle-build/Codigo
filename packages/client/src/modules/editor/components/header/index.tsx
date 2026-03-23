@@ -1,4 +1,4 @@
-import HeaderCenter from "./HeaderCenter";
+﻿import HeaderCenter from "./HeaderCenter";
 import HeaderLeft from "./HeaderLeft";
 import HeaderRight from "./HeaderRight";
 function EditorHeader() {
@@ -18,3 +18,15 @@ function EditorHeader() {
 }
 
 export default EditorHeader;
+
+
+
+
+
+
+
+
+
+
+
+

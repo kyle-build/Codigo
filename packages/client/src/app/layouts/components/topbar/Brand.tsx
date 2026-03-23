@@ -1,4 +1,4 @@
-export function Brand() {
+﻿export function Brand() {
   return (
     <div className="topbar-brand">
       <span className="brand-name">Studio</span>
@@ -7,3 +7,15 @@ export function Brand() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

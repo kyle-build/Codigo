@@ -1,4 +1,4 @@
-export type FieldType = "input" | "select" | "checkbox" | "date";
+﻿export type FieldType = "input" | "select" | "checkbox" | "date";
 
 export interface FieldProps {
   [key: string]: any;
@@ -13,3 +13,15 @@ export interface Field {
 export interface FormSchema {
   fields: Field[];
 }
+
+
+
+
+
+
+
+
+
+
+
+

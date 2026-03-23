@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Layout } from "antd";
 import { observer } from "mobx-react-lite";
 import WidgetPalette from "./WidgetPalette";
@@ -26,3 +26,15 @@ const PageBuilder: React.FC = observer(() => {
 });
 
 export default PageBuilder;
+
+
+
+
+
+
+
+
+
+
+
+

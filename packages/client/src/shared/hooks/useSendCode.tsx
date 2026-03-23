@@ -1,4 +1,4 @@
-import type { FormInstance } from "antd";
+﻿import type { FormInstance } from "antd";
 import { Button, Form, Input } from "antd";
 import { useEffect, useState } from "react";
 import { useRequest } from "ahooks";
@@ -134,3 +134,15 @@ export function useSendCode(form: FormInstance, type: string) {
     sendCodeTemplate,
   };
 }
+
+
+
+
+
+
+
+
+
+
+
+

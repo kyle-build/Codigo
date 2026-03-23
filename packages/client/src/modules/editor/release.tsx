@@ -1,4 +1,4 @@
-import { CaretLeftOutlined } from "@ant-design/icons";
+﻿import { CaretLeftOutlined } from "@ant-design/icons";
 import { FloatButton, QRCode } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -32,3 +32,15 @@ export default function Release() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

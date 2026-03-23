@@ -1,4 +1,4 @@
-import { AuthInput } from "../ui/AuthInput";
+﻿import { AuthInput } from "../ui/AuthInput";
 import { AuthButton } from "../ui/AuthButton";
 import { useRegisterForm } from "../../hooks/useRegisterForm";
 
@@ -134,3 +134,15 @@ export default function RegisterForm({ switchMode }: Props) {
     </form>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

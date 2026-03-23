@@ -1,4 +1,4 @@
-import { registerTheme } from "echarts";
+﻿import { registerTheme } from "echarts";
 interface FunnelTooltipParams {
   name: string;
   value: number;
@@ -395,3 +395,15 @@ const codigoTheme = {
 registerTheme("codigoTheme", codigoTheme);
 
 export default codigoTheme;
+
+
+
+
+
+
+
+
+
+
+
+

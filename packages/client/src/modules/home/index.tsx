@@ -1,4 +1,4 @@
-import { HomeHeader } from "./components/homeHeader/homeHeader";
+﻿import { HomeHeader } from "./components/homeHeader/homeHeader";
 import { HomeCenter } from "./components/homeCenter/homeCenter";
 import { HomeFooter } from "./components/homeFooter/homeFooter";
 import { ParticleBackground } from "./components/background/ParticleBackground";
@@ -20,3 +20,15 @@ export default function Home() {
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

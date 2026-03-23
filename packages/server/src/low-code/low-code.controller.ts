@@ -1,9 +1,9 @@
-import { Controller, Post, Body, UseGuards, Get, Query } from '@nestjs/common';
+﻿import { Controller, Post, Body, UseGuards, Get, Query } from '@nestjs/common';
 import { LowCodeService } from './low-code.service';
 import type {
   PostReleaseRequest,
   PostQuestionDataRequest,
-} from '@codigo/share';
+} from '@codigo/schema';
 import {
   GetUserAgent,
   GetUserIP,

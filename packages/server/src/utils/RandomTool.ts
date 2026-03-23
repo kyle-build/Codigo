@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+﻿import { Injectable } from '@nestjs/common';
 
 /**
  * @description: 生成随机验证码、随机图像和随机昵称的工具类

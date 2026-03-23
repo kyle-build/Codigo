@@ -1,4 +1,4 @@
-import type { FC } from "react";
+﻿import type { FC } from "react";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
 import { getComponentPropsByType } from "@/modules/editor/components/LowCodeComponents";
@@ -141,3 +141,15 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
 );
 
 export default ComponentFields;
+
+
+
+
+
+
+
+
+
+
+
+

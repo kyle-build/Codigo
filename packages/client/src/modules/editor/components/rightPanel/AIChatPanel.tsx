@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Button, Input, Switch, Typography } from "antd";
 import { toJS } from "mobx";
 import { ulid } from "ulid";
-import type { TComponentTypes } from "@codigo/share";
+import type { TComponentTypes } from "@codigo/schema";
 import { useStoreComponents } from "@/shared/hooks";
 
 type ChatRole = "user" | "assistant";
@@ -326,3 +326,15 @@ export default observer(function AIChatPanel() {
     </div>
   );
 });
+
+
+
+
+
+
+
+
+
+
+
+

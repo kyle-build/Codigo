@@ -1,0 +1,31 @@
+{
+  "name": "@codigo/materials-react",
+  "version": "0.0.1",
+  "type": "module",
+  "author": "mike",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "unbuild": "^2.0.0"
+  },
+  "dependencies": {
+    "@codigo/plugin-system": "workspace:*",
+    "@codigo/schema": "workspace:*",
+    "react": "^19.2.4"
+  }
+}

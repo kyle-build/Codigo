@@ -1,4 +1,4 @@
-import { useTitle } from "ahooks";
+﻿import { useTitle } from "ahooks";
 import RegisterOption from "./RegisterOption";
 // import WechatLogin from "./login/WechatLogin";
 
@@ -53,3 +53,15 @@ export default function Register(props: IRegisterProps) {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

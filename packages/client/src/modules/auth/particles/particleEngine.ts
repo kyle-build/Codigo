@@ -1,4 +1,4 @@
-import { Particle } from "./particle";
+﻿import { Particle } from "./particle";
 export class ParticleEngine {
   particles: Particle[] = [];
 
@@ -28,3 +28,15 @@ export class ParticleEngine {
     this.particles.forEach((p) => p.draw(this.ctx));
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+

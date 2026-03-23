@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+﻿import { makeAutoObservable } from "mobx";
 
 export function createStoreAuth() {
   return makeAutoObservable({
@@ -6,3 +6,15 @@ export function createStoreAuth() {
     details: null,
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+

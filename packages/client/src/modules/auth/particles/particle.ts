@@ -1,4 +1,4 @@
-export class Particle {
+﻿export class Particle {
   x: number;
   y: number;
   vx: number;
@@ -28,3 +28,15 @@ export class Particle {
     ctx.fill();
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import type { TComponentTypes } from "@codigo/share";
+﻿import type { TComponentTypes } from "@codigo/schema";
 import { useNavigate } from "react-router-dom";
 
 interface TemplateComponent {
@@ -231,3 +231,15 @@ export default function TemplateSelect() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

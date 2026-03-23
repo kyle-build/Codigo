@@ -1,4 +1,4 @@
-import { action } from "mobx";
+﻿import { action } from "mobx";
 import { createStorePage } from "@/shared/stores";
 import type { TStorePage, DeviceType, CodeFramework } from "@/shared/stores";
 import { useStorePermission } from "./useStorePermission";
@@ -66,3 +66,15 @@ export function useStorePage() {
     store: storePage,
   };
 }
+
+
+
+
+
+
+
+
+
+
+
+

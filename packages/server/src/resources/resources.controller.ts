@@ -1,4 +1,4 @@
-import {
+﻿import {
   Controller,
   Post,
   UseGuards,
@@ -14,7 +14,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { TCurrentUser } from 'src/utils/GetUserMessageTool';
 import { getUserMess } from 'src/utils/GetUserMessageTool';
-import type { ResourcesRequest, DeleteResourcesRequest } from '@codigo/share';
+import type { ResourcesRequest, DeleteResourcesRequest } from '@codigo/schema';
 
 @Controller('resources')
 export class ResourcesController {

@@ -1,4 +1,4 @@
-import {
+﻿import {
   CheckCircleOutlined,
   CheckSquareOutlined,
   CreditCardOutlined,
@@ -139,3 +139,15 @@ export default function ComponentList() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

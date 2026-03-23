@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+﻿import { Outlet } from "react-router-dom";
 import { Topbar } from "@/app/layouts/components/topbar/Topbar";
 
 export function StudioLayout() {
@@ -12,3 +12,15 @@ export function StudioLayout() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

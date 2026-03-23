@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+﻿import { createHash } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 
 // to-do: 可以考虑添加其他加密算法，如SHA256等

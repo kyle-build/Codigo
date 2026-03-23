@@ -1,4 +1,4 @@
-import type { Widget } from "./index";
+﻿import type { Widget } from "./index";
 
 export function buildOption(widget: Widget, ds: any[]) {
   const c = widget.config.color || "#2563eb";
@@ -174,3 +174,15 @@ export function buildOption(widget: Widget, ds: any[]) {
 
   return {};
 }
+
+
+
+
+
+
+
+
+
+
+
+

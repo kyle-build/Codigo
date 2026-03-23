@@ -1,4 +1,4 @@
-import { observer } from "mobx-react-lite";
+﻿import { observer } from "mobx-react-lite";
 import type { Widget as WidgetType } from "../types";
 import { reportStore } from "../stores/reportStore";
 import { ChartWidget } from "./ChartWidget";
@@ -49,3 +49,15 @@ export const Widget = observer(({ widget }: Props) => {
     </div>
   );
 });
+
+
+
+
+
+
+
+
+
+
+
+

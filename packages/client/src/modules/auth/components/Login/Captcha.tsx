@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+﻿import { Button, Form, Input } from "antd";
 import { useSendCode } from "@/shared/hooks/useSendCode";
 import { usePhoneLogin } from "@/modules/auth/hooks/usePhoneLogin";
 
@@ -35,3 +35,15 @@ export default function Captcha() {
     </Form>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

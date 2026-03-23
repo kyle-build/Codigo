@@ -1,12 +1,12 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 
 import { Input, Segmented } from "antd";
 import type { SegmentedLabeledOption } from "antd/es/segmented";
-import type { ITextComponentProps } from "@codigo/share";
+import type { ITextComponentProps } from "@codigo/schema";
 import {
   fillComponentPropsByConfig,
   textComponentDefaultConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import { FormContainer, FormPropLabel } from "..";
 
 export default function TextComponentProps(_props: ITextComponentProps) {
@@ -49,3 +49,15 @@ export default function TextComponentProps(_props: ITextComponentProps) {
     </FormContainer>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

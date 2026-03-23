@@ -1,11 +1,11 @@
-import { Input, Segmented, Select } from "antd";
+﻿import { Input, Segmented, Select } from "antd";
 import type { SegmentedLabeledOption } from "antd/es/segmented";
 import { useMemo } from "react";
-import type { IImageComponentProps } from "@codigo/share";
+import type { IImageComponentProps } from "@codigo/schema";
 import {
   fillComponentPropsByConfig,
   imageComponentDefaultConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import { FormContainer, FormPropLabel, UploadEditOrChooiseInput } from "..";
 
 export const fitOptions = [
@@ -88,3 +88,15 @@ export default function ImageComponentProps(_props: IImageComponentProps) {
     </FormContainer>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import type { FC } from "react";
+﻿import type { FC } from "react";
 import {
   ImageComponentProps,
   SwiperComponentProps,
@@ -15,7 +15,7 @@ import {
   CheckboxComponentProps,
   RadioComponentProps,
 } from "..";
-import type { TBasicComponentConfig } from "@codigo/share";
+import type { TBasicComponentConfig } from "@codigo/schema";
 
 // @ts-ignore
 export const componentPropsList: Record<TComponentTypes, FC<any>> = {
@@ -39,3 +39,15 @@ export const componentPropsList: Record<TComponentTypes, FC<any>> = {
 export function getComponentPropsByType(type: TBasicComponentConfig["type"]) {
   return componentPropsList[type];
 }
+
+
+
+
+
+
+
+
+
+
+
+

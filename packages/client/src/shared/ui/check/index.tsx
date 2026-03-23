@@ -1,4 +1,4 @@
-import { Checkbox as AntCheckbox } from "antd";
+﻿import { Checkbox as AntCheckbox } from "antd";
 
 interface CheckProps {
   checked?: boolean;
@@ -15,3 +15,15 @@ export function Check({ checked, disabled, onChange }: CheckProps) {
     />
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

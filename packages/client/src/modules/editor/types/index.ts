@@ -1,4 +1,4 @@
-export type NodeType =
+﻿export type NodeType =
   | "text"
   | "button"
   | "input"
@@ -30,3 +30,15 @@ export interface CanvasNode {
   y: number;
   style: NodeStyle;
 }
+
+
+
+
+
+
+
+
+
+
+
+

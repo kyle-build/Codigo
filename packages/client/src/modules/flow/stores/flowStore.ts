@@ -1,4 +1,4 @@
-import { makeAutoObservable, toJS } from "mobx";
+﻿import { makeAutoObservable, toJS } from "mobx";
 import type { FlowNode, FlowEdge, NodeType } from "../types";
 import { trackUndo } from "mobx-shallow-undo";
 
@@ -176,3 +176,15 @@ class FlowStore {
 }
 
 export const flowStore = new FlowStore();
+
+
+
+
+
+
+
+
+
+
+
+

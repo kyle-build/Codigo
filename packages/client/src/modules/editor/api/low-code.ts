@@ -1,7 +1,7 @@
-import type {
+﻿import type {
   PostReleaseRequest,
   getQuestionDataByIdRequest,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import request from "@/shared/utils/request";
 
 export async function postRelease(data: PostReleaseRequest) {
@@ -28,3 +28,15 @@ export async function getQuestionDataByTypeRequest(
 ) {
   return request("/low_code/get_question_data_by_id", { data, method: "POST" });
 }
+
+
+
+
+
+
+
+
+
+
+
+

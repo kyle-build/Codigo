@@ -1,4 +1,4 @@
-import type { TComponentPropsUnion } from "@codigo/share";
+﻿import type { TBasicComponentConfig as TComponentPropsUnion } from "@codigo/schema";
 import { makeAutoObservable } from "mobx";
 
 interface IStoreComponents {
@@ -20,3 +20,15 @@ export function createStoreComponents() {
 }
 
 export type TStoreComponents = ReturnType<typeof createStoreComponents>;
+
+
+
+
+
+
+
+
+
+
+
+

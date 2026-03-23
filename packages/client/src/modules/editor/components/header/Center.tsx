@@ -1,4 +1,4 @@
-import {
+﻿import {
   CheckOutlined,
   FundViewOutlined,
   PlusOutlined,
@@ -7,7 +7,7 @@ import {
   MobileOutlined,
   DesktopOutlined,
 } from "@ant-design/icons";
-import type { IComponent, PostReleaseRequest } from "@codigo/share";
+import type { TBasicComponentConfig as IComponent, PostReleaseRequest } from "@codigo/materials-react";
 import { useRequest } from "ahooks";
 import { Button, Space, message, InputNumber } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -183,3 +183,15 @@ const Center = observer(() => {
 });
 
 export default Center;
+
+
+
+
+
+
+
+
+
+
+
+

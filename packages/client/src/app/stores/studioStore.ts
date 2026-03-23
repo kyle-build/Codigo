@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+﻿import { makeAutoObservable } from "mobx";
 
 class StudioStore {
   currentModule: string = "form";
@@ -13,3 +13,15 @@ class StudioStore {
 }
 
 export const studioStore = new StudioStore();
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,10 +1,10 @@
-import request from "@/shared/utils/request";
+﻿import request from "@/shared/utils/request";
 import type {
   SendCodeRequest,
   RegisterRequest,
   LoginWithPasswordRequest,
   LoginWithPhoneRequest,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 
 // 图形验证码接口
 export async function getCaptcha(data: { type: string }) {
@@ -49,3 +49,15 @@ export async function getLoginWithPhone(data: LoginWithPhoneRequest) {
     method: "POST",
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,8 +1,8 @@
-import type { IRichTextComponentProps } from "@codigo/share";
+﻿import type { IRichTextComponentProps } from "@codigo/schema";
 import {
   fillComponentPropsByConfig,
   richTextComponentDefaultConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import { useMemo, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -51,3 +51,15 @@ export default function RichTextComponentProps(
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

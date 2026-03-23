@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 interface AuthButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "outline" | "ghost";
@@ -40,3 +40,15 @@ export function AuthButton({
     </button>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

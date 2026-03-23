@@ -1,10 +1,10 @@
-import { Input } from "antd";
+﻿import { Input } from "antd";
 import { useMemo } from "react";
-import type { IInputComponentProps } from "@codigo/share";
+import type { IInputComponentProps } from "@codigo/schema";
 import {
   fillComponentPropsByConfig,
   inputComponentDefaultConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import { FormContainer, FormPropLabel } from "..";
 
 export default function InputComponentProps(_props: IInputComponentProps) {
@@ -30,3 +30,15 @@ export default function InputComponentProps(_props: IInputComponentProps) {
     </FormContainer>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

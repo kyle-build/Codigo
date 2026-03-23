@@ -1,4 +1,4 @@
-import {
+﻿import {
   Injectable,
   InternalServerErrorException,
   BadRequestException,
@@ -8,7 +8,7 @@ import {
   PostReleaseRequest,
   PostQuestionDataRequest,
   objectOmit,
-} from '@codigo/share';
+} from '@codigo/schema';
 import { DataSource, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

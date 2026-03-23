@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Card } from "antd";
 import { EditOutlined, PictureOutlined } from "@ant-design/icons";
 import { pageStore } from "../../stores/usePage";
@@ -54,3 +54,15 @@ const WidgetPalette: React.FC = () => {
 };
 
 export default WidgetPalette;
+
+
+
+
+
+
+
+
+
+
+
+

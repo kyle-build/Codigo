@@ -1,4 +1,4 @@
-import { chartTemplates } from "../types/widgetTemplates";
+﻿import { chartTemplates } from "../types/widgetTemplates";
 import { reportStore } from "../stores/reportStore";
 import { DeleteOutlined } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
@@ -34,3 +34,15 @@ export const Toolbar = observer(() => {
     </div>
   );
 });
+
+
+
+
+
+
+
+
+
+
+
+

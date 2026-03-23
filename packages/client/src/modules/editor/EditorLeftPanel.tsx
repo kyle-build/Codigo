@@ -1,4 +1,4 @@
-import { Tabs } from "antd";
+﻿import { Tabs } from "antd";
 import { AppstoreOutlined, EditOutlined, ApartmentOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import ComponentList from "./components/leftPanel/ComponentList";
@@ -66,3 +66,15 @@ export default function EdiotLeftPanel() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

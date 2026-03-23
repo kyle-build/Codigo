@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Button, Input, Segmented, Typography } from "antd";
 import { toJS } from "mobx";
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
-import type { TComponentTypes } from "@codigo/share";
+import type { TComponentTypes } from "@codigo/schema";
 
 type CodeFramework = "react" | "vue";
 
@@ -203,3 +203,15 @@ export default observer(function CodeSyncPanel() {
     </div>
   );
 });
+
+
+
+
+
+
+
+
+
+
+
+

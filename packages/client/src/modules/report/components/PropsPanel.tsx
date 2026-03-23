@@ -1,4 +1,4 @@
-import { observer } from "mobx-react-lite";
+﻿import { observer } from "mobx-react-lite";
 import { reportStore } from "../stores/reportStore";
 
 export const PropsPanel = observer(() => {
@@ -200,3 +200,15 @@ export const PropsPanel = observer(() => {
     </aside>
   );
 });
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-type TraceDataTypeShared = {
+﻿type TraceDataTypeShared = {
   filePath: string; // 文件相对路径 e.g. page/index.tsx
   line: number; // 行号从1开始
   functionNames: string[]; // 函数名数组，可能有多个函数嵌套调用，[0] 是最外层函数名
@@ -61,3 +61,15 @@ export type {
   TraceDataTypeUseEffect,
   TraceDataTypeUseState,
 };
+
+
+
+
+
+
+
+
+
+
+
+

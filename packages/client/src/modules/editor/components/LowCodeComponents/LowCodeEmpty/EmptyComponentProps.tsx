@@ -1,9 +1,9 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 import {
   type IEmptyComponentProps,
   emptyComponentDefaultConfig,
   fillComponentPropsByConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import { Input, Select } from "antd";
 import { FormContainer, FormPropLabel } from "..";
 import { fitOptions } from "../LowCodeImage/ImageComponentProps";
@@ -42,3 +42,15 @@ export default function EmptyComponentProps(_props: IEmptyComponentProps) {
     </FormContainer>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

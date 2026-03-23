@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+﻿import { makeAutoObservable } from "mobx";
 import type { Widget } from "../types/index";
 import { chartTemplates } from "../types/widgetTemplates";
 
@@ -101,3 +101,15 @@ class ReportStore {
 }
 
 export const reportStore = new ReportStore();
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import { Form, Button, Input, Modal, Image, message } from "antd";
+﻿import { Form, Button, Input, Modal, Image, message } from "antd";
 import { ulid } from "ulid";
 import type {
   FormItemProps,
@@ -13,9 +13,9 @@ import type {
   TComponentPropsUnion,
   TransformedComponentConfig,
   IResources,
-} from "@codigo/share";
-import { objectOmit } from "@codigo/share";
-import type { UploadType } from "@codigo/share";
+} from "@codigo/materials-react";
+import { objectOmit } from "@codigo/schema";
+import type { UploadType } from "@codigo/schema";
 import { useStoreComponents } from "@/shared/hooks/useStoreComponents";
 import {
   UploadOutlined,
@@ -500,3 +500,15 @@ export const UploadEditOrChooiseInput: FC<UploadEditOrChooiseInputProps> = ({
     </>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+

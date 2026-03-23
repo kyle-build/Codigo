@@ -1,4 +1,4 @@
-import { RouterProvider } from "react-router-dom";
+﻿import { RouterProvider } from "react-router-dom";
 import "@/shared/assets/base.css";
 import { router } from "./router";
 function App() {
@@ -10,3 +10,15 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+
+

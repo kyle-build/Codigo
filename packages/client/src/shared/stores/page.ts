@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+﻿import { makeAutoObservable } from "mobx";
 
 export type DeviceType = "mobile" | "pc";
 export type CodeFramework = "react" | "vue";
@@ -26,3 +26,15 @@ export function createStorePage() {
 }
 
 export type TStorePage = ReturnType<typeof createStorePage>;
+
+
+
+
+
+
+
+
+
+
+
+

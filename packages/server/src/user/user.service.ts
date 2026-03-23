@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+﻿import { BadRequestException, Injectable } from '@nestjs/common';
 import { CaptchaTool } from '../utils/captchaTool';
 import { RedisModule } from '../utils/modules/redis.module';
 import { TextMessageTool } from '../utils/TextMessageTool';

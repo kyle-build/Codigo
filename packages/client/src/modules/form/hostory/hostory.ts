@@ -1,4 +1,4 @@
-export class History<T> {
+﻿export class History<T> {
   private stack: string[] = [];
   private cursor = 0;
   private paused = false;
@@ -51,3 +51,15 @@ export class History<T> {
     return this.cursor < this.stack.length - 1;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+

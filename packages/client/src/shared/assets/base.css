@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 html,
 body,
 #root {
@@ -7,3 +7,15 @@ body,
 .ant-btn-primary {
   background-color: #1a70f7;
 }
+
+
+
+
+
+
+
+
+
+
+
+

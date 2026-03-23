@@ -1,4 +1,4 @@
-import { observer } from "mobx-react-lite";
+﻿import { observer } from "mobx-react-lite";
 import type { Widget } from "../types";
 import { reportStore } from "../stores/reportStore";
 
@@ -35,3 +35,15 @@ export const TableWidget = observer(({ widget }: { widget: Widget }) => {
     </div>
   );
 });
+
+
+
+
+
+
+
+
+
+
+
+

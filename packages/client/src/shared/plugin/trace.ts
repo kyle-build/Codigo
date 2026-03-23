@@ -1,4 +1,4 @@
-// import type { LoaderContext } from "@rspack/core";
+﻿// import type { LoaderContext } from "@rspack/core";
 // import { parse } from "@babel/parser";
 // import generateModule from "@babel/generator";
 // const generate = (generateModule as any).default || generateModule;
@@ -739,3 +739,15 @@
 //   const output = generate(ast, { sourceMaps: true, filename: relPath }, source);
 //   return output.code;
 // }
+
+
+
+
+
+
+
+
+
+
+
+

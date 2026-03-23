@@ -1,10 +1,10 @@
-import { Input, Select, Switch } from "antd";
+﻿import { Input, Select, Switch } from "antd";
 import { useMemo } from "react";
 import {
   type ICardComponentProps,
   alertComponentDefaultConfig,
   fillComponentPropsByConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import { FormContainer, FormPropLabel } from "..";
 
 export default function CardComponentProps(_props: ICardComponentProps) {
@@ -58,3 +58,15 @@ export default function CardComponentProps(_props: ICardComponentProps) {
     </FormContainer>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

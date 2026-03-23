@@ -1,4 +1,4 @@
-import request from "@/shared/utils/request";
+﻿import request from "@/shared/utils/request";
 
 // 获取微信二维码
 export async function getWechatLogin() {
@@ -9,3 +9,15 @@ export async function getWechatLogin() {
 export async function checkScan(params: { ticket: string }) {
   return request("/wechat_login/check_scan", { params });
 }
+
+
+
+
+
+
+
+
+
+
+
+

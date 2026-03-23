@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { Canvas } from "./components/Canvas";
 import { PropsPanel } from "./components/PropsPanel";
@@ -22,3 +22,15 @@ const ReportDesigner = observer(() => {
 });
 
 export default ReportDesigner;
+
+
+
+
+
+
+
+
+
+
+
+

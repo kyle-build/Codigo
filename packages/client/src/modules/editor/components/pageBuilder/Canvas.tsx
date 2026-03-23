@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+﻿import React, { useRef } from "react";
 import { observer } from "mobx-react-lite";
 import { pageStore } from "../../stores/usePage";
 
@@ -59,3 +59,15 @@ const Canvas: React.FC = observer(() => {
 });
 
 export default Canvas;
+
+
+
+
+
+
+
+
+
+
+
+

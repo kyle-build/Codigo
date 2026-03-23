@@ -1,15 +1,15 @@
-import { ColorPicker, Input, Segmented } from "antd";
+﻿import { ColorPicker, Input, Segmented } from "antd";
 import { useMemo } from "react";
 import type { ColorFactory } from "antd/es/color-picker/color";
 
 import type {
   IQrcodeComponentProps,
   TQrcodeComponentConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import {
   fillComponentPropsByConfig,
   qrcodeComponentDefaultConfig,
-} from "@codigo/share";
+} from "@codigo/materials-react";
 import { FormContainer, FormPropLabel } from "../utils/components";
 import { useStoreComponents } from "@/shared/hooks/useStoreComponents";
 
@@ -74,3 +74,15 @@ export default function QrcodeComponentProps(_props: IQrcodeComponentProps) {
     </FormContainer>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

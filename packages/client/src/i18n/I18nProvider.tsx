@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+﻿import { createContext, useState } from "react";
 import zhCN from "./locales/zh-CN.json";
 import { getDefaultLocale } from "./utils/getDefaultLocale";
 
@@ -50,3 +50,15 @@ export function I18nProvider({ children }) {
     </I18nContext.Provider>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

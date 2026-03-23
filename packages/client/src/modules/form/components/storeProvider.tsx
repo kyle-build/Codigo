@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+﻿import React, { createContext, useContext } from "react";
 import { FormStore } from "../stores/formStore";
 
 const store = new FormStore();
@@ -16,3 +16,15 @@ export const StoreProvider: React.FC<{
 export function useFormStore() {
   return useContext(StoreContext);
 }
+
+
+
+
+
+
+
+
+
+
+
+

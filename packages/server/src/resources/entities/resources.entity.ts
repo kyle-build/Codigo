@@ -1,5 +1,5 @@
-import type { UploadType } from '@codigo/share';
-import type { IResources } from '@codigo/share';
+﻿import type { UploadType } from '@codigo/schema';
+import type { IResources } from '@codigo/schema';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'resources' })

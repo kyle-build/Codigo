@@ -1,4 +1,4 @@
-import { observer } from "mobx-react-lite";
+﻿import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import { studioStore } from "@/app/stores/studioStore";
 
@@ -27,3 +27,15 @@ export const NavButton = observer(({ name, label, path }: Props) => {
     </button>
   );
 });
+
+
+
+
+
+
+
+
+
+
+
+

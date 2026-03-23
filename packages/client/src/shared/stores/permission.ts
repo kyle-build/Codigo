@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+﻿import { makeAutoObservable } from "mobx";
 
 export type PermissionRole = "owner" | "editor" | "commenter" | "viewer";
 export type PermissionAction =
@@ -93,3 +93,15 @@ export function createStorePermission() {
 }
 
 export type TStorePermission = ReturnType<typeof createStorePermission>;
+
+
+
+
+
+
+
+
+
+
+
+

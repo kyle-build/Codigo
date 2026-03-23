@@ -1,4 +1,4 @@
-import { useDebugValue, useState } from "react";
+﻿import { useDebugValue, useState } from "react";
 
 const useStateWithLabel = (initValue: unknown, label: string) => {
   const [value, setValue] = useState(initValue);
@@ -7,3 +7,15 @@ const useStateWithLabel = (initValue: unknown, label: string) => {
 };
 
 export default useStateWithLabel;
+
+
+
+
+
+
+
+
+
+
+
+

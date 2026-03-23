@@ -1,11 +1,11 @@
-import { ulid } from "ulid";
+﻿import { ulid } from "ulid";
 import { action, computed, toJS } from "mobx";
 import type {
   TBasicComponentConfig,
   TComponentPropsUnion,
   TComponentTypes,
-} from "@codigo/share";
-import { calcValueByString } from "@codigo/share";
+} from "@codigo/materials-react";
+import { calcValueByString } from "@codigo/schema";
 import { createStoreComponents } from "@/shared/stores";
 import { arrayMove } from "@dnd-kit/sortable";
 import { trackUndo } from "mobx-shallow-undo";
@@ -598,3 +598,15 @@ export function useStoreComponents() {
     localStorageInStore,
   };
 }
+
+
+
+
+
+
+
+
+
+
+
+

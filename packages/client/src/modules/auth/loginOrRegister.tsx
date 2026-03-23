@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { ConfigProvider, theme } from "antd";
 import Register from "./components/register/Register";
 import Login from "./components/login/Login";
@@ -57,3 +57,15 @@ export default function LoginOrRegister() {
     </ConfigProvider>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

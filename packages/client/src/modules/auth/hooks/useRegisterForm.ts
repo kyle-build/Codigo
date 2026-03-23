@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 export function useRegisterForm() {
   const [formData, setFormData] = useState({
@@ -44,3 +44,15 @@ export function useRegisterForm() {
     handleSubmit,
   };
 }
+
+
+
+
+
+
+
+
+
+
+
+

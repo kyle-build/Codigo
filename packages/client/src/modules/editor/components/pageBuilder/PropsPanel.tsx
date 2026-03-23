@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { observer } from "mobx-react-lite";
 import { InputNumber, Divider } from "antd";
 import { pageStore } from "../../stores/usePage";
@@ -54,3 +54,15 @@ const PropsPanel: React.FC = observer(() => {
 });
 
 export default PropsPanel;
+
+
+
+
+
+
+
+
+
+
+
+

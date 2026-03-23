@@ -1,9 +1,9 @@
-import { Button, message } from "antd";
+﻿import { Button, message } from "antd";
 import { FormOutlined, LineChartOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useRequest } from "ahooks";
-import type { IComponent } from "@codigo/share";
+import type { TBasicComponentConfig as IComponent } from "@codigo/materials-react";
 import ComponentDatas from "./components/ComponentDatas";
 import { getQuestionComponents } from "@/modules/editor/api/low-code";
 import DataSource from "./DataSource";
@@ -93,3 +93,15 @@ export default function Statistics() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

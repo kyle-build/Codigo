@@ -1,4 +1,4 @@
-import { observer } from "mobx-react-lite";
+﻿import { observer } from "mobx-react-lite";
 import { useRef, useState, useEffect } from "react";
 import { ApartmentOutlined, EditOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -649,3 +649,15 @@ export default observer(() => {
     </div>
   );
 });
+
+
+
+
+
+
+
+
+
+
+
+

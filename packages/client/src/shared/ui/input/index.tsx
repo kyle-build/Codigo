@@ -1,4 +1,4 @@
-import { Input as AntInput } from "antd";
+﻿import { Input as AntInput } from "antd";
 
 interface InputProps {
   value?: string;
@@ -15,3 +15,15 @@ export function Input({ value, placeholder, onChange }: InputProps) {
     />
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

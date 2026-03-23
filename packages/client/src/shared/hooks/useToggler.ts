@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+﻿import { useCallback, useState } from "react";
 const useToggler = (init: unknown) => {
   const [value, setValue] = useState(init);
   const toggleValue = useCallback(() => setValue((pre: unknown) => !pre), []);
@@ -6,3 +6,15 @@ const useToggler = (init: unknown) => {
 };
 
 export default useToggler;
+
+
+
+
+
+
+
+
+
+
+
+

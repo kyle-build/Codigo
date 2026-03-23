@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+﻿import { useEffect, useRef } from "react";
 
 export function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -167,3 +167,15 @@ export function ParticleBackground() {
 }
 
 export default ParticleBackground;
+
+
+
+
+
+
+
+
+
+
+
+

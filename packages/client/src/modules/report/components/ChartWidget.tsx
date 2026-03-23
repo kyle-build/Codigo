@@ -1,4 +1,4 @@
-import { observer } from "mobx-react-lite";
+﻿import { observer } from "mobx-react-lite";
 import type { Widget } from "../types";
 import { reportStore } from "../stores/reportStore";
 import { useEChart } from "../hooks/useEChart";
@@ -17,3 +17,15 @@ export const ChartWidget = observer(({ widget }: Props) => {
 
   return <div className="h-full w-full" ref={ref} />;
 });
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import { IUser } from '@codigo/share';
+﻿import { IUser } from '@codigo/schema';
 import type { ExecutionContext } from '@nestjs/common';
 import { createParamDecorator } from '@nestjs/common';
 import type { Request } from 'express';
