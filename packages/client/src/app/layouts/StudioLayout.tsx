@@ -1,7 +1,7 @@
 ﻿import { Outlet } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import { observer } from "mobx-react-lite";
-import EditorHeader from "@/modules/editor/EditorHeader";
+import EditorHeader from "@/modules/editor/components/header";
 
 export const StudioLayout = observer(() => {
   return (

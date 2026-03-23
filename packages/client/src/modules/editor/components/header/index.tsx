@@ -1,23 +1,27 @@
-﻿import HeaderCenter from "./HeaderCenter";
-import HeaderLeft from "./HeaderLeft";
-import HeaderRight from "./HeaderRight";
-function EditorHeader() {
+import { useStorePage } from "@/shared/hooks/useStorePage";
+import Left from "./Left";
+import { observer } from "mobx-react-lite";
+import Center from "./Center";
+import Right from "./Right";
+
+const Header = observer(({}) => {
+  const { store: storePage } = useStorePage();
   return (
-    <div>
-      <div>
-        <HeaderLeft />
+    <div className="flex items-center mx-6">
+      <div className="flex-1">
+        <Left title={storePage.title} />
       </div>
-      <div>
-        <HeaderCenter />
+      <div className="flex-1 flex items-center justify-center">
+        <Center />
       </div>
-      <div>
-        <HeaderRight />
+      <div className="flex-1 flex justify-end">
+        <Right />
       </div>
     </div>
   );
-}
+});
 
-export default EditorHeader;
+export default Header;
 
 
 

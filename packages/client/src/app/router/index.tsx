@@ -1,9 +1,9 @@
 import { createHashRouter } from "react-router-dom";
-import Editor from "@/modules/editor/Editor";
+import Editor from "@/modules/editor";
 import Home from "@/modules/home/index";
 import DataCount from "@/modules/dataCount/dataCount";
-import Release from "@/modules/editor/release";
-import Preview from "@/modules/editor/preview";
+import Release from "@/modules/release";
+import Preview from "@/modules/preview";
 import LoginOrRegister from "@/modules/auth/loginOrRegister";
 // import Form from "@/modules/form/form";
 import Flow from "@/modules/flow/flow";
@@ -63,15 +63,3 @@ export const router = createHashRouter([
     ],
   },
 ]);
-
-
-
-
-
-
-
-
-
-
-
-

@@ -2,15 +2,16 @@ import { createRef, useEffect, useRef, useState } from "react";
 import { useTitle } from "ahooks";
 import { observer } from "mobx-react-lite";
 
-import EditorLeftPanel from "./EditorLeftPanel";
-import EditorRightPanel from "./EditorRightPanel";
-import EditorCanvas from "./EditorCanvas";
+import EditorLeftPanel from "./components/leftPanel";
+import EditorRightPanel from "./components/rightPanel";
+import EditorCanvas from "./components/canvas";
 
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
+import { getLowCodePage } from "@/modules/editor/api/low-code";
 
 const Editor = observer(() => {
   useTitle("codigo - 页面编辑");
-  const { store: storeComps, localStorageInStore } = useStoreComponents();
+  const { store: storeComps, loadPageData } = useStoreComponents();
   const { store: storePage } = useStorePage();
 
   //  创建容器用于调用子组件的函数
@@ -22,7 +23,7 @@ const Editor = observer(() => {
 
   // 从本地缓存或者服务端获取上一次配置的页面组件
   useEffect(() => {
-    localStorageInStore();
+    loadPageData(getLowCodePage);
   }, []);
 
   useEffect(() => {
@@ -108,15 +109,3 @@ const Editor = observer(() => {
 });
 
 export default Editor;
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
-﻿import React, { useRef } from "react";
+import React, { useRef } from "react";
 import { observer } from "mobx-react-lite";
-import { pageStore } from "../../stores/usePage";
+import { pageStore } from "../../stores/pageStore";
 
 const Canvas: React.FC = observer(() => {
   const canvasRef = useRef<HTMLDivElement>(null);

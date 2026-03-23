@@ -1,17 +1,17 @@
-﻿import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { FloatButton } from "antd";
 import { useNavigate } from "react-router-dom";
 import { CaretLeftOutlined } from "@ant-design/icons";
-import { generateComponent } from "./EditorCanvas";
+import { generateComponent } from "@/modules/editor/components/canvas";
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
 
 const PreviewCanvas = observer(() => {
-  const { store, getComponentById, localStorageInStore } = useStoreComponents();
+  const { store, getComponentById, loadPageData } = useStoreComponents();
 
   // 从本地或者服务端读取组件信息
   useEffect(() => {
-    localStorageInStore();
+    loadPageData();
   }, []);
 
   return (
@@ -78,15 +78,3 @@ export default observer(function Preview() {
     </div>
   );
 });
-
-
-
-
-
-
-
-
-
-
-
-

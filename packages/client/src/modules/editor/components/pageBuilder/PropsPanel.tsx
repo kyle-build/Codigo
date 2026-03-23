@@ -1,7 +1,7 @@
-﻿import React from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 import { InputNumber, Divider } from "antd";
-import { pageStore } from "../../stores/usePage";
+import { pageStore } from "../../stores/pageStore";
 
 const PropsPanel: React.FC = observer(() => {
   const node = pageStore.selected;

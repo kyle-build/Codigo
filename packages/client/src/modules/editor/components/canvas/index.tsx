@@ -1,4 +1,4 @@
-﻿import ClassNames from "classnames";
+import ClassNames from "classnames";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import type { CSSProperties, FC, MouseEvent as ReactMouseEvent, ReactNode } from "react";
@@ -22,7 +22,7 @@ import {
   useStorePermission,
 } from "@/shared/hooks";
 import type { TStoreComponents } from "@/shared/stores";
-import { components } from "./components/leftPanel/ComponentList";
+import { components } from "../leftPanel/ComponentList";
 import { DeleteOutlined } from "@ant-design/icons";
 
 export function generateComponent(conf: TBasicComponentConfig) {

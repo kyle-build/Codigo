@@ -1,7 +1,7 @@
-﻿import React from "react";
+import React from "react";
 import { Card } from "antd";
 import { EditOutlined, PictureOutlined } from "@ant-design/icons";
-import { pageStore } from "../../stores/usePage";
+import { pageStore } from "../../stores/pageStore";
 
 const widgets = [
   {

@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Button, Tabs } from "antd";
 import {
   AppstoreOutlined,
@@ -9,11 +9,11 @@ import {
   LineChartOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import ComponentFields from "./components/rightPanel/ComponentFields";
-import GlobalFields from "./components/rightPanel/GlobalFields";
-import CodeSyncPanel from "./components/rightPanel/CodeSyncPanel";
-import AIChatPanel from "./components/rightPanel/AIChatPanel";
-import PermissionPanel from "./components/rightPanel/PermissionPanel";
+import ComponentFields from "./ComponentFields";
+import GlobalFields from "./GlobalFields";
+import CodeSyncPanel from "./CodeSyncPanel";
+import AIChatPanel from "./AIChatPanel";
+import PermissionPanel from "./PermissionPanel";
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
 
 export default function EditorRightPanel() {

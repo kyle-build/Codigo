@@ -1,4 +1,4 @@
-﻿import { ulid } from "ulid";
+import { ulid } from "ulid";
 import { action, computed, toJS } from "mobx";
 import type {
   TBasicComponentConfig,
@@ -11,7 +11,6 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { trackUndo } from "mobx-shallow-undo";
 import { message } from "antd";
 import type { TStoreComponents } from "@/shared/stores";
-import { getLowCodePage } from "@/modules/editor/api/low-code";
 import { useStorePage } from ".";
 import { useStorePermission } from "./useStorePermission";
 
@@ -473,62 +472,9 @@ export function useStoreComponents() {
     addOperationLog("save_draft", "本地草稿");
   });
 
-  // 定义从本地存储中读取组件的函数
-  const localStorageInStore = action(async () => {
-    // 从本地存储中读取组件配置相关数据
-    const compConfig = localStorage.getItem("compConfig");
-    const sortableCompConfig = localStorage.getItem("sortableCompConfig");
-    const currentCompConfig = localStorage.getItem("currentCompConfig");
-    const pageSettings = localStorage.getItem("pageSettings");
-
-    const storeTime = localStorage.getItem("store_time");
-    const releaseTime = localStorage.getItem("release_time");
-
-    // 如果存在组件配置数据，则根据存储时间判断是否可以读取数据
-    if (compConfig && compConfig !== "{}") {
-      if (
-        storeTime &&
-        Number(storeTime) > (releaseTime ? Number(releaseTime) : 0)
-      ) {
-        // 从JSON字符串转换为组件配置对象
-        storeComponents.compConfigs = JSON.parse(compConfig);
-        storeComponents.sortableCompConfig = JSON.parse(sortableCompConfig!);
-        storeComponents.currentCompConfig = JSON.parse(currentCompConfig!);
-        normalizeLayout(
-          storeComponents.compConfigs,
-          storeComponents.sortableCompConfig,
-        );
-
-        // Restore page settings
-        if (pageSettings) {
-          const settings = JSON.parse(pageSettings);
-          const { setDeviceType, setCanvasSize, setCodeFramework } =
-            useStorePage();
-          if (settings.deviceType) setDeviceType(settings.deviceType);
-          if (settings.canvasWidth && settings.canvasHeight) {
-            setCanvasSize(settings.canvasWidth, settings.canvasHeight);
-          }
-          if (settings.codeFramework) {
-            setCodeFramework(settings.codeFramework);
-          }
-        }
-
-        message.success("已自动从草稿中读取数据");
-      } else {
-        // 服务端获取页面组件
-        readDataFromServer();
-      }
-    } else {
-      // 服务端获取页面组件
-      readDataFromServer();
-    }
-  });
-
-  const { updatePage } = useStorePage();
   // 定义从服务器读取数据的函数
-  const readDataFromServer = action(async () => {
+  const initFromServerData = action((data: any) => {
     // 获取组件数据和页面信息，并转换为组件配置对象
-    const { data } = await getLowCodePage();
     storeComponents.compConfigs = data?.components
       ?.map((comp: any) => {
         return {
@@ -565,6 +511,61 @@ export function useStoreComponents() {
     message.success("已自动从服务器读取数据");
   });
 
+  // 定义从本地存储中读取组件的函数
+  const loadPageData = action(
+    async (fetchServerData?: () => Promise<{ data: any }>) => {
+      // 从本地存储中读取组件配置相关数据
+      const compConfig = localStorage.getItem("compConfig");
+      const sortableCompConfig = localStorage.getItem("sortableCompConfig");
+      const currentCompConfig = localStorage.getItem("currentCompConfig");
+      const pageSettings = localStorage.getItem("pageSettings");
+
+      const storeTime = localStorage.getItem("store_time");
+      const releaseTime = localStorage.getItem("release_time");
+
+      // 如果存在组件配置数据，则根据存储时间判断是否可以读取数据
+      if (compConfig && compConfig !== "{}") {
+        if (
+          storeTime &&
+          Number(storeTime) > (releaseTime ? Number(releaseTime) : 0)
+        ) {
+          // 从JSON字符串转换为组件配置对象
+          storeComponents.compConfigs = JSON.parse(compConfig);
+          storeComponents.sortableCompConfig = JSON.parse(sortableCompConfig!);
+          storeComponents.currentCompConfig = JSON.parse(currentCompConfig!);
+          normalizeLayout(
+            storeComponents.compConfigs,
+            storeComponents.sortableCompConfig,
+          );
+
+          // Restore page settings
+          if (pageSettings) {
+            const settings = JSON.parse(pageSettings);
+            const { setDeviceType, setCanvasSize, setCodeFramework } =
+              useStorePage();
+            if (settings.deviceType) setDeviceType(settings.deviceType);
+            if (settings.canvasWidth && settings.canvasHeight) {
+              setCanvasSize(settings.canvasWidth, settings.canvasHeight);
+            }
+            if (settings.codeFramework) {
+              setCodeFramework(settings.codeFramework);
+            }
+          }
+
+          message.success("已自动从草稿中读取数据");
+        } else if (fetchServerData) {
+          // 服务端获取页面组件
+          const { data } = await fetchServerData();
+          initFromServerData(data);
+        }
+      } else if (fetchServerData) {
+        // 服务端获取页面组件
+        const { data } = await fetchServerData();
+        initFromServerData(data);
+      }
+    },
+  );
+
   return {
     _replace,
     replaceByCode,
@@ -595,18 +596,7 @@ export function useStoreComponents() {
     removeCurrentComponent,
     getCurrentComponentIndex,
     storeInLocalStorage,
-    localStorageInStore,
+    loadPageData,
+    initFromServerData,
   };
 }
-
-
-
-
-
-
-
-
-
-
-
-
