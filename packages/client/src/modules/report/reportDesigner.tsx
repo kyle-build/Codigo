@@ -1,4 +1,4 @@
-﻿import { useEffect } from "react";
+import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { Canvas } from "./components/Canvas";
 import { PropsPanel } from "./components/PropsPanel";
@@ -11,7 +11,7 @@ const ReportDesigner = observer(() => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-full w-full">
       <Toolbar />
       <div className="flex-1 overflow-hidden flex">
         <Canvas />

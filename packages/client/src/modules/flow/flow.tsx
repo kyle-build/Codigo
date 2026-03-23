@@ -1,4 +1,4 @@
-﻿import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import { useRef, useState, useEffect } from "react";
 import { ApartmentOutlined, EditOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -221,76 +221,56 @@ export default observer(() => {
   ];
 
   return (
-    <div className="flex h-full bg-slate-50">
-      <aside className="flex w-20 flex-shrink-0 flex-col gap-2 border-r border-slate-200 bg-white/70 p-3 backdrop-blur-md">
-        {navItems.map((item) => {
-          const active = location.pathname === item.key;
-
-          return (
-            <button
-              key={item.key}
-              onClick={() => navigate(item.key)}
-              className={`group flex h-14 flex-col items-center justify-center rounded-lg border text-[10px] font-medium transition-all ${
-                active
-                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 shadow-sm"
-                  : "border-slate-200 bg-white text-slate-500 hover:border-emerald-200 hover:text-emerald-600"
-              }`}
-            >
-              <span className="text-base leading-none">{item.icon}</span>
-              <span className="mt-1 leading-none">{item.label}</span>
-              <span className="mt-0.5 leading-none text-[9px] opacity-80">
-                {item.desc}
-              </span>
-            </button>
-          );
-        })}
-      </aside>
-      <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex min-h-12 items-center justify-between gap-3 border-b border-zinc-200 bg-white px-4 py-2">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold">Flow</span>
-            <span className="h-4 w-px bg-zinc-200" />
-            <span className="text-[11px] text-zinc-500">
-              {flowStore.nodes.length} 节点 · {flowStore.edges.length} 连线
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[11px] text-zinc-500">添加节点：</span>
-            {Object.entries(NODE_TYPES).map(([key, t]) => (
-              <button
-                key={key}
-                className="h-7 rounded-md border px-2.5 text-xs transition-colors"
-                style={{
-                  color: NODE_COLORS[key as NodeType].text,
-                  borderColor: NODE_COLORS[key as NodeType].border,
-                  background: NODE_COLORS[key as NodeType].bg,
-                }}
-                onClick={() =>
-                  flowStore.addNode(
-                    key as NodeType,
-                    t.label,
-                    120 + Math.random() * 300,
-                    80 + Math.random() * 180,
-                  )
-                }
-              >
-                {t.label}
-              </button>
-            ))}
-            {(flowStore.selectedNodeId || flowStore.selectedEdgeId) && (
-              <button
-                className="h-7 rounded-md border border-red-200 bg-red-50 px-2.5 text-xs text-red-600 transition-colors hover:bg-red-100"
-                onClick={() => flowStore.removeSelected()}
-              >
-                删除
-              </button>
-            )}
-          </div>
+    <div className="flex min-w-0 flex-1 flex-col h-full">
+      <div className="flex min-h-12 items-center justify-between gap-3 border-b border-slate-200 bg-white/60 backdrop-blur-md px-4 py-2 relative z-10">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold">Flow</span>
+          <span className="h-4 w-px bg-zinc-200" />
+          <span className="text-[11px] text-zinc-500">
+            {flowStore.nodes.length} 节点 · {flowStore.edges.length} 连线
+          </span>
         </div>
-        <div className="flex flex-1 overflow-hidden">
-          <div className="relative min-h-[500px] min-w-[800px] flex-1 overflow-auto bg-white">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[11px] text-zinc-500">添加节点：</span>
+          {Object.entries(NODE_TYPES).map(([key, t]) => (
+            <button
+              key={key}
+              className="h-7 rounded-md border px-2.5 text-xs transition-colors hover:opacity-80"
+              style={{
+                color: NODE_COLORS[key as NodeType].text,
+                borderColor: NODE_COLORS[key as NodeType].border,
+                background: NODE_COLORS[key as NodeType].bg,
+              }}
+              onClick={() =>
+                flowStore.addNode(
+                  key as NodeType,
+                  t.label,
+                  120 + Math.random() * 300,
+                  80 + Math.random() * 180,
+                )
+              }
+            >
+              {t.label}
+            </button>
+          ))}
+          {(flowStore.selectedNodeId || flowStore.selectedEdgeId) && (
+            <button
+              className="h-7 rounded-md border border-red-200 bg-red-50 px-2.5 text-xs text-red-600 transition-colors hover:bg-red-100"
+              onClick={() => flowStore.removeSelected()}
+            >
+              删除
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-1 overflow-hidden relative">
+        <div className="flex-auto flex items-center justify-center bg-slate-100/50 relative overflow-auto p-8">
+          <div className="absolute w-[400px] h-[720px] bg-emerald-500/5 blur-3xl rounded-full pointer-events-none"></div>
+          <div
+            className="editor-canvas-container relative z-10 bg-white text-left overflow-hidden shadow-2xl rounded-lg border border-slate-200 transition-all duration-300 w-full h-full flex flex-col"
+          >
             <div
-              className="relative min-h-[500px] min-w-[800px]"
+              className="relative w-full h-full"
               style={{
                 backgroundImage:
                   "radial-gradient(circle, #e4e4e7 1px, transparent 1px)",
@@ -641,6 +621,7 @@ export default observer(() => {
               </div>
             )}
           </aside>
+          </div>
         </div>
         <div className="flex h-[30px] flex-shrink-0 items-center border-t border-zinc-200 bg-zinc-50 px-4 text-[11px] text-zinc-500">
           拖拽节点移动 · 拖拽节点右侧圆点连线 · Delete 键删除选中

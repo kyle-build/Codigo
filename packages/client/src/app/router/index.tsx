@@ -1,4 +1,4 @@
-﻿import { createHashRouter } from "react-router-dom";
+import { createHashRouter } from "react-router-dom";
 import Editor from "@/modules/editor/Editor";
 import Home from "@/modules/home/index";
 import DataCount from "@/modules/dataCount/dataCount";
@@ -10,6 +10,7 @@ import Flow from "@/modules/flow/flow";
 import Report from "@/modules/report/reportDesigner";
 import DevDoc from "@/modules/devDocument/DevDoc";
 import TemplateSelect from "@/modules/home/TemplateSelect";
+import { StudioLayout } from "@/app/layouts/StudioLayout";
 
 export const router = createHashRouter([
   {
@@ -29,10 +30,6 @@ export const router = createHashRouter([
     element: <LoginOrRegister />,
   },
   {
-    path: "/editor",
-    element: <Editor />,
-  },
-  {
     path: "/dataCount",
     element: <DataCount />,
   },
@@ -49,12 +46,21 @@ export const router = createHashRouter([
   //   element: <Form />,
   // },
   {
-    path: "/flow",
-    element: <Flow />,
-  },
-  {
-    path: "/report",
-    element: <Report />,
+    element: <StudioLayout />,
+    children: [
+      {
+        path: "/editor",
+        element: <Editor />,
+      },
+      {
+        path: "/flow",
+        element: <Flow />,
+      },
+      {
+        path: "/report",
+        element: <Report />,
+      },
+    ],
   },
 ]);
 
