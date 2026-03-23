@@ -1,73 +1,30 @@
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useRef, useCallback } from "react";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
+import { Input, Typography } from "antd";
 import {
-  SandpackProvider,
-  SandpackLayout,
-  SandpackCodeEditor,
-  SandpackPreview,
-  useSandpack,
-} from "@codesandbox/sandpack-react";
-import { message } from "antd";
+  createIframeSandboxSrcdoc,
+  createRuntimeEnvelope,
+  createWorkerSandboxScript,
+  isRuntimeEnvelope,
+  parseSchemaFromCode,
+  renderCode,
+  SANDBOX_EVENT_LOGIC_RESULT,
+  SANDBOX_EVENT_SCHEMA_UPDATE,
+  type SandboxSchemaNode,
+} from "@codigo/editor-sandbox";
 
-// Custom hook component to listen for code changes in Sandpack
-const CodeSyncListener = ({
-  onCodeChange,
-}: {
-  onCodeChange: (code: string) => void;
-}) => {
-  const { sandpack } = useSandpack();
-  const { files, activeFile } = sandpack;
-
-  useEffect(() => {
-    const activeFileContent = files[activeFile]?.code;
-    if (activeFileContent) {
-      // We debounce the sync in the parent component
-      onCodeChange(activeFileContent);
-    }
-  }, [files, activeFile, onCodeChange]);
-
-  return null;
-};
-
-function extractSchemaText(source: string) {
-  const schemaKey = "const pageSchema =";
-  const keyIndex = source.indexOf(schemaKey);
-  if (keyIndex < 0) {
-    throw new Error("未找到 pageSchema，请保留 const pageSchema = [...]");
-  }
-
-  const schemaStart = source.indexOf("[", keyIndex);
-  if (schemaStart < 0) {
-    throw new Error("未找到 pageSchema 数组起始位置");
-  }
-
-  let depth = 0;
-  let schemaEnd = -1;
-
-  for (let i = schemaStart; i < source.length; i++) {
-    const char = source[i];
-    if (char === "[") depth += 1;
-    if (char === "]") {
-      depth -= 1;
-      if (depth === 0) {
-        schemaEnd = i;
-        break;
-      }
-    }
-  }
-
-  if (schemaEnd < 0) {
-    throw new Error("pageSchema 数组未正常闭合");
-  }
-
-  return source.slice(schemaStart, schemaEnd + 1);
-}
+const { Text } = Typography;
 
 export const SandboxCanvas = observer(() => {
   const { store, getComponentById, replaceByCode } = useStoreComponents();
   const { store: pageStore } = useStorePage();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const workerRef = useRef<Worker | null>(null);
+  const [code, setCode] = useState("");
+  const [errorText, setErrorText] = useState("");
+  const [logicSummary, setLogicSummary] = useState("等待逻辑沙箱结果");
 
   const schemaText = useMemo(() => {
     const serializableComponents = store.sortableCompConfig
@@ -88,144 +45,124 @@ export const SandboxCanvas = observer(() => {
   }, [getComponentById, store.sortableCompConfig, store.compConfigs]);
 
   const generatedCode = useMemo(() => {
-    if (pageStore.codeFramework === "vue") {
-      return `<script setup lang="ts">
-import LowCodeRenderer from "./LowCodeRenderer.vue";
-const pageSchema = ${schemaText};
-</script>
-
-<template>
-  <div class="codigo-page" style="height: 100%; min-height: 100vh; position: relative;">
-    <LowCodeRenderer
-      v-for="component in pageSchema"
-      :key="component.id"
-      :component="component"
-    />
-  </div>
-</template>
-`;
-    }
-
-    return `import React from "react";
-import { LowCodeRenderer } from "./LowCodeRenderer";
-
-const pageSchema = ${schemaText};
-
-export default function Page() {
-  return (
-    <div className="codigo-page" style={{ height: '100%', minHeight: '100vh', position: 'relative' }}>
-      {pageSchema.map((component) => (
-        <LowCodeRenderer key={component.id} component={component} />
-      ))}
-    </div>
-  );
-}
-`;
+    return renderCode(pageStore.codeFramework, schemaText);
   }, [pageStore.codeFramework, schemaText]);
 
-  const sandboxFiles: Record<string, string> = useMemo(() => {
-    if (pageStore.codeFramework === "react") {
-      return {
-        "/App.js": generatedCode,
-        "/LowCodeRenderer.js": `
-export function LowCodeRenderer({ component }) {
-  const { type, props, styles } = component;
-  
-  return (
-    <div style={{ ...styles, border: '1px dashed #ccc', padding: '8px', margin: '4px', borderRadius: '4px', position: styles?.position || 'relative', left: styles?.left, top: styles?.top }}>
-      <div style={{ fontSize: '14px', marginBottom: '4px', color: '#10b981' }}><strong>{type}</strong></div>
-      <div style={{ fontSize: '12px', color: '#666', background: '#f8fafc', padding: '4px', borderRadius: '4px' }}>
-        {JSON.stringify(props)}
-      </div>
-    </div>
-  );
-}
-        `,
-      };
-    }
+  const iframeSrcdoc = useMemo(() => createIframeSandboxSrcdoc(), []);
 
-    if (pageStore.codeFramework === "vue") {
-      return {
-        "/src/App.vue": generatedCode,
-        "/src/LowCodeRenderer.vue": `
-<script setup>
-defineProps({ component: Object })
-</script>
-<template>
-  <div :style="[component.styles, { border: '1px dashed #ccc', padding: '8px', margin: '4px', borderRadius: '4px', position: component.styles?.position || 'relative', left: component.styles?.left, top: component.styles?.top }]">
-    <div style="font-size: 14px; margin-bottom: 4px; color: #10b981"><strong>{{ component.type }}</strong></div>
-    <div style="font-size: 12px; color: #666; background: #f8fafc; padding: 4px; border-radius: 4px;">
-      {{ JSON.stringify(component.props) }}
-    </div>
-  </div>
-</template>
-        `,
-      };
-    }
-    return {};
-  }, [generatedCode, pageStore.codeFramework]);
-
-  const [localCode, setLocalCode] = useState("");
-
-  const handleCodeChange = (newCode: string) => {
-    setLocalCode(newCode);
-  };
+  const pushSchemaToRuntime = useCallback((schema: SandboxSchemaNode[]) => {
+    iframeRef.current?.contentWindow?.postMessage(
+      createRuntimeEnvelope("iframe-ui", SANDBOX_EVENT_SCHEMA_UPDATE, schema),
+      "*",
+    );
+    workerRef.current?.postMessage(
+      createRuntimeEnvelope(
+        "worker-logic",
+        SANDBOX_EVENT_SCHEMA_UPDATE,
+        schema,
+      ),
+    );
+  }, []);
 
   useEffect(() => {
-    if (!localCode) return;
+    const workerScript = createWorkerSandboxScript();
+    const blob = new Blob([workerScript], { type: "application/javascript" });
+    const workerUrl = URL.createObjectURL(blob);
+    const worker = new Worker(workerUrl);
+    workerRef.current = worker;
 
-    // Check if it's the same as generated, to avoid infinite loops
-    if (localCode === generatedCode) return;
+    worker.onmessage = (event: MessageEvent<unknown>) => {
+      if (!isRuntimeEnvelope(event.data)) return;
+      if (event.data.event !== SANDBOX_EVENT_LOGIC_RESULT) return;
+      const payload = event.data.payload as {
+        componentCount?: number;
+        types?: string[];
+      };
+      const count = payload.componentCount ?? 0;
+      const types = payload.types?.join(", ") || "-";
+      setLogicSummary(`逻辑沙箱：${count} 个组件，类型 ${types}`);
+    };
+
+    return () => {
+      worker.terminate();
+      workerRef.current = null;
+      URL.revokeObjectURL(workerUrl);
+    };
+  }, []);
+
+  useEffect(() => {
+    setCode(generatedCode);
+    setErrorText("");
+    try {
+      const parsed = parseSchemaFromCode(generatedCode);
+      pushSchemaToRuntime(parsed);
+    } catch (error) {
+      setErrorText((error as Error).message);
+    }
+  }, [generatedCode, pushSchemaToRuntime]);
+
+  useEffect(() => {
+    if (!code || code === generatedCode) return;
 
     const timer = window.setTimeout(() => {
       try {
-        const schemaSource = extractSchemaText(localCode);
-        const parsedValue = JSON.parse(schemaSource);
-        if (Array.isArray(parsedValue)) {
-          // Sync back to visual canvas store
-          replaceByCode(parsedValue);
-          message.success("画布已同步更新", 1);
-        }
-      } catch (e) {
-        // Ignore errors while typing, only valid JSON schemas will be synced
+        const parsedValue = parseSchemaFromCode(code);
+        replaceByCode(parsedValue);
+        pushSchemaToRuntime(parsedValue);
+        setErrorText("");
+      } catch (error) {
+        setErrorText((error as Error).message);
       }
-    }, 1000); // 1s debounce
+    }, 600);
 
     return () => clearTimeout(timer);
-  }, [localCode, generatedCode, replaceByCode]);
+  }, [code, generatedCode, pushSchemaToRuntime, replaceByCode]);
 
   return (
-    <div className="w-full h-full bg-white flex flex-col relative group">
-      <div className="absolute top-2 right-4 z-50 flex items-center gap-2">
-        <span className="text-xs text-slate-500 bg-white/80 px-2 py-1 rounded shadow-sm">
-          💡 修改代码后，停顿1秒自动同步到可视化画布
-        </span>
+    <div className="w-full h-full bg-white grid grid-cols-2 gap-0">
+      <div className="h-full border-r border-slate-200 flex flex-col">
+        <div className="px-3 py-2 border-b border-slate-200 bg-slate-50">
+          <Text className="text-xs text-slate-600">Code JSON 编辑态</Text>
+        </div>
+        <Input.TextArea
+          value={code}
+          onChange={(event) => setCode(event.target.value)}
+          autoSize={false}
+          className="font-mono text-xs flex-1 h-full rounded-none border-0"
+        />
+        <div className="px-3 py-2 border-t border-slate-200 bg-slate-50">
+          {errorText ? (
+            <Text type="danger" className="text-xs">
+              {errorText}
+            </Text>
+          ) : (
+            <Text className="text-xs text-emerald-600">
+              语法合法，已自动同步
+            </Text>
+          )}
+        </div>
       </div>
-      <SandpackProvider
-        template={pageStore.codeFramework === "vue" ? "vue" : "react"}
-        files={sandboxFiles}
-        theme="auto"
-        customSetup={{
-          dependencies: {
-            react: "^18.2.0",
-            "react-dom": "^18.2.0",
-          },
-        }}
-      >
-        <SandpackLayout style={{ flex: 1, height: "100%", minHeight: "100%" }}>
-          <SandpackCodeEditor
-            showLineNumbers
-            wrapContent
-            style={{ height: "100%", flex: 1 }}
-          />
-          <SandpackPreview
-            style={{ height: "100%", flex: 1 }}
-            showOpenInCodeSandbox={false}
-            showRefreshButton={true}
-          />
-        </SandpackLayout>
-        <CodeSyncListener onCodeChange={handleCodeChange} />
-      </SandpackProvider>
+      <div className="h-full flex flex-col">
+        <div className="px-3 py-2 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+          <Text className="text-xs text-slate-600">iframe UI sandbox</Text>
+          <Text className="text-xs text-slate-500">{logicSummary}</Text>
+        </div>
+        <iframe
+          ref={iframeRef}
+          title="codigo-ui-sandbox"
+          srcDoc={iframeSrcdoc}
+          sandbox="allow-scripts"
+          className="w-full h-full border-0 bg-slate-50"
+          onLoad={() => {
+            try {
+              const parsed = parseSchemaFromCode(code || generatedCode);
+              pushSchemaToRuntime(parsed);
+            } catch {
+              return;
+            }
+          }}
+        />
+      </div>
     </div>
   );
 });

@@ -6,11 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^2.20.0",
+    "@codigo/editor-sandbox": "workspace:*",
     "@codigo/materials-react": "workspace:*",
     "@codigo/render-react": "workspace:*",
     "@codigo/render-vue": "workspace:*",

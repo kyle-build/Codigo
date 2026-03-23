@@ -22,6 +22,7 @@
     "build:materials-react": "pnpm --filter materials-react run build",
     "build:render-react": "pnpm --filter @codigo/render-react run build",
     "build:render-vue": "pnpm --filter @codigo/render-vue run build",
+    "build:editor-sandbox": "pnpm --filter @codigo/editor-sandbox run build",
     "start:server": "pnpm --filter server run start:prod",
     "start:release": "pnpm --filter release run start",
     "commit": "git-cz"
