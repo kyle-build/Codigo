@@ -143,6 +143,18 @@ export function useStoreComponents() {
       storeComponents.sortableCompConfig.push(comp.id);
 
       setCurrentComponent(comp.id);
+
+      const { store: storePermission, broadcastComponentUpdate } =
+        useStorePermission();
+      broadcastComponentUpdate(
+        Number(
+          new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
+        ),
+        Number(storePermission.currentUserId),
+        "add",
+        comp,
+      );
+
       addOperationLog("add_component", type);
     },
   );
@@ -177,6 +189,18 @@ export function useStoreComponents() {
         // @ts-expect-error ignore type
         curCompConfig.props[key] = calcValueByString(value);
       }
+
+      const { store: storePermission, broadcastComponentUpdate } =
+        useStorePermission();
+      broadcastComponentUpdate(
+        Number(
+          new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
+        ),
+        Number(storePermission.currentUserId),
+        "update",
+        curCompConfig,
+      );
+
       addOperationLog("update_component", curCompConfig.type);
     },
   );
@@ -195,6 +219,16 @@ export function useStoreComponents() {
       // @ts-expect-error ignore type
       curCompConfig.styles[key] = calcValueByString(value);
     }
+
+    const { store: storePermission, broadcastComponentUpdate } =
+      useStorePermission();
+    broadcastComponentUpdate(
+      Number(new URLSearchParams(window.location.hash.split("?")[1]).get("id")),
+      Number(storePermission.currentUserId),
+      "update",
+      curCompConfig,
+    );
+
     addOperationLog("update_style", curCompConfig.type);
   });
 
@@ -213,6 +247,17 @@ export function useStoreComponents() {
       curCompConfig.styles.top = `${Math.max(0, Math.round(top))}px`;
       curCompConfig.styles.width =
         curCompConfig.styles.width ?? getDefaultWidthByType(curCompConfig.type);
+
+      const { store: storePermission, broadcastComponentUpdate } =
+        useStorePermission();
+      broadcastComponentUpdate(
+        Number(
+          new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
+        ),
+        Number(storePermission.currentUserId),
+        "update",
+        curCompConfig,
+      );
 
       if (!silent) {
         addOperationLog("move_component", curCompConfig.type);
@@ -234,11 +279,62 @@ export function useStoreComponents() {
       const curCompConfig = getCurrentComponentConfig.get();
       if (!curCompConfig) return;
 
-      // 更新当前组件配置的props属性
-      // @ts-expect-error typescript无法正确推断可选类型
-      curCompConfig.props[key][index][field] = value;
+      // 如果当前组件配置的props属性中没有对应的key，则初始化为一个空数组
+      // @ts-expect-error ignore type
+      if (!curCompConfig.props[key]) curCompConfig.props[key] = [];
+
+      // 更新对应key数组中指定索引的对象的指定字段的值
+      // @ts-expect-error ignore type
+      curCompConfig.props[key][index][field] = calcValueByString(value);
+
+      const { store: storePermission, broadcastComponentUpdate } =
+        useStorePermission();
+      broadcastComponentUpdate(
+        Number(
+          new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
+        ),
+        Number(storePermission.currentUserId),
+        "update",
+        curCompConfig,
+      );
+
       addOperationLog("update_component", curCompConfig.type);
     });
+
+  // 根据 id 移除指定组件配置项
+  type TRemoveComponentByIdWithArray = (args: {
+    key: string;
+    index: number;
+  }) => void;
+  const removeComponentByIdWithArray: TRemoveComponentByIdWithArray = action(
+    ({ key, index }) => {
+      if (!ensurePermission("edit_content", "当前角色不能修改组件内容")) return;
+      // 获取当前组件配置
+      const curCompConfig = getCurrentComponentConfig.get();
+      if (!curCompConfig) return;
+
+      // 如果当前组件配置的props属性中没有对应的key，直接返回
+      // @ts-expect-error ignore type
+      if (!curCompConfig.props[key]) return;
+
+      // 移除对应key数组中指定索引的对象
+      // @ts-expect-error ignore type
+      curCompConfig.props[key].splice(index, 1);
+
+      const { store: storePermission, broadcastComponentUpdate } =
+        useStorePermission();
+      broadcastComponentUpdate(
+        Number(
+          new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
+        ),
+        Number(storePermission.currentUserId),
+        "update",
+        curCompConfig,
+      );
+
+      addOperationLog("remove_component", curCompConfig.type);
+    },
+  );
 
   // 定义展开或者折叠组件列表的函数
   const setItemsExpandIndex = action((index: number) => {
@@ -376,6 +472,16 @@ export function useStoreComponents() {
     const rollbackIndex = index - 1 > 0 ? index - 1 : 0;
     storeComponents.currentCompConfig =
       storeComponents.sortableCompConfig[rollbackIndex] || null;
+
+    const { store: storePermission, broadcastComponentUpdate } =
+      useStorePermission();
+    broadcastComponentUpdate(
+      Number(new URLSearchParams(window.location.hash.split("?")[1]).get("id")),
+      Number(storePermission.currentUserId),
+      "remove",
+      { id: curCompConfig.id },
+    );
+
     addOperationLog("remove_component", curCompConfig.type);
   });
 
@@ -428,6 +534,21 @@ export function useStoreComponents() {
         currentId && nextCompConfigs[currentId]
           ? currentId
           : (nextSortableCompConfig[0] ?? null);
+
+      const { store: storePermission, broadcastComponentUpdate } =
+        useStorePermission();
+      broadcastComponentUpdate(
+        Number(
+          new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
+        ),
+        Number(storePermission.currentUserId),
+        "replace_all",
+        {
+          compConfigs: nextCompConfigs,
+          sortableCompConfig: nextSortableCompConfig,
+        },
+      );
+
       addOperationLog(
         "ai_replace",
         `共 ${nextSortableCompConfig.length} 个组件`,
@@ -583,6 +704,7 @@ export function useStoreComponents() {
     updateCurrentComponentStyles,
     updateComponentPosition,
     updateCurrentCompConfigWithArray,
+    removeComponentByIdWithArray,
     setItemsExpandIndex,
     // 导出撤销操作的函数
     undo,

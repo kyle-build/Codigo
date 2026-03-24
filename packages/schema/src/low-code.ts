@@ -8,6 +8,7 @@ export interface ILowCode {
   components: string[];
   tdk: string;
   desc: string;
+  lockEditing?: boolean; // 编辑锁状态
 }
 
 // 组件表属性类型

@@ -1,19 +1,25 @@
 import { createRef, useEffect, useRef, useState } from "react";
 import { useTitle } from "ahooks";
 import { observer } from "mobx-react-lite";
+import { useSearchParams } from "react-router-dom";
 
 import EditorLeftPanel from "./components/leftPanel";
 import EditorRightPanel from "./components/rightPanel";
 import EditorCanvas from "./components/canvas";
 import { SandboxCanvas } from "./components/canvas/SandboxCanvas";
 
-import { useStoreComponents, useStorePage } from "@/shared/hooks";
+import { useStoreComponents, useStorePage, useStorePermission, useStoreAuth } from "@/shared/hooks";
 import { getLowCodePage } from "@/modules/editor/api/low-code";
 
 const Editor = observer(() => {
   useTitle("codigo - 页面编辑");
+  const [searchParams] = useSearchParams();
+  const pageId = Number(searchParams.get("id"));
+
   const { store: storeComps, loadPageData } = useStoreComponents();
   const { store: storePage } = useStorePage();
+  const { initCollaboration, cleanupCollaboration } = useStorePermission();
+  const { store: storeAuth } = useStoreAuth();
 
   //  创建容器用于调用子组件的函数
   const canvasRef = createRef<any>();
@@ -26,6 +32,18 @@ const Editor = observer(() => {
   useEffect(() => {
     loadPageData(getLowCodePage);
   }, []);
+
+  // 初始化协作
+  useEffect(() => {
+    if (pageId && storeAuth.details?.id) {
+      initCollaboration(pageId, storeAuth.details.id, storeAuth.details.username || "User");
+    }
+    return () => {
+      if (pageId && storeAuth.details?.id) {
+        cleanupCollaboration(pageId, storeAuth.details.id);
+      }
+    };
+  }, [pageId, storeAuth.details]);
 
   useEffect(() => {
     let scrollTimeout: NodeJS.Timeout;

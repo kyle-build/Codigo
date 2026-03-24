@@ -1,4 +1,4 @@
-﻿import { makeAutoObservable } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 export type PermissionRole = "owner" | "editor" | "commenter" | "viewer";
 export type PermissionAction =
@@ -12,6 +12,7 @@ export type PermissionAction =
 
 export interface Collaborator {
   id: string;
+  user_id: number;
   name: string;
   role: PermissionRole;
   color: string;
@@ -52,56 +53,11 @@ export const roleColorMap: Record<PermissionRole, string> = {
 export function createStorePermission() {
   return makeAutoObservable<IStorePermission>({
     documentId: "codigo-editor-doc",
-    currentUserId: "u-owner",
+    currentUserId: "",
     lockEditing: false,
-    collaborators: [
-      {
-        id: "u-owner",
-        name: "产品负责人",
-        role: "owner",
-        color: "#f97316",
-        isOnline: true,
-        lastActiveAt: Date.now(),
-      },
-      {
-        id: "u-dev",
-        name: "前端开发",
-        role: "editor",
-        color: "#10b981",
-        isOnline: true,
-        lastActiveAt: Date.now() - 60 * 1000,
-      },
-      {
-        id: "u-pm",
-        name: "项目经理",
-        role: "commenter",
-        color: "#3b82f6",
-        isOnline: true,
-        lastActiveAt: Date.now() - 5 * 60 * 1000,
-      },
-      {
-        id: "u-qa",
-        name: "测试同学",
-        role: "viewer",
-        color: "#64748b",
-        isOnline: false,
-        lastActiveAt: Date.now() - 25 * 60 * 1000,
-      },
-    ],
+    collaborators: [],
     logs: [],
   });
 }
 
 export type TStorePermission = ReturnType<typeof createStorePermission>;
-
-
-
-
-
-
-
-
-
-
-
-

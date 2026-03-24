@@ -1,12 +1,14 @@
-﻿import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SendCodeDto } from './dto/sendSms.dto';
-import { GetUserIP, GetUserAgent } from '../utils/GetUserMessageTool';
+import { GetUserIP, GetUserAgent, getUserMess } from '../utils/GetUserMessageTool';
+import type { TCurrentUser } from '../utils/GetUserMessageTool';
 import { CaptchaDto } from './dto/captcha.dto';
 import { SecretTool } from 'src/utils/SecretTool';
 import { RandomTool } from 'src/utils/RandomTool';
 import { RegisterDto } from './dto/register.dto';
 import { PhoneLoginDto, PasswordLoginDto } from './dto/login.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 /**
  * 用户控制器，处理与用户相关的 HTTP 请求
@@ -18,6 +20,12 @@ export class UserController {
     private readonly secrectTool: SecretTool,
     private readonly randomTool: RandomTool,
   ) {}
+
+  @Get('me')
+  @UseGuards(AuthGuard('jwt'))
+  getCurrentUser(@getUserMess() user: TCurrentUser) {
+    return user;
+  }
 
   /**
    * 图形验证码接口

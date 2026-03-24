@@ -1,4 +1,4 @@
-﻿// low-code.entity.ts
+// low-code.entity.ts
 import type { IComponent, IComponentData, ILowCode } from '@codigo/schema';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import type { TComponentTypes } from '@codigo/schema';
@@ -22,6 +22,9 @@ export class Page implements ILowCode {
 
   @Column()
   desc: string = '';
+
+  @Column({ default: false })
+  lockEditing: boolean = false;
 }
 
 @Entity({ name: 'component' })

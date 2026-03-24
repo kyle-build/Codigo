@@ -1,4 +1,4 @@
-﻿import {
+import {
   Injectable,
   InternalServerErrorException,
   BadRequestException,
@@ -12,8 +12,11 @@ import {
 import { DataSource, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Page, Component, ComponentData } from './entities/low-code.entity';
+import { User } from '../user/entities/user.entity';
+import { PageCollaborator } from './entities/page-collaborator.entity';
+import { OperationLog } from './entities/operation-log.entity';
 import { RedisModule } from 'src/utils/modules/redis.module';
+import type { InviteCollaboratorRequest, UpdateCollaboratorRoleRequest } from '@codigo/schema';
 
 @Injectable()
 export class LowCodeService {
@@ -25,6 +28,12 @@ export class LowCodeService {
     private readonly ComponentRepository: Repository<Component>,
     @InjectRepository(ComponentData)
     private readonly ComponentDataRepository: Repository<ComponentData>,
+    @InjectRepository(PageCollaborator)
+    private readonly pageCollaboratorRepository: Repository<PageCollaborator>,
+    @InjectRepository(OperationLog)
+    private readonly operationLogRepository: Repository<OperationLog>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly redis: RedisModule,
   ) {}
   /**
@@ -315,5 +324,179 @@ export class LowCodeService {
     );
 
     return matchesComponetDatas;
+  }
+
+  // ---- 协作相关服务 ----
+
+  async getCollaborators(pageId: number) {
+    const collabs = await this.pageCollaboratorRepository.find({
+      where: { page_id: pageId },
+    });
+
+    const page = await this.PageCodeRepository.findOneBy({ id: pageId });
+    if (!page) {
+      throw new BadRequestException('页面不存在');
+    }
+
+    const ownerId = page.account_id;
+    const result = [];
+
+    // 添加 owner
+    const owner = await this.userRepository.findOneBy({ id: ownerId });
+    if (owner) {
+      result.push({
+        id: owner.id.toString(), // 用作唯一标识
+        user_id: owner.id,
+        page_id: pageId,
+        name: owner.username || 'Owner',
+        role: 'owner',
+      });
+    }
+
+    for (const collab of collabs) {
+      const u = await this.userRepository.findOneBy({ id: collab.user_id });
+      if (u) {
+        result.push({
+          id: collab.id,
+          user_id: u.id,
+          page_id: pageId,
+          name: u.username || 'User',
+          role: collab.role,
+        });
+      }
+    }
+
+    return {
+      lockEditing: page.lockEditing,
+      collaborators: result,
+    };
+  }
+
+  async inviteCollaborator(
+    pageId: number,
+    body: InviteCollaboratorRequest,
+    currentUserId: number,
+  ) {
+    const page = await this.PageCodeRepository.findOneBy({ id: pageId });
+    if (!page || page.account_id !== currentUserId) {
+      throw new BadRequestException('只有所有者才能邀请成员');
+    }
+
+    const targetUser = await this.userRepository.findOneBy({
+      username: body.userName,
+    });
+    if (!targetUser) {
+      throw new BadRequestException('未找到该用户');
+    }
+
+    if (targetUser.id === currentUserId) {
+      throw new BadRequestException('不能邀请自己');
+    }
+
+    const existCollab = await this.pageCollaboratorRepository.findOneBy({
+      page_id: pageId,
+      user_id: targetUser.id,
+    });
+
+    if (existCollab) {
+      throw new BadRequestException('该用户已是协作者');
+    }
+
+    const newCollab = this.pageCollaboratorRepository.create({
+      page_id: pageId,
+      user_id: targetUser.id,
+      role: body.role,
+    });
+    await this.pageCollaboratorRepository.save(newCollab);
+
+    await this.logOperation(
+      pageId,
+      currentUserId,
+      'invite_member',
+      body.userName,
+    );
+
+    return { msg: '邀请成功' };
+  }
+
+  async updateCollaboratorRole(
+    pageId: number,
+    targetUserId: number,
+    body: UpdateCollaboratorRoleRequest,
+    currentUserId: number,
+  ) {
+    const page = await this.PageCodeRepository.findOneBy({ id: pageId });
+    if (!page || page.account_id !== currentUserId) {
+      throw new BadRequestException('只有所有者才能修改角色');
+    }
+
+    const collab = await this.pageCollaboratorRepository.findOneBy({
+      page_id: pageId,
+      user_id: targetUserId,
+    });
+
+    if (!collab) {
+      throw new BadRequestException('协作者不存在');
+    }
+
+    collab.role = body.role;
+    await this.pageCollaboratorRepository.save(collab);
+
+    const targetUser = await this.userRepository.findOneBy({ id: targetUserId });
+    await this.logOperation(
+      pageId,
+      currentUserId,
+      'update_role',
+      `${targetUser?.username || 'User'} -> ${body.role}`,
+    );
+
+    return { msg: '修改成功' };
+  }
+
+  async removeCollaborator(
+    pageId: number,
+    targetUserId: number,
+    currentUserId: number,
+  ) {
+    const page = await this.PageCodeRepository.findOneBy({ id: pageId });
+    if (!page || page.account_id !== currentUserId) {
+      throw new BadRequestException('只有所有者才能移除成员');
+    }
+
+    const collab = await this.pageCollaboratorRepository.findOneBy({
+      page_id: pageId,
+      user_id: targetUserId,
+    });
+
+    if (!collab) {
+      throw new BadRequestException('协作者不存在');
+    }
+
+    await this.pageCollaboratorRepository.remove(collab);
+
+    const targetUser = await this.userRepository.findOneBy({ id: targetUserId });
+    await this.logOperation(
+      pageId,
+      currentUserId,
+      'remove_member',
+      targetUser?.username || 'User',
+    );
+
+    return { msg: '移除成功' };
+  }
+
+  async logOperation(
+    pageId: number,
+    actorId: number,
+    event: string,
+    target: string,
+  ) {
+    const log = this.operationLogRepository.create({
+      page_id: pageId,
+      actor_id: actorId,
+      event,
+      target,
+    });
+    await this.operationLogRepository.save(log);
   }
 }
