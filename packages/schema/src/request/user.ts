@@ -1,5 +1,6 @@
 import type { IUser } from "..";
 
+// 验证码接口的参数类型
 export interface CaptchaRequest {
   type: "register" | "login";
 }
@@ -7,6 +8,10 @@ export interface CaptchaRequest {
 // 注册接口的参数类型
 export type RegisterRequest = Pick<IUser, "phone" | "password"> & {
   sendCode: string;
+};
+
+// 前端表单验证参数类型
+export type RegisterRequestFormValue = RegisterRequest & {
   confirm: string;
 };
 

@@ -1,7 +1,9 @@
-﻿import {
+import {
+  BorderOutlined,
   CheckCircleOutlined,
   CheckSquareOutlined,
   CreditCardOutlined,
+  DashboardOutlined,
   EditOutlined,
   ExpandOutlined,
   // FontColorsOutlined,
@@ -13,7 +15,6 @@
   SplitCellsOutlined,
   UnorderedListOutlined,
   WarningOutlined,
-  BarChartOutlined,
   TableOutlined,
 } from "@ant-design/icons";
 import { Collapse } from "antd";
@@ -22,6 +23,11 @@ import { useStoreComponents, useStorePermission } from "@/shared/hooks";
 
 // 基础组件配置数组
 const basicComponents = [
+  {
+    type: "button",
+    name: "按钮组件",
+    icon: <BorderOutlined />,
+  },
   {
     type: "video",
     name: "视频组件",
@@ -101,9 +107,9 @@ const formComponents = [
 // 报表组件配置数组
 const reportComponents = [
   {
-    type: "chart",
-    name: "图表组件",
-    icon: <BarChartOutlined />,
+    type: "statistic",
+    name: "统计指标组件",
+    icon: <DashboardOutlined />,
   },
   {
     type: "table",
@@ -113,7 +119,11 @@ const reportComponents = [
 ];
 
 // 导出所有组件配置，用于其他地方引用
-export const components = [...basicComponents, ...formComponents];
+export const components = [
+  ...basicComponents,
+  ...formComponents,
+  ...reportComponents,
+];
 
 interface ComponentProps {
   name: string;
@@ -210,15 +220,3 @@ export default function ComponentList() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

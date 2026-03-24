@@ -12,6 +12,25 @@ export default function ListComponent(_props: IListComponentProps) {
     };
   }, [_props]);
 
+  function renderTitle(title: string, titleLink: string) {
+    if (!titleLink) return title;
+    if (titleLink.startsWith("#")) {
+      return (
+        <a
+          href={titleLink}
+          onClick={(event) => {
+            event.preventDefault();
+            const element = document.getElementById(titleLink.slice(1));
+            element?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+        >
+          {title}
+        </a>
+      );
+    }
+    return <a href={titleLink}>{title}</a>;
+  }
+
   return (
     <List
       itemLayout="horizontal"
@@ -20,7 +39,7 @@ export default function ListComponent(_props: IListComponentProps) {
         <List.Item>
           <List.Item.Meta
             avatar={<Avatar src={item.avatar} />}
-            title={<a href={item.titleLink}>{item.title}</a>}
+            title={renderTitle(item.title, item.titleLink)}
             description={item.description}
           />
         </List.Item>

@@ -13,11 +13,14 @@ import { useStorePermission } from "./useStorePermission";
 
 const storeComponents = createStoreComponents();
 const codeSupportedTypes: TComponentTypes[] = [
+  "button",
   "video",
   "swiper",
   "qrcode",
   "card",
   "list",
+  "statistic",
+  "table",
   "image",
   "titleText",
   "split",
@@ -37,6 +40,7 @@ const layoutStartY = 24;
 
 function getDefaultWidthByType(type: TComponentTypes): string {
   switch (type) {
+    case "table":
     case "card":
     case "list":
     case "image":
@@ -45,9 +49,11 @@ function getDefaultWidthByType(type: TComponentTypes): string {
     case "richText":
       return "420px";
     case "input":
+    case "button":
     case "textArea":
     case "radio":
     case "checkbox":
+    case "statistic":
       return "360px";
     case "split":
       return "520px";

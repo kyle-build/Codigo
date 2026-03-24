@@ -4,11 +4,14 @@ import type { SandboxSchemaNode } from "./types";
 const schemaKey = "const pageSchema =";
 
 export const supportedComponentTypes: TComponentTypes[] = [
+  "button",
   "video",
   "swiper",
   "qrcode",
   "card",
   "list",
+  "statistic",
+  "table",
   "image",
   "titleText",
   "split",

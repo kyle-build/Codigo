@@ -1,10 +1,13 @@
 import type { FC } from "react";
 import type { TComponentTypes } from "@codigo/schema";
 import {
+  ButtonComponent,
   CardComponent,
   ImageComponent,
   ListComponent,
+  StatisticComponent,
   SwiperComponent,
+  TableComponent,
   VideoComponent,
   TextComponent,
   SplitComponent,
@@ -20,11 +23,14 @@ import {
 
 // @ts-ignore
 export const componentList: Record<TComponentTypes, FC<any>> = {
+  button: ButtonComponent,
   video: VideoComponent,
   image: ImageComponent,
   swiper: SwiperComponent,
   card: CardComponent,
   list: ListComponent,
+  statistic: StatisticComponent,
+  table: TableComponent,
   titleText: TextComponent,
   split: SplitComponent,
   empty: EmptyComponent,

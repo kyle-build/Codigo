@@ -1,5 +1,7 @@
-// 组件的名称映射
 export type TComponentTypes =
+  | "button"
+  | "statistic"
+  | "table"
   | "video"
   | "swiper"
   | "qrcode"
@@ -22,10 +24,9 @@ export interface IComponentPropWarpper<T> {
   isHidden: boolean;
 }
 
-// 组件通用属性类型
 export interface TBasicComponentConfig<
   T extends string = TComponentTypes,
-  P extends Record<string, any> = object
+  P extends Record<string, any> = object,
 > {
   type: T;
   id: string;

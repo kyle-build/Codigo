@@ -20,12 +20,27 @@ export default function ImageComponent(_props: IImageComponentProps) {
     />
   );
 
-  // 如果图片可跳转，则覆盖上a标签
-  if (props.handleClicked === "open-url")
+  if (props.handleClicked === "open-url" && props.link) {
+    if (props.link.startsWith("#")) {
+      return (
+        <button
+          type="button"
+          onClick={() => {
+            const element = document.getElementById(props.link!.slice(1));
+            element?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+          className="w-full text-left"
+        >
+          {img}
+        </button>
+      );
+    }
     return (
       <a href={props.link} target="_blank" rel="noreferrer">
         {img}
       </a>
     );
-  else return img;
+  }
+
+  return img;
 }

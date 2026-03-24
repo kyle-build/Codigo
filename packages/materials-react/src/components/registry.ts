@@ -1,8 +1,11 @@
+import { ButtonComponent as LowCodeButton } from "./Button";
 import { VideoComponent as LowCodeVideo } from "./LowCodeVideo";
 import { ImageComponent as LowCodeImage } from "./LowCodeImage";
 import { SwiperComponent as LowCodeSwiper } from "./LowCodeSwiper";
 import { CardComponent as LowCodeCard } from "./LowCodeCard";
 import { ListComponent as LowCodeList } from "./LowCodeList";
+import { StatisticComponent as LowCodeStatistic } from "./LowCodeStatistic";
+import { TableComponent as LowCodeTable } from "./LowCodeTable";
 import { TextComponent as LowCodeText } from "./LowCodeText";
 import { SplitComponent as LowCodeSplit } from "./LowCodeSplit";
 import { EmptyComponent as LowCodeEmpty } from "./LowCodeEmpty";
@@ -16,6 +19,12 @@ import { CheckboxComponent as LowCodeCheckbox } from "./LowCodeCheckbox";
 import { registerComponent } from "@codigo/plugin-system";
 
 export function initBuiltinComponents() {
+  registerComponent({
+    type: "button",
+    name: "Button",
+    defaultConfig: {} as any,
+    render: LowCodeButton,
+  });
   registerComponent({
     type: "video",
     name: "Video",
@@ -45,6 +54,18 @@ export function initBuiltinComponents() {
     name: "List",
     defaultConfig: {} as any,
     render: LowCodeList,
+  });
+  registerComponent({
+    type: "statistic",
+    name: "Statistic",
+    defaultConfig: {} as any,
+    render: LowCodeStatistic,
+  });
+  registerComponent({
+    type: "table",
+    name: "Table",
+    defaultConfig: {} as any,
+    render: LowCodeTable,
   });
   registerComponent({
     type: "titleText",
