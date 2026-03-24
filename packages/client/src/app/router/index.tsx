@@ -12,6 +12,7 @@ import { StudioLayout } from "@/app/layouts/StudioLayout";
 import AdminLayout from "@/modules/admin/components/AdminLayout";
 import AdminUsers from "@/modules/admin/pages/users";
 import { AdminRouteGuard } from "@/modules/admin/components/AdminRouteGuard";
+import Profile from "@/modules/profile";
 
 export const router = createHashRouter([
   {
@@ -29,6 +30,10 @@ export const router = createHashRouter([
   {
     path: "/login",
     element: <LoginOrRegister />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
   {
     path: "/dataCount",

@@ -1,4 +1,4 @@
-﻿import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { Avatar, Dropdown } from "antd";
 import type { MenuProps } from "antd";
@@ -16,6 +16,14 @@ export const HomeHeader = observer(() => {
   const { isLogin, logout } = useStoreAuth();
 
   const userMenuItems: MenuProps["items"] = [
+    {
+      key: "profile",
+      icon: <UserOutlined />,
+      label: "个人中心",
+      onClick: () => {
+        navigate("/profile");
+      },
+    },
     {
       key: "logout",
       icon: <LogoutOutlined />,

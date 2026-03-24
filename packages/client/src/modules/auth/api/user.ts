@@ -1,9 +1,11 @@
-﻿import request from "@/shared/utils/request";
+import request from "@/shared/utils/request";
 import type {
   SendCodeRequest,
   RegisterRequest,
   LoginWithPasswordRequest,
   LoginWithPhoneRequest,
+  UpdateProfileRequest,
+  ChangePasswordRequest,
 } from "@codigo/materials-react";
 
 // 图形验证码接口
@@ -47,5 +49,25 @@ export async function getLoginWithPhone(data: LoginWithPhoneRequest) {
   return request("/auth/tokens/phone", {
     data,
     method: "POST",
+  });
+}
+
+/**
+ * 更新个人信息
+ */
+export async function updateProfile(data: UpdateProfileRequest) {
+  return request("/users/me", {
+    data,
+    method: "PATCH",
+  });
+}
+
+/**
+ * 修改密码
+ */
+export async function updatePassword(data: ChangePasswordRequest) {
+  return request("/users/me/password", {
+    data,
+    method: "PUT",
   });
 }

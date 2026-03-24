@@ -1,4 +1,4 @@
-﻿import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CaptchaTool } from '../utils/captchaTool';
 import { RedisModule } from '../utils/modules/redis.module';
 import { TextMessageTool } from '../utils/TextMessageTool';
@@ -194,4 +194,49 @@ export class UserService {
       msg: '登录成功',
     };
   }
+
+  /**
+   * 更新个人信息服务
+   */
+  async updateProfile(userId: number, updateData: { username?: string; head_img?: string }) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) throw new BadRequestException('用户不存在');
+
+    if (updateData.username !== undefined) user.username = updateData.username;
+    if (updateData.head_img !== undefined) user.head_img = updateData.head_img;
+
+    await this.userRepository.save(user);
+    
+    // 返回脱敏后的用户信息
+    const { password, ...rest } = user;
+    return {
+      data: rest,
+      msg: '更新成功',
+    };
+  }
+
+  /**
+   * 修改密码服务
+   */
+  async updatePassword(userId: number, oldPassword?: string, newPassword?: string) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) throw new BadRequestException('用户不存在');
+
+    // 如果用户设置了旧密码，需要验证旧密码
+    if (oldPassword) {
+      const isPasswordValid = user.password === this.secretTool.getSecret(oldPassword);
+      if (!isPasswordValid) throw new BadRequestException('旧密码错误');
+    }
+
+    if (!newPassword) throw new BadRequestException('新密码不能为空');
+
+    user.password = this.secretTool.getSecret(newPassword);
+    await this.userRepository.save(user);
+
+    return {
+      data: null,
+      msg: '密码修改成功',
+    };
+  }
 }
+
