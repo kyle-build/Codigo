@@ -68,12 +68,14 @@ export class CollaborationGateway
     }
 
     const users = this.roomUsers.get(roomId);
-    users.set(client.id, {
-      userId: payload.userId,
-      userName: payload.userName,
-      isOnline: true,
-      lastActiveAt: Date.now(),
-    });
+    if (users) {
+      users.set(client.id, {
+        userId: payload.userId,
+        userName: payload.userName,
+        isOnline: true,
+        lastActiveAt: Date.now(),
+      });
+    }
 
     this.broadcastRoomUsers(roomId);
     console.log(`Client ${client.id} joined room ${roomId}`);
@@ -95,14 +97,9 @@ export class CollaborationGateway
   }
 
   @SubscribeMessage('component_update')
-  handleComponentUpdate(
-    client: Socket,
-    payload: SocketComponentUpdatePayload,
-  ) {
+  handleComponentUpdate(client: Socket, payload: SocketComponentUpdatePayload) {
     const roomId = `page_${payload.pageId}`;
-    // 更新最后活跃时间
     this.updateUserActivity(client.id, roomId);
-    // 广播给房间内除发送者外的其他人
     client.to(roomId).emit('sync_component', payload);
   }
 
@@ -117,8 +114,10 @@ export class CollaborationGateway
     const users = this.roomUsers.get(roomId);
     if (users && users.has(socketId)) {
       const user = users.get(socketId);
-      user.lastActiveAt = Date.now();
-      users.set(socketId, user);
+      if (user) {
+        user.lastActiveAt = Date.now();
+        users.set(socketId, user);
+      }
       this.broadcastRoomUsers(roomId);
     }
   }

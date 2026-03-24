@@ -1,4 +1,5 @@
-﻿import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import type { GlobalRole } from '@codigo/schema';
 
 @Entity()
 export class User {
@@ -19,4 +20,10 @@ export class User {
 
   @Column()
   open_id: string = '';
+
+  @Column({ default: 'USER' })
+  global_role: GlobalRole = 'USER';
+
+  @Column({ default: 'active' })
+  status: 'active' | 'frozen' = 'active';
 }

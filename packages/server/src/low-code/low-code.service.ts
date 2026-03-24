@@ -4,26 +4,31 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { TCurrentUser } from '../utils/GetUserMessageTool';
-import {
-  PostReleaseRequest,
-  PostQuestionDataRequest,
-  objectOmit,
-} from '@codigo/schema';
-import { DataSource, In } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { PageCollaborator } from './entities/page-collaborator.entity';
 import { OperationLog } from './entities/operation-log.entity';
 import { RedisModule } from 'src/utils/modules/redis.module';
 import { PageVersion } from './entities/page-version.entity';
+import { Page, Component, ComponentData } from './entities/low-code.entity';
 import type {
- 
- ,
-
   InviteCollaboratorRequest,
   UpdateCollaboratorRoleRequest,
+  PostReleaseRequest,
+  PostQuestionDataRequest,
 } from '@codigo/schema';
+
+function objectOmit<T extends Record<string, any>, K extends keyof T>(
+  obj: T,
+  keys: K[],
+): Omit<T, K> {
+  const result = { ...obj };
+  for (const key of keys) {
+    delete result[key];
+  }
+  return result;
+}
 
 @Injectable()
 export class LowCodeService {
@@ -137,7 +142,7 @@ export class LowCodeService {
         account_id: user.id,
         version: nextVersion,
         desc: `Version ${nextVersion}`,
-        schema_data: body,
+        schema_data: body as any,
       });
 
       await queryRunner.commitTransaction();
@@ -391,7 +396,7 @@ export class LowCodeService {
     }
 
     const ownerId = page.account_id;
-    const result = [];
+    const result: any[] = [];
 
     // 添加 owner
     const owner = await this.userRepository.findOneBy({ id: ownerId });
@@ -492,8 +497,6 @@ export class LowCodeService {
     }
 
     collab.role = body.role;
-     ,
-   
     await this.pageCollaboratorRepository.save(collab);
 
     const targetUser = await this.userRepository.findOneBy({
@@ -526,8 +529,6 @@ export class LowCodeService {
 
     if (!collab) {
       throw new BadRequestException('协作者不存在');
-     ,
-   
     }
 
     await this.pageCollaboratorRepository.remove(collab);

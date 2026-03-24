@@ -1,4 +1,4 @@
-﻿import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { jwtConfig, redisConfig, typeOrmConfig } from '../config';
@@ -7,6 +7,7 @@ import { RedisModule } from './utils/modules/redis.module';
 import { User } from './user/entities/user.entity';
 import { LowCodeModule } from './low-code/low-code.module';
 import { ResourcesModule } from './resources/resources.module';
+import { AdminModule } from './admin/admin.module';
 import { JWTstrategy } from './utils/JwtStrategyTool';
 
 /**
@@ -25,6 +26,7 @@ import { JWTstrategy } from './utils/JwtStrategyTool';
     UserModule,
     LowCodeModule,
     ResourcesModule,
+    AdminModule,
     RedisModule.forRoot(redisConfig),
     JwtModule.register(jwtConfig),
   ],
