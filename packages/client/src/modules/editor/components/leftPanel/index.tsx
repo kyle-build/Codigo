@@ -1,5 +1,9 @@
 import { Tabs } from "antd";
-import { AppstoreOutlined, EditOutlined, ApartmentOutlined } from "@ant-design/icons";
+import {
+  AppstoreOutlined,
+  EditOutlined,
+  ApartmentOutlined,
+} from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import ComponentList from "./ComponentList";
 
@@ -37,7 +41,7 @@ export default function EdiotLeftPanel() {
 
   return (
     <div className="flex h-full">
-      <div className="mr-3 flex w-16 flex-shrink-0 flex-col gap-2 border-r border-slate-200 pr-3">
+      <div className="sticky top-0 mr-3 flex h-fit w-16 flex-shrink-0 flex-col gap-2 border-r border-slate-200 pr-3">
         {navItems.map((item) => {
           const active = location.pathname === item.key;
 
@@ -66,15 +70,3 @@ export default function EdiotLeftPanel() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
