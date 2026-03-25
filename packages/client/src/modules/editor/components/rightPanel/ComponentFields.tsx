@@ -1,20 +1,75 @@
-﻿import type { FC } from "react";
+import type { FC } from "react";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
+import {
+  AppstoreOutlined,
+  BorderOutlined,
+  DragOutlined,
+  ShrinkOutlined,
+} from "@ant-design/icons";
 import { getComponentPropsByType } from "@/modules/editor/components/LowCodeComponents";
 import type { TStoreComponents } from "@/shared/stores";
 import { useStoreComponents } from "@/shared/hooks";
-import { Form, InputNumber, Collapse, Divider } from "antd";
+import { Collapse, Empty, Form, InputNumber } from "antd";
 
 const { Panel } = Collapse;
 
 const ComponentFields: FC<{ store: TStoreComponents }> = observer(
   ({ store }) => {
-    // 为选中组件展示
     if (!store.currentCompConfig)
       return (
-        <div style={{ textAlign: "center", padding: "20px", color: "#999" }}>
-          未选中组件
+        <div className="py-8">
+          <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50/80 p-6 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-2xl text-emerald-600">
+              <AppstoreOutlined />
+            </div>
+            <div className="mb-2 text-base font-semibold text-slate-900">
+              暂未选中组件
+            </div>
+            <div className="mb-5 text-sm leading-6 text-slate-500">
+              先在画布中点击一个组件，或从左侧资源库拖入新组件，再在这里完成细节配置。
+            </div>
+            <div className="grid grid-cols-3 gap-3 text-left">
+              {[
+                {
+                  key: "content",
+                  icon: <AppstoreOutlined />,
+                  title: "编辑内容",
+                  desc: "修改当前组件的文案、数据和事件。",
+                },
+                {
+                  key: "layout",
+                  icon: <DragOutlined />,
+                  title: "调整布局",
+                  desc: "设置位置、尺寸、边距与画布结构。",
+                },
+                {
+                  key: "style",
+                  icon: <ShrinkOutlined />,
+                  title: "细化样式",
+                  desc: "统一页面节奏，让视觉更稳定。",
+                },
+              ].map((item) => (
+                <div
+                  key={item.key}
+                  className="rounded-2xl border border-white bg-white px-3 py-3 shadow-[0_16px_30px_-28px_rgba(15,23,42,0.65)]"
+                >
+                  <div className="mb-2 text-emerald-600">{item.icon}</div>
+                  <div className="text-sm font-medium text-slate-900">
+                    {item.title}
+                  </div>
+                  <div className="mt-1 text-xs leading-5 text-slate-400">
+                    {item.desc}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={false}
+              className="!mb-0 !mt-5"
+            />
+          </div>
         </div>
       );
 
@@ -24,14 +79,10 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
 
     if (!config) return null;
 
-    // 右侧的配置属性组件
     const ComponentProps = getComponentPropsByType(config.type);
-
-    // 当前样式
     const styles = config.styles || {};
 
-    const handleStyleChange = (changedValues: any, allValues: any) => {
-      // 转换值为带px单位的字符串，或者保留百分比/auto等
+    const handleStyleChange = (_changedValues: any, allValues: any) => {
       const formattedStyles = { ...allValues };
       Object.keys(formattedStyles).forEach((key) => {
         if (typeof formattedStyles[key] === "number") {
@@ -41,8 +92,7 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
       updateCurrentComponentStyles(formattedStyles);
     };
 
-    // 解析初始值 (去掉px以便在InputNumber中显示)
-    const initialValues = { ...styles };
+    const initialValues: Record<string, any> = { ...styles };
     Object.keys(initialValues).forEach((key) => {
       if (
         typeof initialValues[key] === "string" &&
@@ -52,104 +102,148 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
       }
     });
 
+    const styleSections = [
+      {
+        key: "position",
+        title: "位置",
+        icon: <DragOutlined />,
+        fields: [
+          { label: "X 坐标", name: "left", placeholder: "px" },
+          { label: "Y 坐标", name: "top", placeholder: "px" },
+        ],
+      },
+      {
+        key: "size",
+        title: "尺寸",
+        icon: <BorderOutlined />,
+        fields: [
+          { label: "宽度", name: "width", placeholder: "默认 100%" },
+          { label: "高度", name: "height", placeholder: "默认 auto" },
+        ],
+      },
+      {
+        key: "margin",
+        title: "外间距",
+        icon: <ShrinkOutlined />,
+        fields: [
+          { label: "上间距", name: "marginTop", placeholder: "px" },
+          { label: "下间距", name: "marginBottom", placeholder: "px" },
+          { label: "左间距", name: "marginLeft", placeholder: "px" },
+          { label: "右间距", name: "marginRight", placeholder: "px" },
+        ],
+      },
+      {
+        key: "padding",
+        title: "内间距",
+        icon: <AppstoreOutlined />,
+        fields: [
+          { label: "上间距", name: "paddingTop", placeholder: "px" },
+          { label: "下间距", name: "paddingBottom", placeholder: "px" },
+          { label: "左间距", name: "paddingLeft", placeholder: "px" },
+          { label: "右间距", name: "paddingRight", placeholder: "px" },
+        ],
+      },
+    ];
+
     return (
-      <div className="component-fields-container pb-10">
+      <div className="component-fields-container space-y-4 pb-10">
+        <div className="rounded-3xl border border-slate-200/80 bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(255,255,255,0.98))] p-4 shadow-[0_20px_40px_-32px_rgba(16,185,129,0.85)]">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
+              Active
+            </span>
+            <span className="rounded-full bg-slate-900/5 px-2.5 py-1 text-xs text-slate-500">
+              ID · {config.id.slice(-6)}
+            </span>
+          </div>
+          <div className="text-base font-semibold text-slate-900">
+            {config.type}
+          </div>
+          <div className="mt-1 text-sm leading-6 text-slate-500">
+            当前组件已选中，可在下方配置内容、布局与间距，快速完成精细化调整。
+          </div>
+        </div>
+
         <Collapse
           defaultActiveKey={["props", "styles"]}
           ghost
           expandIconPosition="end"
+          className="[&_.ant-collapse-item]:mb-3 [&_.ant-collapse-item]:overflow-hidden [&_.ant-collapse-item]:rounded-3xl [&_.ant-collapse-item]:border [&_.ant-collapse-item]:border-slate-200/80 [&_.ant-collapse-item]:bg-white [&_.ant-collapse-header]:!items-center [&_.ant-collapse-header]:!px-5 [&_.ant-collapse-header]:!py-4 [&_.ant-collapse-content-box]:!px-5 [&_.ant-collapse-content-box]:!pb-5 [&_.ant-collapse-content-box]:!pt-1"
         >
           <Panel
-            header={<span className="font-bold">组件属性</span>}
+            header={
+              <div>
+                <div className="font-semibold text-slate-900">组件属性</div>
+                <div className="text-xs text-slate-400">
+                  配置业务内容、字段和交互逻辑
+                </div>
+              </div>
+            }
             key="props"
           >
-            {/* 移除 key 强制重新挂载，避免 FormContainer 内部重新初始化导致状态丢失 */}
-            <ComponentProps {...toJS(config.props)} id={config.id} />
+            <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+              <ComponentProps {...toJS(config.props)} id={config.id} />
+            </div>
           </Panel>
 
           <Panel
-            header={<span className="font-bold">组件尺寸与间距</span>}
+            header={
+              <div>
+                <div className="font-semibold text-slate-900">布局与间距</div>
+                <div className="text-xs text-slate-400">
+                  调整位置、尺寸与内外边距节奏
+                </div>
+              </div>
+            }
             key="styles"
           >
             <Form
               layout="vertical"
               initialValues={initialValues}
               onValuesChange={handleStyleChange}
+              className="[&_.ant-form-item]:mb-4 [&_.ant-form-item-label>label]:text-slate-500 [&_.ant-input-number]:!h-11 [&_.ant-input-number]:!w-full [&_.ant-input-number]:!rounded-2xl [&_.ant-input-number]:!border-slate-200 [&_.ant-input-number]:!bg-slate-50/70"
             >
-              <Divider className="my-2" plain>
-                位置 (Position)
-              </Divider>
-              <div className="grid grid-cols-2 gap-2">
-                <Form.Item label="X 坐标" name="left">
-                  <InputNumber className="w-full" placeholder="px" />
-                </Form.Item>
-                <Form.Item label="Y 坐标" name="top">
-                  <InputNumber className="w-full" placeholder="px" />
-                </Form.Item>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <Form.Item label="宽度" name="width">
-                  <InputNumber className="w-full" placeholder="默认 100%" />
-                </Form.Item>
-                <Form.Item label="高度" name="height">
-                  <InputNumber className="w-full" placeholder="默认 auto" />
-                </Form.Item>
-              </div>
-
-              <Divider className="my-2" plain>
-                外间距 (Margin)
-              </Divider>
-              <div className="grid grid-cols-2 gap-2">
-                <Form.Item label="上间距" name="marginTop">
-                  <InputNumber className="w-full" placeholder="px" />
-                </Form.Item>
-                <Form.Item label="下间距" name="marginBottom">
-                  <InputNumber className="w-full" placeholder="px" />
-                </Form.Item>
-                <Form.Item label="左间距" name="marginLeft">
-                  <InputNumber className="w-full" placeholder="px" />
-                </Form.Item>
-                <Form.Item label="右间距" name="marginRight">
-                  <InputNumber className="w-full" placeholder="px" />
-                </Form.Item>
-              </div>
-
-              <Divider className="my-2" plain>
-                内间距 (Padding)
-              </Divider>
-              <div className="grid grid-cols-2 gap-2">
-                <Form.Item label="上间距" name="paddingTop">
-                  <InputNumber className="w-full" placeholder="px" />
-                </Form.Item>
-                <Form.Item label="下间距" name="paddingBottom">
-                  <InputNumber className="w-full" placeholder="px" />
-                </Form.Item>
-                <Form.Item label="左间距" name="paddingLeft">
-                  <InputNumber className="w-full" placeholder="px" />
-                </Form.Item>
-                <Form.Item label="右间距" name="paddingRight">
-                  <InputNumber className="w-full" placeholder="px" />
-                </Form.Item>
+              <div className="space-y-4">
+                {styleSections.map((section) => (
+                  <div
+                    key={section.key}
+                    className="rounded-2xl border border-slate-100 bg-slate-50/60 p-4"
+                  >
+                    <div className="mb-4 flex items-center gap-2">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white text-emerald-600 shadow-sm">
+                        {section.icon}
+                      </span>
+                      <div>
+                        <div className="text-sm font-semibold text-slate-900">
+                          {section.title}
+                        </div>
+                        <div className="text-xs text-slate-400">
+                          {section.fields.length === 2
+                            ? "双字段精确控制"
+                            : "四向数值统一调整"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {section.fields.map((field) => (
+                        <Form.Item
+                          key={String(field.name)}
+                          label={field.label}
+                          name={field.name}
+                        >
+                          <InputNumber placeholder={field.placeholder} />
+                        </Form.Item>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
             </Form>
           </Panel>
         </Collapse>
       </div>
     );
-  }
+  },
 );
 
 export default ComponentFields;
-
-
-
-
-
-
-
-
-
-
-
-

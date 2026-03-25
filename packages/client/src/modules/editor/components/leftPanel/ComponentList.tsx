@@ -22,11 +22,18 @@ import {
   PieChartOutlined,
 } from "@ant-design/icons";
 import { Collapse, Empty, Input } from "antd";
+import type { TComponentTypes } from "@codigo/schema";
 import type { FC, ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { useStoreComponents, useStorePermission } from "@/shared/hooks";
 
-const basicComponents = [
+interface ComponentProps {
+  name: string;
+  icon: ReactNode;
+  type: TComponentTypes;
+}
+
+const basicComponents: ComponentProps[] = [
   {
     type: "button",
     name: "按钮组件",
@@ -84,7 +91,7 @@ const basicComponents = [
   },
 ];
 
-const formComponents = [
+const formComponents: ComponentProps[] = [
   {
     type: "input",
     name: "输入框组件",
@@ -107,7 +114,7 @@ const formComponents = [
   },
 ];
 
-const reportComponents = [
+const reportComponents: ComponentProps[] = [
   {
     type: "statistic",
     name: "统计指标组件",
@@ -140,12 +147,6 @@ export const components = [
   ...formComponents,
   ...reportComponents,
 ];
-
-interface ComponentProps {
-  name: string;
-  icon: ReactNode;
-  type: string;
-}
 
 const EditorComponent: FC<ComponentProps> = ({ icon, name, type }) => {
   const store = useStoreComponents();
