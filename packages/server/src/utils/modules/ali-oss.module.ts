@@ -1,4 +1,4 @@
-﻿import { Buffer } from 'node:buffer';
+import { Buffer } from 'node:buffer';
 import { resolve } from 'node:path';
 import { unlinkSync } from 'node:fs';
 import AliOss from 'ali-oss';
@@ -41,7 +41,7 @@ export class AliOssModule {
   }
 
   // 上传资源，接受中间件Multer处理的上传文件对象参数
-  async uploadToAliOss(file: Express.Multer.File) {
+  async uploadToAliOss(file: Express.Multer.File): Promise<string> {
     // 使用Buffer将文件名从latin1编码转换为utf8编码，为了确保文件名是正确的Unicode格式
     const name = Buffer.from(file.originalname, 'latin1').toString('utf8');
     // 生成上传到阿里云 oss 的文件的路径，原始文件名+当前时间戳+原始文件扩展名
@@ -66,7 +66,7 @@ export class AliOssModule {
   }
 
   // 删除资源
-  async deleteFromAliOss(url: string) {
+  async deleteFromAliOss(url: string): Promise<void> {
     // 调用阿里云删除 api，拿到前端的 url 处理成名字+后缀
     const { res } = await this.alioss.delete(
       decodeURI(url.replace(aliOssDomain, '')),

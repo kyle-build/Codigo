@@ -1,25 +1,30 @@
-﻿import { Code } from './code';
+import { Code } from './code';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import type { RestMessage } from '../vo/restVo';
 
 /**
  * 拦截异常统一处理
  */
 export class XException extends HttpException {
   code: Code;
-  codeN: number;
 
-  constructor(params: { code: Code; message: string; status?: HttpStatus }) {
+  constructor(params: {
+    code: Code;
+    message: RestMessage;
+    status?: HttpStatus;
+    details?: unknown;
+  }) {
     super(
       {
         code: params.code,
-        codeN: params.code,
+        msg: params.message,
         message: params.message,
+        ...(params.details === undefined ? {} : { details: params.details }),
       },
       params.status ?? XException.mapStatus(params.code),
     );
 
     this.code = params.code;
-    this.codeN = params.code;
   }
 
   private static mapStatus(code: Code): HttpStatus {

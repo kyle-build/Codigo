@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { RandomTool } from '../utils/RandomTool';
 import { SecretTool } from '../utils/SecretTool';
 import { JwtService } from '@nestjs/jwt';
+import { Code, XException } from '../code';
 
 interface Ipasswordlogin {
   phone: string;
@@ -160,11 +161,19 @@ export class UserService {
 
   async passwordLogin({ phone, password }: Ipasswordlogin) {
     const foundUser = await this.userRepository.findOneBy({ phone });
-    if (!foundUser) throw new BadRequestException('账号不存在');
+    if (!foundUser) {
+      throw new XException({
+        code: Code.LOGIN_ERROR,
+        message: '账号不存在',
+      });
+    }
     const isPasswordValid =
       foundUser.password === this.secretTool.getSecret(password);
     if (!isPasswordValid) {
-      throw new BadRequestException('密码错误');
+      throw new XException({
+        code: Code.LOGIN_ERROR,
+        message: '密码错误',
+      });
     }
     return {
       data: this.jwtService.sign({ id: foundUser.id }),
@@ -182,13 +191,28 @@ export class UserService {
    */
   async phoneLogin({ phone, sendCode }: IphoneLogin) {
     const foundUser = await this.userRepository.findOneBy({ phone });
-    if (!foundUser) throw new BadRequestException('账号不存在');
+    if (!foundUser) {
+      throw new XException({
+        code: Code.LOGIN_ERROR,
+        message: '账号不存在',
+      });
+    }
     const codeExist = await this.redis.exists(`login:code:${phone}`);
-    if (!codeExist) throw new BadRequestException('请先获取手机验证码');
+    if (!codeExist) {
+      throw new XException({
+        code: Code.LOGIN_ERROR,
+        message: '请先获取手机验证码',
+      });
+    }
     const codeRes = (await this.redis.get(`login:code:${phone}`))!.split(
       '_',
     )[1];
-    if (codeRes !== sendCode) throw new BadRequestException('验证码错误');
+    if (codeRes !== sendCode) {
+      throw new XException({
+        code: Code.LOGIN_ERROR,
+        message: '验证码错误',
+      });
+    }
     return {
       data: this.jwtService.sign({ id: foundUser.id }),
       msg: '登录成功',
@@ -211,7 +235,8 @@ export class UserService {
     await this.userRepository.save(user);
 
     // 返回脱敏后的用户信息
-    const { password, ...rest } = user;
+    const { password: ignoredPassword, ...rest } = user;
+    void ignoredPassword;
     return {
       data: rest,
       msg: '更新成功',

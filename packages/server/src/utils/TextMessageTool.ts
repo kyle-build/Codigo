@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { TextMessageConfig } from 'config';
 
 /**
@@ -11,7 +11,10 @@ import { TextMessageConfig } from 'config';
  */
 @Injectable()
 export class TextMessageTool {
-  async sendTextMessage(phone: string, randomCode: number): Promise<any> {
+  async sendTextMessage(
+    phone: string,
+    randomCode: number,
+  ): Promise<{ code?: number; [key: string]: unknown }> {
     const url = new URL('https://jmsms.market.alicloudapi.com/sms/send');
 
     url.searchParams.append('mobile', phone);
@@ -25,6 +28,6 @@ export class TextMessageTool {
       },
     });
 
-    return response.json();
+    return (await response.json()) as { code?: number; [key: string]: unknown };
   }
 }

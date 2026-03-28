@@ -1,4 +1,4 @@
-﻿import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { AliOssModule } from 'src/utils/modules/ali-oss.module';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -21,12 +21,7 @@ export class ResourcesService {
     type: UploadType,
     account_id: number,
   ) {
-    let url = '';
-    try {
-      url = await this.alioss.uploadToAliOss(file);
-    } catch (error) {
-      return error;
-    }
+    const url = await this.alioss.uploadToAliOss(file);
 
     await this.resourcesRespository.save({
       url,

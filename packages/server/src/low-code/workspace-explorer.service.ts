@@ -30,7 +30,10 @@ export class WorkspaceExplorerService {
     pageId: number,
     user: TCurrentUser,
   ): Promise<PageWorkspaceExplorerResponse> {
-    const workspace = await this.workspaceService.getPageWorkspace(pageId, user);
+    const workspace = await this.workspaceService.getPageWorkspace(
+      pageId,
+      user,
+    );
     if (!workspace.exists) {
       return {
         pageId,
@@ -44,7 +47,10 @@ export class WorkspaceExplorerService {
       pageId,
       workspaceId: workspace.workspaceId,
       rootPath: workspace.workspaceRelativePath,
-      tree: await this.readDirectoryTree(workspace.workspaceRoot, workspace.workspaceRoot),
+      tree: await this.readDirectoryTree(
+        workspace.workspaceRoot,
+        workspace.workspaceRoot,
+      ),
     };
   }
 
@@ -53,12 +59,18 @@ export class WorkspaceExplorerService {
     user: TCurrentUser,
     filePath: string,
   ): Promise<PageWorkspaceFileResponse> {
-    const workspace = await this.workspaceService.getPageWorkspace(pageId, user);
+    const workspace = await this.workspaceService.getPageWorkspace(
+      pageId,
+      user,
+    );
     if (!workspace.exists) {
       throw new NotFoundException('工作区尚未生成');
     }
 
-    const absolutePath = this.resolveWorkspacePath(workspace.workspaceRoot, filePath);
+    const absolutePath = this.resolveWorkspacePath(
+      workspace.workspaceRoot,
+      filePath,
+    );
     if (!existsSync(absolutePath)) {
       throw new NotFoundException('文件不存在');
     }
@@ -119,7 +131,9 @@ export class WorkspaceExplorerService {
   }
 
   private resolveWorkspacePath(workspaceRoot: string, targetPath: string) {
-    const normalizedTarget = targetPath.replaceAll('\\', '/').replace(/^\/+/, '');
+    const normalizedTarget = targetPath
+      .replaceAll('\\', '/')
+      .replace(/^\/+/, '');
     const absolutePath = resolve(workspaceRoot, normalizedTarget);
     const relativePath = relative(workspaceRoot, absolutePath);
 

@@ -9,7 +9,7 @@
     }
   },
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
     "release": "standard-version",
     "run:client": "pnpm --filter client run dev",
     "run:server": "pnpm --filter server run start:dev",
@@ -19,12 +19,14 @@
     "build:schema": "pnpm --filter schema run build",
     "build:server": "pnpm --filter server run build",
     "build:release": "pnpm --filter release run build",
+    "build:plugins": "pnpm --filter plugin-system run build",
     "build:materials-react": "pnpm --filter materials-react run build",
     "build:render-react": "pnpm --filter @codigo/render-react run build",
     "build:render-vue": "pnpm --filter @codigo/render-vue run build",
     "build:editor-sandbox": "pnpm --filter @codigo/editor-sandbox run build",
     "start:server": "pnpm --filter server run start:prod",
     "start:release": "pnpm --filter release run start",
+    "build:all": "pnpm run build:client && pnpm run build:schema && pnpm run build:server && pnpm run build:release && pnpm run build:plugins && pnpm run build:materials-react && pnpm run build:render-react && pnpm run build:render-vue && pnpm run build:editor-sandbox",
     "commit": "git-cz"
   },
   "keywords": [],
