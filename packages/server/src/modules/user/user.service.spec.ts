@@ -79,4 +79,36 @@ describe('UserService', () => {
 
     expect(resolved).toBe(true);
   });
+
+  it('blocks frozen user password login', async () => {
+    userRepository.findOneBy.mockResolvedValue({
+      id: 1,
+      phone: '18800000000',
+      password: 'hashed-password',
+      status: 'frozen',
+    });
+
+    await expect(
+      service.passwordLogin({
+        phone: '18800000000',
+        password: '123456',
+      } as never),
+    ).rejects.toThrow('账号已被冻结，请联系管理员');
+  });
+
+  it('blocks frozen user phone login', async () => {
+    userRepository.findOneBy.mockResolvedValue({
+      id: 1,
+      phone: '18800000000',
+      password: 'hashed-password',
+      status: 'frozen',
+    });
+
+    await expect(
+      service.phoneLogin({
+        phone: '18800000000',
+        sendCode: '123456',
+      } as never),
+    ).rejects.toThrow('账号已被冻结，请联系管理员');
+  });
 });

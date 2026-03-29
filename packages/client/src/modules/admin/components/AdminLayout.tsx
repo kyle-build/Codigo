@@ -1,20 +1,24 @@
 import { useEffect } from "react";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { Layout, Menu, Avatar, Dropdown, Space, Spin } from "antd";
 import {
   UserOutlined,
   DashboardOutlined,
   AppstoreOutlined,
   LogoutOutlined,
+  SafetyCertificateOutlined,
 } from "@ant-design/icons";
-import { useStoreAuth } from "@/shared/hooks";
+import { useAdminAccess, useStoreAuth } from "@/shared/hooks";
 import { observer } from "mobx-react-lite";
 
 const { Header, Sider, Content } = Layout;
 
 export default observer(function AdminLayout() {
   const { store: storeAuth, logout } = useStoreAuth();
+  const { hasAdminPermission } = useAdminAccess();
   const nav = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
 
   useEffect(() => {
     // 检查是否有登录信息和全局角色
@@ -68,7 +72,7 @@ export default observer(function AdminLayout() {
         </div>
         <Menu
           mode="inline"
-          defaultSelectedKeys={["users"]}
+          selectedKeys={[pathname.replace("/admin/", "") || "users"]}
           className="h-[calc(100%-64px)] border-r-0 pt-4"
           onClick={handleMenuClick}
           items={[
@@ -82,12 +86,25 @@ export default observer(function AdminLayout() {
               key: "users",
               icon: <UserOutlined />,
               label: "用户管理",
+              disabled: !hasAdminPermission("USER_MANAGE"),
+            },
+            {
+              key: "permissions",
+              icon: <SafetyCertificateOutlined />,
+              label: "权限分配",
+              disabled: !hasAdminPermission("PERMISSION_ASSIGN"),
             },
             {
               key: "pages",
               icon: <AppstoreOutlined />,
               label: "页面管理",
-              disabled: true,
+              disabled: !hasAdminPermission("PAGE_MANAGE"),
+            },
+            {
+              key: "components",
+              icon: <AppstoreOutlined />,
+              label: "组件管理",
+              disabled: !hasAdminPermission("COMPONENT_MANAGE"),
             },
           ]}
         />

@@ -26,6 +26,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
     const user = await this.userRepository.findOne({ where: { id: data.id } });
     if (!user) throw new UnauthorizedException('出现错误，请重新登录');
+    if (user.status === 'frozen') {
+      throw new UnauthorizedException('账号已被冻结，请联系管理员');
+    }
 
     return { ...user, password: '' };
   }

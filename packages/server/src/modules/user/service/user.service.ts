@@ -127,6 +127,13 @@ export class UserService {
       });
     }
 
+    if (foundUser.status === 'frozen') {
+      throw new XException({
+        code: Code.LOGIN_ERROR,
+        message: '账号已被冻结，请联系管理员',
+      });
+    }
+
     const isPasswordValid =
       foundUser.password === this.secretTool.getSecret(password);
     if (!isPasswordValid) {
@@ -148,6 +155,12 @@ export class UserService {
       throw new XException({
         code: Code.LOGIN_ERROR,
         message: '账号不存在',
+      });
+    }
+    if (foundUser.status === 'frozen') {
+      throw new XException({
+        code: Code.LOGIN_ERROR,
+        message: '账号已被冻结，请联系管理员',
       });
     }
     const codeExist = await this.redis.exists(`login:code:${phone}`);

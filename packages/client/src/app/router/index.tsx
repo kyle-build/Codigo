@@ -10,9 +10,11 @@ import DevDoc from "@/modules/devDocument";
 import TemplateSelect from "@/modules/home/components/TemplateSelect";
 import { StudioLayout } from "@/app/layouts/StudioLayout";
 import AdminLayout from "@/modules/admin/components/AdminLayout";
+import { AdminPermissionRoute } from "@/modules/admin/components/AdminPermissionRoute";
+import AdminComponents from "@/modules/admin/pages/components";
+import AdminPages from "@/modules/admin/pages/pages";
 import AdminUsers from "@/modules/admin/pages/users";
 import { AdminRouteGuard } from "@/modules/admin/components/AdminRouteGuard";
-import Profile from "@/modules/profile";
 
 export const router = createHashRouter([
   {
@@ -70,7 +72,35 @@ export const router = createHashRouter([
       },
       {
         path: "users",
-        element: <AdminUsers />,
+        element: (
+          <AdminPermissionRoute permission="USER_MANAGE">
+            <AdminUsers />
+          </AdminPermissionRoute>
+        ),
+      },
+      {
+        path: "permissions",
+        element: (
+          <AdminPermissionRoute permission="PERMISSION_ASSIGN">
+            <AdminUsers />
+          </AdminPermissionRoute>
+        ),
+      },
+      {
+        path: "pages",
+        element: (
+          <AdminPermissionRoute permission="PAGE_MANAGE">
+            <AdminPages />
+          </AdminPermissionRoute>
+        ),
+      },
+      {
+        path: "components",
+        element: (
+          <AdminPermissionRoute permission="COMPONENT_MANAGE">
+            <AdminComponents />
+          </AdminPermissionRoute>
+        ),
       },
     ],
   },

@@ -1,3 +1,5 @@
+import type { AdminPermission } from "./admin";
+
 export type GlobalRole = "SUPER_ADMIN" | "ADMIN" | "USER";
 
 export interface IUser {
@@ -8,5 +10,6 @@ export interface IUser {
   username: string;
   password: string;
   global_role: GlobalRole;
+  admin_permissions: AdminPermission[] | null;
   status: "active" | "frozen";
 }

@@ -19,11 +19,14 @@ export const AdminRouteGuard = observer(({ children }: { children: React.ReactNo
         if (!res) {
           nav("/login", { replace: true });
         } else if (res.global_role !== "ADMIN" && res.global_role !== "SUPER_ADMIN") {
-          nav("/home", { replace: true });
+          nav("/", { replace: true });
         }
       });
-    } else if (storeAuth.details.global_role !== "ADMIN" && storeAuth.details.global_role !== "SUPER_ADMIN") {
-      nav("/home", { replace: true });
+    } else if (
+      storeAuth.details.global_role !== "ADMIN" &&
+      storeAuth.details.global_role !== "SUPER_ADMIN"
+    ) {
+      nav("/", { replace: true });
     }
   }, [storeAuth.token, storeAuth.details, nav, fetchUserInfo]);
 

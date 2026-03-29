@@ -1,5 +1,6 @@
 import { createStoreAuth } from "../stores";
 import { computed, action, runInAction } from "mobx";
+import type { IUser } from "@codigo/schema";
 import request from "../utils/request";
 
 export const storeAuth = createStoreAuth();
@@ -46,10 +47,13 @@ export function useStoreAuth() {
   });
 
   const updateLocalUserInfo = action(
-    (updates: Partial<typeof storeAuth.details>) => {
+    (updates: Partial<IUser>) => {
       if (storeAuth.details) {
         runInAction(() => {
-          storeAuth.details = { ...storeAuth.details, ...updates };
+          storeAuth.details = {
+            ...storeAuth.details,
+            ...updates,
+          } as IUser;
         });
       }
     },

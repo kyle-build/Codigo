@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import type { GlobalRole } from '@codigo/schema';
+import type { AdminPermission, GlobalRole } from '@codigo/schema';
 
 @Entity()
 export class User {
@@ -23,6 +23,9 @@ export class User {
 
   @Column({ default: 'USER' })
   global_role: GlobalRole = 'USER';
+
+  @Column({ type: 'simple-json', nullable: true })
+  admin_permissions: AdminPermission[] | null = null;
 
   @Column({ default: 'active' })
   status: 'active' | 'frozen' = 'active';
