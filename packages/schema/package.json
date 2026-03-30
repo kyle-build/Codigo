@@ -28,6 +28,6 @@
     "unbuild": "^2.0.0"
   },
   "dependencies": {
-    "@codigo/materials-react": "workspace:*"
+    "@codigo/materials": "workspace:*"
   }
 }

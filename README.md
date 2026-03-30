@@ -19,7 +19,7 @@
 
 ### 3. 物料与渲染层 (Materials & Renderers)
 
-- **`@codigo/materials-react`**（你刚刚查看的包）
+- **`@codigo/materials`**（你刚刚查看的包）
   - **作用**：React 版本的**物料库**（即左侧组件面板里可以拖拽的组件，如按钮、输入框、轮播图等）。它包含了这些组件的具体实现以及在低代码平台中的配置面板描述。
   - **关系**：依赖 `@codigo/plugin-system`（用于注册自己）和 `@codigo/schema`。被编辑器客户端（`client`）和发布端（`release`）消费。
 - **`@codigo/render-react` & `@codigo/render-vue`**
@@ -30,13 +30,13 @@
 
 - **`@codigo/client`**
   - **作用**：低代码平台的**主应用（编辑器/设计器前端）**。也就是用户用来拖拽组件、配置属性、搭建页面的可视化操作界面（基于 Vite + React）。
-  - **关系**：它集大成者，依赖了 `@codigo/materials-react`（提供可拖拽物料）、`@codigo/render-react` 和 `@codigo/render-vue`（提供画布渲染能力）以及 `@codigo/schema`。
+  - **关系**：它集大成者，依赖了 `@codigo/materials`（提供可拖拽物料）、`@codigo/render-react` 和 `@codigo/render-vue`（提供画布渲染能力）以及 `@codigo/schema`。
 - **`@codigo/server`**
   - **作用**：项目的**后端服务**（基于 NestJS + MySQL + Redis）。负责用户认证、页面数据保存、资源上传（OSS）等服务端逻辑。
   - **关系**：依赖 `@codigo/schema`，实现了前后端类型的复用。
 - **`@codigo/release`**
   - **作用**：**发布与预览端**（基于 Next.js）。当用户在编辑器中完成页面搭建并点击“发布”后，C 端用户访问的真实页面就是由这个包负责渲染的（支持 SSR 以利于 SEO 和首屏加载）。
-  - **关系**：依赖 `@codigo/materials-react`（用于渲染具体组件）和 `@codigo/schema`。
+  - **关系**：依赖 `@codigo/materials`（用于渲染具体组件）和 `@codigo/schema`。
 
 ---
 

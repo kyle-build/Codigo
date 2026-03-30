@@ -5,7 +5,7 @@ import {
   type IButtonComponentProps,
   buttonComponentDefaultConfig,
   fillComponentPropsByConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormPropLabel } from "..";
 
 export default function ButtonComponentProps(_props: IButtonComponentProps) {
@@ -54,7 +54,11 @@ export default function ButtonComponentProps(_props: IButtonComponentProps) {
       <FormPropLabel name="link" prop={props.link} label="跳转链接：">
         <Input placeholder="https://... 或 #section-id" />
       </FormPropLabel>
-      <FormPropLabel name="targetId" prop={props.targetId} label="目标锚点 ID：">
+      <FormPropLabel
+        name="targetId"
+        prop={props.targetId}
+        label="目标锚点 ID："
+      >
         <Input placeholder="section-overview" />
       </FormPropLabel>
       <FormPropLabel

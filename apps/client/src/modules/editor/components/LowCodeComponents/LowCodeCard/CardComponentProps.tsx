@@ -4,7 +4,7 @@ import {
   type ICardComponentProps,
   cardComponentDefaultConfig,
   fillComponentPropsByConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormPropLabel, UploadEditOrChooiseInput } from "..";
 
 export default function CardComponentProps(_props: ICardComponentProps) {
@@ -26,15 +26,3 @@ export default function CardComponentProps(_props: ICardComponentProps) {
     </FormContainer>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

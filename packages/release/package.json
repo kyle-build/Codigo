@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.0",
-    "@codigo/materials-react": "workspace:*",
+    "@codigo/materials": "workspace:*",
     "@codigo/schema": "workspace:*",
     "ahooks": "^3.7.8",
     "next": "14.0.4",

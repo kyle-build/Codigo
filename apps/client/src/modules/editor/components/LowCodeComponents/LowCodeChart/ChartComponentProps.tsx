@@ -6,7 +6,7 @@ import {
   type TPieChartComponentConfig,
   chartComponentDefaultConfig,
   fillComponentPropsByConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormPropLabel } from "..";
 
 type ChartPropsUnion =

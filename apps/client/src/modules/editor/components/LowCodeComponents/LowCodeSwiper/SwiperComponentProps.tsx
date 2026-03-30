@@ -5,7 +5,7 @@ import {
   defaultImageInfo,
   fillComponentPropsByConfig,
   swiperComponentDefaultConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import {
   FormContainer,
   FormContainerWithList,
@@ -132,15 +132,3 @@ export default function SwiperComponentProps(_props: ISwiperComponentProps) {
     </>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

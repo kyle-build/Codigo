@@ -5,7 +5,7 @@ import {
   type IStatisticComponentProps,
   fillComponentPropsByConfig,
   statisticComponentDefaultConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormPropLabel } from "..";
 
 export default function StatisticComponentProps(

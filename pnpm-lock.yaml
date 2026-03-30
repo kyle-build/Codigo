@@ -72,15 +72,12 @@ importers:
       '@codigo/editor-sandbox':
         specifier: workspace:*
         version: link:../../packages/editor-sandbox
-      '@codigo/materials-react':
+      '@codigo/materials':
         specifier: workspace:*
-        version: link:../../packages/materials-react
-      '@codigo/render-react':
+        version: link:../../packages/materials
+      '@codigo/render':
         specifier: workspace:*
-        version: link:../../packages/render-react
-      '@codigo/render-vue':
-        specifier: workspace:*
-        version: link:../../packages/render-vue
+        version: link:../../packages/render
       '@codigo/schema':
         specifier: workspace:*
         version: link:../../packages/schema
@@ -613,7 +610,7 @@ importers:
 
   packages/file-service: {}
 
-  packages/materials-react:
+  packages/materials:
     dependencies:
       '@codigo/plugin-system':
         specifier: workspace:*
@@ -656,9 +653,9 @@ importers:
       '@ant-design/nextjs-registry':
         specifier: ^1.0.0
         version: 1.3.0(@ant-design/cssinjs@2.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.2.2(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.0.4(@babel/core@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@codigo/materials-react':
+      '@codigo/materials':
         specifier: workspace:*
-        version: link:../materials-react
+        version: link:../materials
       '@codigo/schema':
         specifier: workspace:*
         version: link:../schema
@@ -700,20 +697,7 @@ importers:
         specifier: ^5
         version: 5.9.3
 
-  packages/render-react:
-    dependencies:
-      '@codigo/runtime-core':
-        specifier: workspace:*
-        version: link:../runtime-core
-      '@codigo/schema':
-        specifier: workspace:*
-        version: link:../schema
-    devDependencies:
-      unbuild:
-        specifier: ^2.0.0
-        version: 2.0.0(typescript@5.9.3)
-
-  packages/render-vue:
+  packages/render:
     dependencies:
       '@codigo/runtime-core':
         specifier: workspace:*
@@ -741,9 +725,9 @@ importers:
 
   packages/schema:
     dependencies:
-      '@codigo/materials-react':
+      '@codigo/materials':
         specifier: workspace:*
-        version: link:../materials-react
+        version: link:../materials
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -754,9 +738,9 @@ importers:
 
   packages/template:
     dependencies:
-      '@codigo/materials-react':
+      '@codigo/materials':
         specifier: workspace:*
-        version: link:../materials-react
+        version: link:../materials
       '@codigo/schema':
         specifier: workspace:*
         version: link:../schema

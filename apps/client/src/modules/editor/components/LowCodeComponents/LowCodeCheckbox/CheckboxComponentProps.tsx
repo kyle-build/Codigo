@@ -4,7 +4,7 @@ import {
   type ICheckboxComponentProps,
   checkboxComponentDefaultConfig,
   fillComponentPropsByConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormContainerWithList, FormPropLabel } from "..";
 
 export default function CheckboxComponentProps(
@@ -55,15 +55,3 @@ export default function CheckboxComponentProps(
     </>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

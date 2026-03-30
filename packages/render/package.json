@@ -1,5 +1,5 @@
 {
-  "name": "@codigo/render-react",
+  "name": "@codigo/render",
   "version": "0.0.1",
   "type": "module",
   "main": "./dist/index.cjs",

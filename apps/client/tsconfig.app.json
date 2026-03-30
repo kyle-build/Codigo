@@ -27,7 +27,8 @@
     /* Path mapping */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@codigo/materials-react": ["../../packages/materials/src/index.ts"]
     }
   },
   "include": ["src"]

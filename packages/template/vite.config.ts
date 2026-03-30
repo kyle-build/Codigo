@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": "/src",
+      "@codigo/materials-react": "@codigo/materials",
     },
   },
 });
