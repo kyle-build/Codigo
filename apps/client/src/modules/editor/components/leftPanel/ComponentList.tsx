@@ -24,7 +24,7 @@ import {
 } from "@ant-design/icons";
 import { Collapse, Empty, Input } from "antd";
 import type { TComponentTypes } from "@codigo/schema";
-import { getComponentContainerMeta } from "@codigo/materials-react";
+import { getComponentContainerMeta } from "@codigo/materials";
 import type { FC, ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { useStoreComponents, useStorePermission } from "@/shared/hooks";

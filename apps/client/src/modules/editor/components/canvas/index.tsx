@@ -15,7 +15,10 @@ import {
   useRef,
   useState,
 } from "react";
-import { getComponentByType, getComponentContainerMeta } from "@codigo/materials-react";
+import {
+  getComponentByType,
+  getComponentContainerMeta,
+} from "@codigo/materials";
 import type {
   ComponentNode,
   ComponentNodeRecord,
@@ -48,14 +51,16 @@ export function generateComponent(
   const slotNodes = groupChildrenBySlot(conf);
   const slotEntries = Object.entries(slotNodes).map(([slotName, items]) => [
     slotName,
-    items.map((child) => children?.find((item) => {
-      return (
-        typeof item === "object" &&
-        item !== null &&
-        "key" in item &&
-        String(item.key) === child.id
-      );
-    })),
+    items.map((child) =>
+      children?.find((item) => {
+        return (
+          typeof item === "object" &&
+          item !== null &&
+          "key" in item &&
+          String(item.key) === child.id
+        );
+      }),
+    ),
   ]);
   const slots = Object.fromEntries(slotEntries);
 
@@ -345,8 +350,7 @@ const EditorCanvas: FC<{
       const nextParentId = element.dataset.parentId ?? "root";
       const nextSlot = element.dataset.slot ?? "root";
       return (
-        nextParentId === (parentId ?? "root") &&
-        nextSlot === (slot ?? "root")
+        nextParentId === (parentId ?? "root") && nextSlot === (slot ?? "root")
       );
     });
   }
@@ -373,7 +377,10 @@ const EditorCanvas: FC<{
       const rect = element.getBoundingClientRect();
       const centerY = rect.top + rect.height / 2;
       const centerX = rect.left + rect.width / 2;
-      if (clientY < centerY || (Math.abs(clientY - centerY) < 8 && clientX < centerX)) {
+      if (
+        clientY < centerY ||
+        (Math.abs(clientY - centerY) < 8 && clientX < centerX)
+      ) {
         return index;
       }
     }
@@ -386,9 +393,16 @@ const EditorCanvas: FC<{
     clientX: number,
     clientY: number,
   ) {
-    const targetElement = document.elementFromPoint(clientX, clientY) as HTMLElement | null;
-    const slotZone = targetElement?.closest("[data-slot-name]") as HTMLElement | null;
-    const current = getComponentById(movingId) as ComponentNodeRecord | undefined;
+    const targetElement = document.elementFromPoint(
+      clientX,
+      clientY,
+    ) as HTMLElement | null;
+    const slotZone = targetElement?.closest(
+      "[data-slot-name]",
+    ) as HTMLElement | null;
+    const current = getComponentById(movingId) as
+      | ComponentNodeRecord
+      | undefined;
     if (!current) return null;
 
     if (slotZone?.dataset.containerId) {
@@ -412,7 +426,13 @@ const EditorCanvas: FC<{
     }
 
     const canvasRect = canvasRef.current?.getBoundingClientRect();
-    const targetIndex = resolveInsertIndex(null, null, movingId, clientX, clientY);
+    const targetIndex = resolveInsertIndex(
+      null,
+      null,
+      movingId,
+      clientX,
+      clientY,
+    );
     return {
       parentId: null,
       slot: null,
@@ -429,7 +449,7 @@ const EditorCanvas: FC<{
 
   function handleDragComponentStart(event: ReactMouseEvent, id: string) {
     if (!canEditStructure || event.button !== 0) return;
-      const component = getComponentById(id) as ComponentNodeRecord;
+    const component = getComponentById(id) as ComponentNodeRecord;
     if (!component) return;
 
     setCurrentComponent(id);
@@ -469,7 +489,12 @@ const EditorCanvas: FC<{
           targetSlot: target.slot,
           targetIndex: target.index,
         });
-        updateComponentPosition(movingComponent.id, target.left, target.top, false);
+        updateComponentPosition(
+          movingComponent.id,
+          target.left,
+          target.top,
+          false,
+        );
       } else {
         const left =
           movingComponent.origLeft + event.clientX - movingComponent.startX;
@@ -489,7 +514,12 @@ const EditorCanvas: FC<{
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [canEditStructure, moveExistingNode, movingComponent, updateComponentPosition]);
+  }, [
+    canEditStructure,
+    moveExistingNode,
+    movingComponent,
+    updateComponentPosition,
+  ]);
 
   function handleDragOver(e: React.DragEvent) {
     e.preventDefault();
@@ -502,7 +532,9 @@ const EditorCanvas: FC<{
     const type = e.dataTransfer.getData("componentType");
     const rect = canvasRef.current?.getBoundingClientRect();
     const targetElement = e.target as HTMLElement | null;
-    const slotZone = targetElement?.closest("[data-slot-name]") as HTMLElement | null;
+    const slotZone = targetElement?.closest(
+      "[data-slot-name]",
+    ) as HTMLElement | null;
     if (type) {
       if (slotZone) {
         const slotRect = slotZone.getBoundingClientRect();
@@ -529,7 +561,8 @@ const EditorCanvas: FC<{
       if (current) {
         const meta = getComponentContainerMeta(current.type);
         if (meta.isContainer) {
-          const slotName = getAvailableSlots(current.type)[0]?.name ?? "default";
+          const slotName =
+            getAvailableSlots(current.type)[0]?.name ?? "default";
           push(
             type as TComponentTypes,
             {
@@ -659,8 +692,17 @@ const EditorCanvas: FC<{
             onClick={() => handleComponentClick(node)}
             isCurrentComponent={isCurrentComponent(node)}
             id={node.id}
-            parentId={node.id ? (getComponentById(node.id) as ComponentNodeRecord | undefined)?.parentId ?? null : null}
-            slot={(getComponentById(node.id) as ComponentNodeRecord | undefined)?.slot ?? null}
+            parentId={
+              node.id
+                ? ((
+                    getComponentById(node.id) as ComponentNodeRecord | undefined
+                  )?.parentId ?? null)
+                : null
+            }
+            slot={
+              (getComponentById(node.id) as ComponentNodeRecord | undefined)
+                ?.slot ?? null
+            }
             style={{
               left: node.styles?.left as string | number | undefined,
               top: node.styles?.top as string | number | undefined,

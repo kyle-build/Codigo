@@ -4,10 +4,12 @@ import {
   containerComponentDefaultConfig,
   fillComponentPropsByConfig,
   type IContainerComponentProps,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormPropLabel } from "..";
 
-export default function ContainerComponentProps(_props: IContainerComponentProps) {
+export default function ContainerComponentProps(
+  _props: IContainerComponentProps,
+) {
   const props = useMemo(() => {
     return fillComponentPropsByConfig(_props, containerComponentDefaultConfig);
   }, [_props]);
@@ -24,10 +26,18 @@ export default function ContainerComponentProps(_props: IContainerComponentProps
       >
         <Input />
       </FormPropLabel>
-      <FormPropLabel name="borderColor" prop={props.borderColor} label="边框色：">
+      <FormPropLabel
+        name="borderColor"
+        prop={props.borderColor}
+        label="边框色："
+      >
         <Input />
       </FormPropLabel>
-      <FormPropLabel name="borderRadius" prop={props.borderRadius} label="圆角：">
+      <FormPropLabel
+        name="borderRadius"
+        prop={props.borderRadius}
+        label="圆角："
+      >
         <InputNumber className="w-full" />
       </FormPropLabel>
       <FormPropLabel name="padding" prop={props.padding} label="内边距：">

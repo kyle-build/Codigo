@@ -4,10 +4,12 @@ import {
   fillComponentPropsByConfig,
   twoColumnComponentDefaultConfig,
   type ITwoColumnComponentProps,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormPropLabel } from "..";
 
-export default function TwoColumnComponentProps(_props: ITwoColumnComponentProps) {
+export default function TwoColumnComponentProps(
+  _props: ITwoColumnComponentProps,
+) {
   const props = useMemo(() => {
     return fillComponentPropsByConfig(_props, twoColumnComponentDefaultConfig);
   }, [_props]);

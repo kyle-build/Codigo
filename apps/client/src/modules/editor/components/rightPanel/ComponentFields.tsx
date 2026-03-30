@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
-import { getComponentContainerMeta } from "@codigo/materials-react";
+import { getComponentContainerMeta } from "@codigo/materials";
 import {
   AppstoreOutlined,
   BorderOutlined,
@@ -83,8 +83,7 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
       getAvailableSlots,
       setCurrentComponent,
       updateCurrentComponentStyles,
-    } =
-      useStoreComponents();
+    } = useStoreComponents();
     const config = getCurrentComponentConfig.get();
 
     if (!config) return null;
@@ -255,7 +254,9 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
                   容器信息
                 </div>
                 <div className="space-y-2 text-sm text-slate-600">
-                  <div>类型：{containerMeta.isContainer ? "容器组件" : "普通组件"}</div>
+                  <div>
+                    类型：{containerMeta.isContainer ? "容器组件" : "普通组件"}
+                  </div>
                   <div>
                     可用插槽：
                     {containerMeta.isContainer

@@ -22,8 +22,7 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@codigo/materials-react": ["../materials/src/index.ts"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src"]

@@ -9,7 +9,7 @@ import type { FC } from "react";
 
 import { useStorePage } from "@/shared/hooks";
 import type { TStorePage } from "@/shared/stores";
-import { getBuiltinEChartsThemeOptions } from "@codigo/materials-react";
+import { getBuiltinEChartsThemeOptions } from "@codigo/materials";
 
 const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
   const { updatePage } = useStorePage();

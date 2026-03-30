@@ -1,4 +1,4 @@
-﻿import { useMemo } from "react";
+import { useMemo } from "react";
 import { Form, Input } from "antd";
 
 import {
@@ -6,7 +6,7 @@ import {
   fillComponentPropsByConfig,
   listComponentDefaultConfig,
   listItem,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 
 import { FormContainerWithList, UploadEditOrChooiseInput } from "..";
 
@@ -44,15 +44,3 @@ export default function ListComponentProps(_props: IListComponentProps) {
     </FormContainerWithList>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

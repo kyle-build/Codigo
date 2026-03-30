@@ -3,7 +3,7 @@ import { FormOutlined, LineChartOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useRequest } from "ahooks";
-import type { TBasicComponentConfig as IComponent } from "@codigo/materials-react";
+import type { TBasicComponentConfig as IComponent } from "@codigo/materials";
 import ComponentDatas from "./components/ComponentDatas";
 import { getQuestionComponents } from "@/modules/editor/api/low-code";
 import DataSource from "./components/DataSource";
@@ -93,15 +93,3 @@ export default function Statistics() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

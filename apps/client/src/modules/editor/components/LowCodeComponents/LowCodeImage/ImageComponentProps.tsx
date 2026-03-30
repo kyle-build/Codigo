@@ -1,11 +1,11 @@
-﻿import { Input, Segmented, Select } from "antd";
+import { Input, Segmented, Select } from "antd";
 import type { SegmentedLabeledOption } from "antd/es/segmented";
 import { useMemo } from "react";
 import {
   type IImageComponentProps,
   fillComponentPropsByConfig,
   imageComponentDefaultConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormPropLabel, UploadEditOrChooiseInput } from "..";
 
 export const fitOptions = [

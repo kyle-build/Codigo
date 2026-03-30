@@ -1,7 +1,11 @@
 import type { CSSProperties } from "react";
 import { Empty } from "antd";
-import { getComponentByType } from "@codigo/materials-react";
-import { groupChildrenBySlot, type SyncSchemaItem, type TComponentTypes } from "@codigo/schema";
+import { getComponentByType } from "@codigo/materials";
+import {
+  groupChildrenBySlot,
+  type SyncSchemaItem,
+  type TComponentTypes,
+} from "@codigo/schema";
 
 interface LowCodeRendererProps {
   component: SyncSchemaItem;
@@ -12,7 +16,10 @@ export function LowCodeRenderer({ component }: LowCodeRendererProps) {
   const wrapperStyle = (component.styles ?? {}) as CSSProperties;
   const renderedChildren =
     component.children?.map((child) => (
-      <LowCodeRenderer key={child.id ?? `${child.type}-${child.slot ?? "default"}`} component={child} />
+      <LowCodeRenderer
+        key={child.id ?? `${child.type}-${child.slot ?? "default"}`}
+        component={child}
+      />
     )) ?? [];
   const groupedSlots = groupChildrenBySlot(component);
   const slots = Object.fromEntries(
@@ -37,7 +44,11 @@ export function LowCodeRenderer({ component }: LowCodeRendererProps) {
 
   return (
     <div style={wrapperStyle} className="relative">
-      <Component {...component.props} slots={slots} editorNodeId={component.id} />
+      <Component
+        {...component.props}
+        slots={slots}
+        editorNodeId={component.id}
+      />
     </div>
   );
 }

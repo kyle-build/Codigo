@@ -1,10 +1,10 @@
-﻿import { useMemo } from "react";
+import { useMemo } from "react";
 import { Form, Input, Select } from "antd";
 import {
   type IRadioComponentProps,
   fillComponentPropsByConfig,
   radioComponentDefaultConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormContainerWithList, FormPropLabel } from "..";
 
 export default function RadioComponentProps(_props: IRadioComponentProps) {
@@ -54,15 +54,3 @@ export default function RadioComponentProps(_props: IRadioComponentProps) {
     </>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

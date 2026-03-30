@@ -1,14 +1,14 @@
-﻿import { ColorPicker, Input, Segmented } from "antd";
+import { ColorPicker, Input, Segmented } from "antd";
 import { useMemo } from "react";
 
 import type {
   IQrcodeComponentProps,
   TQrcodeComponentConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import {
   fillComponentPropsByConfig,
   qrcodeComponentDefaultConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormPropLabel } from "../utils/components";
 import { useStoreComponents } from "@/shared/hooks/useStoreComponents";
 

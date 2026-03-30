@@ -9,9 +9,7 @@ import {
   DesktopOutlined,
   HistoryOutlined,
 } from "@ant-design/icons";
-import type {
-  PostReleaseRequest,
-} from "@codigo/materials-react";
+import type { PostReleaseRequest } from "@codigo/materials";
 import { useRequest } from "ahooks";
 import { Button, InputNumber, Space, message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -28,14 +26,8 @@ import { VersionHistoryDrawer } from "./VersionHistoryDrawer";
 const Center = observer(() => {
   const nav = useNavigate();
   const { store, setDeviceType, setCanvasSize } = useStorePage();
-  const {
-    serializeSchema,
-    storeInLocalStorage,
-    undo,
-    redo,
-    hasUndo,
-    hasRedo,
-  } = useStoreComponents();
+  const { serializeSchema, storeInLocalStorage, undo, redo, hasUndo, hasRedo } =
+    useStoreComponents();
   const { can, ensurePermission, addOperationLog } = useStorePermission();
   const [historyOpen, setHistoryOpen] = useState(false);
 

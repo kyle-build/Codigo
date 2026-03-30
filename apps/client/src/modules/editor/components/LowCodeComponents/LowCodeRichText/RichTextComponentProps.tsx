@@ -1,8 +1,8 @@
-﻿import {
+import {
   type IRichTextComponentProps,
   fillComponentPropsByConfig,
   richTextComponentDefaultConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { useMemo, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -10,7 +10,7 @@ import "react-quill/dist/quill.snow.css";
 import { useStoreComponents } from "@/shared/hooks/useStoreComponents";
 
 export default function RichTextComponentProps(
-  _props: IRichTextComponentProps
+  _props: IRichTextComponentProps,
 ) {
   const props = useMemo(() => {
     return fillComponentPropsByConfig(_props, richTextComponentDefaultConfig);
@@ -51,15 +51,3 @@ export default function RichTextComponentProps(
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

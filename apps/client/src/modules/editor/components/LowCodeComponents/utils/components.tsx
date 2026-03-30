@@ -1,4 +1,4 @@
-﻿import { Form, Button, Input, Modal, Image, message } from "antd";
+import { Form, Button, Input, Modal, Image, message } from "antd";
 import { ulid } from "ulid";
 import type {
   FormItemProps,
@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import type { FC, ReactNode, RefAttributes } from "react";
 import type { TransformedComponentConfig, IResources } from "@codigo/schema";
 import type { TBasicComponentConfig as TComponentPropsUnion } from "@codigo/schema";
-import { objectOmit } from "@codigo/materials-react";
+import { objectOmit } from "@codigo/materials";
 import type { UploadType } from "@codigo/schema";
 import { useStoreComponents } from "@/shared/hooks/useStoreComponents";
 import {

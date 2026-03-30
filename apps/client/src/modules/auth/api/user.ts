@@ -6,7 +6,7 @@ import type {
   LoginWithPhoneRequest,
   UpdateProfileRequest,
   ChangePasswordRequest,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 
 // 图形验证码接口
 export async function getCaptcha(data: { type: string }) {

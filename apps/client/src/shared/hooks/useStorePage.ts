@@ -7,7 +7,7 @@ import type {
   EditorMode,
 } from "@/shared/stores";
 import { useStorePermission } from "./useStorePermission";
-import { setDefaultEChartsTheme } from "@codigo/materials-react";
+import { setDefaultEChartsTheme } from "@codigo/materials";
 import type {
   PageWorkspaceIDEConfigResponse,
   PageWorkspaceExplorerResponse,

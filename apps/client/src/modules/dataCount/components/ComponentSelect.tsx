@@ -1,4 +1,4 @@
-﻿import type { TBasicComponentConfig as IComponent } from "@codigo/materials-react";
+import type { TBasicComponentConfig as IComponent } from "@codigo/materials";
 import { Button, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 

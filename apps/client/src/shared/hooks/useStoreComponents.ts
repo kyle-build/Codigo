@@ -11,7 +11,7 @@ import {
   calcValueByString,
   flattenComponentTree,
   getComponentContainerMeta,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { createStoreComponents } from "@/shared/stores";
 import { arrayMove } from "@dnd-kit/sortable";
 import { trackUndo } from "mobx-shallow-undo";
@@ -141,7 +141,10 @@ function normalizeFromSchema(schema?: IPageSchema | null) {
   const nextSortableCompConfig: string[] = [];
 
   if (!schema?.components?.length) {
-    return { compConfigs: nextCompConfigs, sortableCompConfig: nextSortableCompConfig };
+    return {
+      compConfigs: nextCompConfigs,
+      sortableCompConfig: nextSortableCompConfig,
+    };
   }
 
   const flatNodes = flattenComponentTree(schema.components);
@@ -199,7 +202,12 @@ function gatherSubtreeIds(
 ): string[] {
   const current = compConfigs[id];
   if (!current) return [];
-  return [id, ...current.childIds.flatMap((childId) => gatherSubtreeIds(compConfigs, childId))];
+  return [
+    id,
+    ...current.childIds.flatMap((childId) =>
+      gatherSubtreeIds(compConfigs, childId),
+    ),
+  ];
 }
 
 function duplicateTreeNode(node: ComponentNode): ComponentNode {
@@ -275,11 +283,7 @@ export function useStoreComponents() {
   };
 
   const insertIntoOrderedIds = action(
-    (
-      ids: string[],
-      nodeId: string,
-      targetIndex?: number,
-    ) => {
+    (ids: string[], nodeId: string, targetIndex?: number) => {
       const nextIds = ids.filter((item) => item !== nodeId);
       const insertAt =
         typeof targetIndex === "number"
@@ -291,12 +295,7 @@ export function useStoreComponents() {
   );
 
   const insertChildIdBySlot = action(
-    (
-      parentId: string,
-      nodeId: string,
-      slot: string,
-      targetIndex?: number,
-    ) => {
+    (parentId: string, nodeId: string, slot: string, targetIndex?: number) => {
       const parent = storeComponents.compConfigs[parentId];
       if (!parent) return;
       const childIds = parent.childIds.filter((item) => item !== nodeId);
@@ -304,14 +303,20 @@ export function useStoreComponents() {
         const child = storeComponents.compConfigs[childId];
         return child && (child.slot ?? "default") === slot;
       });
-      const nextSlotIds = insertIntoOrderedIds(slotSiblingIds, nodeId, targetIndex);
+      const nextSlotIds = insertIntoOrderedIds(
+        slotSiblingIds,
+        nodeId,
+        targetIndex,
+      );
 
       if (!slotSiblingIds.length) {
         parent.childIds = [...childIds, nodeId];
         return;
       }
 
-      const firstIndex = childIds.findIndex((item) => item === slotSiblingIds[0]);
+      const firstIndex = childIds.findIndex(
+        (item) => item === slotSiblingIds[0],
+      );
       const lastIndex = childIds.findIndex(
         (item) => item === slotSiblingIds[slotSiblingIds.length - 1],
       );
@@ -328,13 +333,17 @@ export function useStoreComponents() {
   );
 
   const syncSchema = (keepCurrentId?: string | null) => {
-    normalizeLayout(storeComponents.compConfigs, storeComponents.sortableCompConfig);
+    normalizeLayout(
+      storeComponents.compConfigs,
+      storeComponents.sortableCompConfig,
+    );
     if (
       keepCurrentId &&
       !storeComponents.compConfigs[keepCurrentId] &&
       storeComponents.currentCompConfig === keepCurrentId
     ) {
-      storeComponents.currentCompConfig = storeComponents.sortableCompConfig[0] ?? null;
+      storeComponents.currentCompConfig =
+        storeComponents.sortableCompConfig[0] ?? null;
     }
   };
 
@@ -364,7 +373,12 @@ export function useStoreComponents() {
       }
 
       if (parentId) {
-        insertChildIdBySlot(parentId, node.id, args?.slot ?? "default", targetIndex);
+        insertChildIdBySlot(
+          parentId,
+          node.id,
+          args?.slot ?? "default",
+          targetIndex,
+        );
       } else {
         storeComponents.sortableCompConfig = insertIntoOrderedIds(
           storeComponents.sortableCompConfig,
@@ -385,7 +399,9 @@ export function useStoreComponents() {
 
   const getAvailableSlots = action((type: string) => {
     const { slots } = getComponentContainerMeta(type as TComponentTypes);
-    return slots.length ? slots : [{ name: "default", title: "默认区域", multiple: true }];
+    return slots.length
+      ? slots
+      : [{ name: "default", title: "默认区域", multiple: true }];
   });
 
   const insertNodeIntoContainer = action(
@@ -402,7 +418,9 @@ export function useStoreComponents() {
       const siblings = parent.childIds
         .map((childId) => storeComponents.compConfigs[childId])
         .filter(Boolean)
-        .filter((item) => (item.slot ?? "default") === (args.slot ?? "default"));
+        .filter(
+          (item) => (item.slot ?? "default") === (args.slot ?? "default"),
+        );
       const defaultPosition = getDefaultPosition(siblings.length);
       const comp: ComponentNode = {
         id: ulid(),
@@ -442,7 +460,10 @@ export function useStoreComponents() {
     }) => {
       const node = storeComponents.compConfigs[args.nodeId];
       if (!node) return;
-      const subtreeIds = gatherSubtreeIds(storeComponents.compConfigs, args.nodeId);
+      const subtreeIds = gatherSubtreeIds(
+        storeComponents.compConfigs,
+        args.nodeId,
+      );
       if (args.targetParentId && subtreeIds.includes(args.targetParentId)) {
         message.warning("不能把组件移动到自己的子节点下");
         return;
@@ -455,16 +476,22 @@ export function useStoreComponents() {
       if (prevParentId) {
         const prevParent = storeComponents.compConfigs[prevParentId];
         if (prevParent) {
-          prevParent.childIds = prevParent.childIds.filter((id) => id !== args.nodeId);
+          prevParent.childIds = prevParent.childIds.filter(
+            (id) => id !== args.nodeId,
+          );
         }
       } else {
-        storeComponents.sortableCompConfig = storeComponents.sortableCompConfig.filter(
-          (id) => id !== args.nodeId,
-        );
+        storeComponents.sortableCompConfig =
+          storeComponents.sortableCompConfig.filter((id) => id !== args.nodeId);
       }
 
       if (nextParentId) {
-        insertChildIdBySlot(nextParentId, args.nodeId, nextSlot ?? "default", args.targetIndex);
+        insertChildIdBySlot(
+          nextParentId,
+          args.nodeId,
+          nextSlot ?? "default",
+          args.targetIndex,
+        );
       } else {
         storeComponents.sortableCompConfig = insertIntoOrderedIds(
           storeComponents.sortableCompConfig,
@@ -480,7 +507,9 @@ export function useStoreComponents() {
       const { store: storePermission, broadcastComponentUpdate } =
         useStorePermission();
       broadcastComponentUpdate(
-        Number(new URLSearchParams(window.location.hash.split("?")[1]).get("id")),
+        Number(
+          new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
+        ),
         Number(storePermission.currentUserId),
         "replace_all",
         {
@@ -780,7 +809,10 @@ export function useStoreComponents() {
 
   const moveDownComponent = action(() => {
     const oldIndex = getCurrentComponentIndex.get();
-    if (getCurrentComponentIndex.get() !== getSiblingIds(storeComponents.currentCompConfig!).length - 1) {
+    if (
+      getCurrentComponentIndex.get() !==
+      getSiblingIds(storeComponents.currentCompConfig!).length - 1
+    ) {
       moveComponent({
         oldIndex,
         newIndex: oldIndex + 1,
@@ -793,7 +825,10 @@ export function useStoreComponents() {
   const copyCurrentComponent = action(() => {
     const curCompConfig = getCurrentComponentConfig.get();
     if (!curCompConfig) return;
-    const nodeTree = buildTreeNode(storeComponents.compConfigs, curCompConfig.id);
+    const nodeTree = buildTreeNode(
+      storeComponents.compConfigs,
+      curCompConfig.id,
+    );
     if (!nodeTree) return;
     storeComponents.copyedCompConig = nodeTree;
   });
@@ -805,8 +840,12 @@ export function useStoreComponents() {
     const currentId = storeComponents.currentCompConfig;
     const current = currentId ? storeComponents.compConfigs[currentId] : null;
     const parentId = current?.parentId ?? null;
-    const siblingIds = currentId ? getSiblingIds(currentId) : storeComponents.sortableCompConfig;
-    const insertIndex = currentId ? siblingIds.indexOf(currentId) + 1 : siblingIds.length;
+    const siblingIds = currentId
+      ? getSiblingIds(currentId)
+      : storeComponents.sortableCompConfig;
+    const insertIndex = currentId
+      ? siblingIds.indexOf(currentId) + 1
+      : siblingIds.length;
     const copiedTree = duplicateTreeNode(storeComponents.copyedCompConig);
     offsetNodePosition(copiedTree);
     insertNodeTree(copiedTree, {
@@ -823,16 +862,22 @@ export function useStoreComponents() {
     const curCompConfig = getCurrentComponentConfig.get();
     if (!curCompConfig) return;
 
-    const subtreeIds = gatherSubtreeIds(storeComponents.compConfigs, curCompConfig.id);
+    const subtreeIds = gatherSubtreeIds(
+      storeComponents.compConfigs,
+      curCompConfig.id,
+    );
     if (curCompConfig.parentId) {
       const parent = storeComponents.compConfigs[curCompConfig.parentId];
       if (parent) {
-        parent.childIds = parent.childIds.filter((id) => id !== curCompConfig.id);
+        parent.childIds = parent.childIds.filter(
+          (id) => id !== curCompConfig.id,
+        );
       }
     } else {
-      storeComponents.sortableCompConfig = storeComponents.sortableCompConfig.filter(
-        (id) => id !== curCompConfig.id,
-      );
+      storeComponents.sortableCompConfig =
+        storeComponents.sortableCompConfig.filter(
+          (id) => id !== curCompConfig.id,
+        );
     }
 
     for (const targetId of subtreeIds) {
@@ -848,7 +893,7 @@ export function useStoreComponents() {
       Number(new URLSearchParams(window.location.hash.split("?")[1]).get("id")),
       Number(storePermission.currentUserId),
       "remove",
-        { id: curCompConfig.id, subtreeIds },
+      { id: curCompConfig.id, subtreeIds },
     );
 
     addOperationLog("remove_component", curCompConfig.type);
@@ -915,7 +960,9 @@ export function useStoreComponents() {
   const storeInLocalStorage = action(() => {
     if (!ensurePermission("save_draft", "当前角色不能保存草稿")) return;
     const pageSchema = JSON.stringify(serializeStore(storeComponents));
-    const currentCompConfig = JSON.stringify(toJS(storeComponents.currentCompConfig));
+    const currentCompConfig = JSON.stringify(
+      toJS(storeComponents.currentCompConfig),
+    );
 
     // Get current page store state
     const { store: pageStore } = useStorePage();
@@ -949,7 +996,8 @@ export function useStoreComponents() {
         );
     storeComponents.compConfigs = normalized.compConfigs;
     storeComponents.sortableCompConfig = normalized.sortableCompConfig;
-    storeComponents.currentCompConfig = normalized.sortableCompConfig[0] ?? null;
+    storeComponents.currentCompConfig =
+      normalized.sortableCompConfig[0] ?? null;
     const { updatePage } = useStorePage();
     updatePage({
       tdk: data?.tdk || "",
@@ -961,103 +1009,103 @@ export function useStoreComponents() {
   });
 
   const loadPageData = action(
-      async (fetchServerData?: () => Promise<{ data: any }>) => {
-        const pageSchema = localStorage.getItem(schemaStorageKey);
-        const compConfig = localStorage.getItem("compConfig");
-        const sortableCompConfig = localStorage.getItem("sortableCompConfig");
-        const currentCompConfig = localStorage.getItem("currentCompConfig");
-        const pageSettings = localStorage.getItem("pageSettings");
+    async (fetchServerData?: () => Promise<{ data: any }>) => {
+      const pageSchema = localStorage.getItem(schemaStorageKey);
+      const compConfig = localStorage.getItem("compConfig");
+      const sortableCompConfig = localStorage.getItem("sortableCompConfig");
+      const currentCompConfig = localStorage.getItem("currentCompConfig");
+      const pageSettings = localStorage.getItem("pageSettings");
 
-        const storeTime = localStorage.getItem("store_time");
-        const releaseTime = localStorage.getItem("release_time");
+      const storeTime = localStorage.getItem("store_time");
+      const releaseTime = localStorage.getItem("release_time");
 
-        let serverData = null;
-        if (fetchServerData) {
-          try {
-            const { data } = await fetchServerData();
-            serverData = data;
-          } catch (e) {
-            console.error("获取服务端数据失败", e);
-          }
+      let serverData = null;
+      if (fetchServerData) {
+        try {
+          const { data } = await fetchServerData();
+          serverData = data;
+        } catch (e) {
+          console.error("获取服务端数据失败", e);
         }
+      }
 
-        if (pageSchema) {
-          if (
-            storeTime &&
-            Number(storeTime) > (releaseTime ? Number(releaseTime) : 0)
-          ) {
-            const normalized = normalizeFromSchema(JSON.parse(pageSchema));
-            storeComponents.compConfigs = normalized.compConfigs;
-            storeComponents.sortableCompConfig = normalized.sortableCompConfig;
-            storeComponents.currentCompConfig = currentCompConfig
-              ? JSON.parse(currentCompConfig)
-              : (normalized.sortableCompConfig[0] ?? null);
+      if (pageSchema) {
+        if (
+          storeTime &&
+          Number(storeTime) > (releaseTime ? Number(releaseTime) : 0)
+        ) {
+          const normalized = normalizeFromSchema(JSON.parse(pageSchema));
+          storeComponents.compConfigs = normalized.compConfigs;
+          storeComponents.sortableCompConfig = normalized.sortableCompConfig;
+          storeComponents.currentCompConfig = currentCompConfig
+            ? JSON.parse(currentCompConfig)
+            : (normalized.sortableCompConfig[0] ?? null);
 
-            if (pageSettings) {
-              const settings = JSON.parse(pageSettings);
-              const { setDeviceType, setCanvasSize, setCodeFramework } =
-                useStorePage();
-              if (settings.deviceType) setDeviceType(settings.deviceType);
-              if (settings.canvasWidth && settings.canvasHeight) {
-                setCanvasSize(settings.canvasWidth, settings.canvasHeight);
-              }
-              if (settings.codeFramework) {
-                setCodeFramework(settings.codeFramework);
-              }
+          if (pageSettings) {
+            const settings = JSON.parse(pageSettings);
+            const { setDeviceType, setCanvasSize, setCodeFramework } =
+              useStorePage();
+            if (settings.deviceType) setDeviceType(settings.deviceType);
+            if (settings.canvasWidth && settings.canvasHeight) {
+              setCanvasSize(settings.canvasWidth, settings.canvasHeight);
             }
-
-            message.success("已自动从草稿中读取数据");
-            return serverData;
-          } else if (serverData) {
-            initFromServerData(serverData);
-            return serverData;
-          }
-        }
-
-        if (compConfig && compConfig !== "{}") {
-          if (
-            storeTime &&
-            Number(storeTime) > (releaseTime ? Number(releaseTime) : 0)
-          ) {
-            const legacyComponents = JSON.parse(compConfig);
-            const legacyOrder = JSON.parse(sortableCompConfig!);
-            const normalized = normalizeFromFlatComponents(
-              legacyOrder
-                .map((id: string) => legacyComponents[id])
-                .filter(Boolean),
-            );
-            storeComponents.compConfigs = normalized.compConfigs;
-            storeComponents.sortableCompConfig = normalized.sortableCompConfig;
-            storeComponents.currentCompConfig = currentCompConfig
-              ? JSON.parse(currentCompConfig)
-              : (normalized.sortableCompConfig[0] ?? null);
-
-            if (pageSettings) {
-              const settings = JSON.parse(pageSettings);
-              const { setDeviceType, setCanvasSize, setCodeFramework } =
-                useStorePage();
-              if (settings.deviceType) setDeviceType(settings.deviceType);
-              if (settings.canvasWidth && settings.canvasHeight) {
-                setCanvasSize(settings.canvasWidth, settings.canvasHeight);
-              }
-              if (settings.codeFramework) {
-                setCodeFramework(settings.codeFramework);
-              }
+            if (settings.codeFramework) {
+              setCodeFramework(settings.codeFramework);
             }
-
-            message.success("已自动从草稿中读取数据");
-            return serverData;
-          } else if (serverData) {
-            initFromServerData(serverData);
-            return serverData;
           }
+
+          message.success("已自动从草稿中读取数据");
+          return serverData;
         } else if (serverData) {
           initFromServerData(serverData);
           return serverData;
         }
+      }
+
+      if (compConfig && compConfig !== "{}") {
+        if (
+          storeTime &&
+          Number(storeTime) > (releaseTime ? Number(releaseTime) : 0)
+        ) {
+          const legacyComponents = JSON.parse(compConfig);
+          const legacyOrder = JSON.parse(sortableCompConfig!);
+          const normalized = normalizeFromFlatComponents(
+            legacyOrder
+              .map((id: string) => legacyComponents[id])
+              .filter(Boolean),
+          );
+          storeComponents.compConfigs = normalized.compConfigs;
+          storeComponents.sortableCompConfig = normalized.sortableCompConfig;
+          storeComponents.currentCompConfig = currentCompConfig
+            ? JSON.parse(currentCompConfig)
+            : (normalized.sortableCompConfig[0] ?? null);
+
+          if (pageSettings) {
+            const settings = JSON.parse(pageSettings);
+            const { setDeviceType, setCanvasSize, setCodeFramework } =
+              useStorePage();
+            if (settings.deviceType) setDeviceType(settings.deviceType);
+            if (settings.canvasWidth && settings.canvasHeight) {
+              setCanvasSize(settings.canvasWidth, settings.canvasHeight);
+            }
+            if (settings.codeFramework) {
+              setCodeFramework(settings.codeFramework);
+            }
+          }
+
+          message.success("已自动从草稿中读取数据");
+          return serverData;
+        } else if (serverData) {
+          initFromServerData(serverData);
+          return serverData;
+        }
+      } else if (serverData) {
+        initFromServerData(serverData);
         return serverData;
-      },
-    );
+      }
+      return serverData;
+    },
+  );
 
   return {
     _replace,

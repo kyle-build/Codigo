@@ -9,7 +9,7 @@ import type {
   PutPageWorkspaceFileRequest,
   PutPageWorkspaceFileResponse,
   getQuestionDataByIdRequest,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import request from "@/shared/utils/request";
 
 export async function postRelease(data: PostReleaseRequest) {

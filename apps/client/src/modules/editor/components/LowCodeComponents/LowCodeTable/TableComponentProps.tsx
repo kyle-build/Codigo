@@ -5,7 +5,7 @@ import {
   type ITableComponentProps,
   fillComponentPropsByConfig,
   tableComponentDefaultConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { FormContainer, FormPropLabel } from "..";
 
 export default function TableComponentProps(_props: ITableComponentProps) {

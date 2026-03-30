@@ -1,8 +1,8 @@
-﻿import {
+import {
   type IVideoComponentProps,
   fillComponentPropsByConfig,
   videoComponentDefaultConfig,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { Input, Switch } from "antd";
 import { useMemo } from "react";
 import { FormContainer, FormPropLabel, UploadEditOrChooiseInput } from "..";
@@ -56,15 +56,3 @@ export default function VideoComponentProps(_props: IVideoComponentProps) {
     </FormContainer>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
