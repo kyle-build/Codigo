@@ -1,21 +1,6 @@
-@baseUrl = http://localhost:3000/api
-@type = register
-@phone = 19839704896
+GET http://localhost:3000/api/auth/captcha?type=register
 
-GET {{baseUrl}}/auth/captcha?type={{type}}
 Content-Type: application/json
-
-###
-
-# 先执行上面的验证码请求，再把返回 SVG 中的验证码文字填到这里
-@captcha = 
-
-POST {{baseUrl}}/auth/sms-codes
-Content-Type: application/json
-
 {
-  "type": "{{type}}",
-  "phone": "{{phone}}",
-  "captcha": "{{captcha}}"
+  "type": "register"
 }
-

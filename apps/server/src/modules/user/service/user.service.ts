@@ -33,7 +33,6 @@ export class UserService {
   ) {}
 
   async getCaptcha(key: string, type: string) {
-    console.log(key, type);
     const svgCaptcha = await this.captchaTool.generateCaptcha();
     await this.redis.set(`${type}:captcha:${key}`, svgCaptcha.text, 60);
     return { data: svgCaptcha.data, text: svgCaptcha.text };

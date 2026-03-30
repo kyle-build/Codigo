@@ -8,7 +8,7 @@ import {
   type TComponentTypes,
   getComponentByType,
   initBuiltinComponents,
-} from "@codigo/materials-react";
+} from "@codigo/materials";
 import { useRequest } from "ahooks";
 import { useImmer } from "use-immer";
 import { useMemo, useState } from "react";
@@ -27,7 +27,14 @@ function generateComponent(
   const Component = getComponentByType(conf.type);
 
   if (!usingInputType.includes(conf.type))
-    return <Component {...conf.props} key={conf.id} slots={slots} editorNodeId={editorNodeId} />;
+    return (
+      <Component
+        {...conf.props}
+        key={conf.id}
+        slots={slots}
+        editorNodeId={editorNodeId}
+      />
+    );
   else
     return (
       <Component
@@ -85,7 +92,9 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
   }, [localData.componentIds, localData.components, localData.schema]);
 
   const componentValueMap = useMemo(() => {
-    return new Map(localData.components.map((component) => [component.node_id, component]));
+    return new Map(
+      localData.components.map((component) => [component.node_id, component]),
+    );
   }, [localData.components]);
 
   function renderNode(node: ComponentNode) {
@@ -95,7 +104,8 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
       type: node.type,
       props: sourceComponent?.options ?? node.props ?? {},
     };
-    const renderedChildren = node.children?.map((child) => renderNode(child)) ?? [];
+    const renderedChildren =
+      node.children?.map((child) => renderNode(child)) ?? [];
     const groupedSlots = groupChildrenBySlot(node);
     const slots = Object.fromEntries(
       Object.entries(groupedSlots).map(([slotName, nodes]) => [
@@ -114,16 +124,24 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
           ...(node.styles ?? {}),
         }}
       >
-        {generateComponent(runtimeComponent, (value) => {
-          setLocalData((draft) => {
-            const target = draft.components.find((item) => item.node_id === node.id);
-            if (!target) return;
-            const questionComponentValueField = getQuestionComponentValueField(target);
-            if (questionComponentValueField) {
-              target.options[questionComponentValueField] = value;
-            }
-          });
-        }, slots, node.id)}
+        {generateComponent(
+          runtimeComponent,
+          (value) => {
+            setLocalData((draft) => {
+              const target = draft.components.find(
+                (item) => item.node_id === node.id,
+              );
+              if (!target) return;
+              const questionComponentValueField =
+                getQuestionComponentValueField(target);
+              if (questionComponentValueField) {
+                target.options[questionComponentValueField] = value;
+              }
+            });
+          },
+          slots,
+          node.id,
+        )}
       </div>
     );
   }

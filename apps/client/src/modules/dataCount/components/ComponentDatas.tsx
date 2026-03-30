@@ -1,7 +1,7 @@
-﻿import type { ColumnsType } from "antd/es/table";
+import type { ColumnsType } from "antd/es/table";
 import { Button, Space, Table, message } from "antd";
 import { useRequest } from "ahooks";
-import type { TBasicComponentConfig as IComponent } from "@codigo/materials-react";
+import type { TBasicComponentConfig as IComponent } from "@codigo/materials";
 import { useMemo, useState } from "react";
 import { getQuestionData } from "@/modules/editor/api/low-code";
 import { useStorePage } from "@/shared/hooks/useStorePage";
