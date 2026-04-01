@@ -108,7 +108,6 @@ export const HomeHeader = observer(() => {
         onCancel={() => setIsProfileModalVisible(false)}
         footer={null}
         width={600}
-        destroyOnClose
         centered
         styles={{
           body: { padding: 0, maxHeight: "80vh", overflowY: "auto" },
