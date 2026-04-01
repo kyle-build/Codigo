@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useRequest } from "ahooks";
 import { Alert, Empty, Spin, Typography } from "antd";
 import { observer } from "mobx-react-lite";
@@ -14,7 +14,6 @@ export const WebIDECanvas = observer(() => {
   const pageId = Number(searchParams.get("id"));
   const { store: pageStore, setWorkspaceIDEConfig } = useStorePage();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [frameReady, setFrameReady] = useState(false);
   const workspace = pageStore.workspace;
   const workspaceIDEConfig = pageStore.workspaceIDEConfig;
 
@@ -42,10 +41,6 @@ export const WebIDECanvas = observer(() => {
 
     void fetchIDEConfig();
   }, [fetchIDEConfig, pageId, workspace?.exists, workspaceIDEConfig]);
-
-  useEffect(() => {
-    setFrameReady(false);
-  }, [workspaceIDEConfig?.browserUrl]);
 
   const targetOrigin = useMemo(() => {
     if (!workspaceIDEConfig?.browserUrl) {
@@ -85,7 +80,6 @@ export const WebIDECanvas = observer(() => {
         },
         targetOrigin,
       );
-      setFrameReady(true);
     };
 
     window.addEventListener("message", handleMessage);

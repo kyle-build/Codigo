@@ -1,52 +1,47 @@
-﻿// import { createContext, useState } from "react";
-// import zhCN from "./locales/zh-CN.json";
-// import { getDefaultLocale } from "./utils/getDefaultLocale";
+import { createContext, useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import zhCN from "./locales/zh-CN.json";
+import { getDefaultLocale } from "./utils/getDefaultLocale";
 
-// export const I18nContext = createContext(null);
+type LocaleMessages = Record<string, Record<string, string>>;
 
-// const messages: Record<string, any> = {
-//   "zh-CN": zhCN,
-// };
+interface I18nContextValue {
+  locale: string;
+  t: (key: string) => string;
+  changeLocale: (newLocale: string) => Promise<void>;
+}
 
-// export function I18nProvider({ children }) {
-//   const [locale, setLocale] = useState(getDefaultLocale());
-//   const [localeMessages, setLocaleMessages] = useState(messages);
+const defaultMessages: LocaleMessages = {
+  "zh-CN": zhCN,
+};
 
-//   const t = (key: string) => {
-//     const msg = localeMessages[locale]?.[key];
+export const I18nContext = createContext<I18nContextValue | null>(null);
 
-//     if (!msg) {
-//       console.warn(`[i18n] Missing translation: ${key}`);
-//       return key;
-//     }
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const [locale, setLocale] = useState(getDefaultLocale());
+  const [localeMessages, setLocaleMessages] =
+    useState<LocaleMessages>(defaultMessages);
 
-//     return msg;
-//   };
+  const value = useMemo<I18nContextValue>(
+    () => ({
+      locale,
+      t: (key: string) => localeMessages[locale]?.[key] ?? key,
+      changeLocale: async (newLocale: string) => {
+        if (!localeMessages[newLocale]) {
+          const module = await import(`./locales/${newLocale}.json`);
+          setLocaleMessages((prev) => ({
+            ...prev,
+            [newLocale]: module.default as Record<string, string>,
+          }));
+        }
 
-//   const changeLocale = async (newLocale: string) => {
-//     if (!localeMessages[newLocale]) {
-//       const module = await import(`./locales/${newLocale}.json`);
-//       setLocaleMessages((prev) => ({
-//         ...prev,
-//         [newLocale]: module.default,
-//       }));
-//     }
+        setLocale(newLocale);
+        localStorage.setItem("user-locale", newLocale);
+        document.documentElement.lang = newLocale;
+      },
+    }),
+    [locale, localeMessages],
+  );
 
-//     setLocale(newLocale);
-//     localStorage.setItem("user-locale", newLocale);
-
-//     document.documentElement.lang = newLocale;
-//   };
-
-//   return (
-//     <I18nContext.Provider
-//       value={{
-//         locale,
-//         t,
-//         changeLocale,
-//       }}
-//     >
-//       {children}
-//     </I18nContext.Provider>
-//   );
-// }
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
+}

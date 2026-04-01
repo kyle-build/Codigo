@@ -1,11 +1,200 @@
 @import '~@opensumi/ide-core-browser/lib/style/variable.less';
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: #f3f3f3;
+  color: #1f2328;
+  font-family:
+    'Segoe UI',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    sans-serif;
+}
+
 #main {
+  --vscode-font-family:
+    'Segoe UI',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    sans-serif;
+  --vscode-font-size: 13px;
+  --vscode-font-weight: 400;
+  --vscode-editor-background: #ffffff;
+  --vscode-editor-foreground: #1f2328;
+  --vscode-textLink-foreground: #0f6cbd;
+  --vscode-textLink-activeForeground: #085694;
+  --vscode-textPreformat-foreground: #0550ae;
+  --vscode-textBlockQuote-background: #f6f8fa;
+  --vscode-textBlockQuote-border: #d0d7de;
+  --vscode-scrollbarSlider-background: rgba(31, 35, 40, 0.16);
+  --vscode-scrollbarSlider-hoverBackground: rgba(31, 35, 40, 0.28);
+  --vscode-scrollbarSlider-activeBackground: rgba(31, 35, 40, 0.38);
   display: flex;
   width: 100vw;
   height: 100vh;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: var(--background);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(243, 243, 243, 0.98) 100%);
+  color: #1f2328;
+}
+
+#custom-wrapper {
+  width: 100%;
+  height: 100%;
+  background: #f3f3f3;
+  color: #1f2328;
+  font-family:
+    'Segoe UI',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    sans-serif;
+}
+
+#custom-wrapper * {
+  box-sizing: border-box;
+}
+
+#custom-wrapper button,
+#custom-wrapper input,
+#custom-wrapper textarea,
+#custom-wrapper select {
+  font: inherit;
+}
+
+#custom-wrapper a {
+  color: #0f6cbd;
+}
+
+#custom-wrapper :focus-visible {
+  outline: 1px solid rgba(0, 120, 212, 0.85);
+  outline-offset: -1px;
+}
+
+#custom-wrapper [role='tablist'] {
+  background: #f3f3f3;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+#custom-wrapper [role='tab'] {
+  min-height: 35px;
+  padding: 0 14px;
+  color: #57606a;
+  background: #ececec;
+  border-right: 1px solid #e5e7eb;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+#custom-wrapper [role='tab'][aria-selected='true'] {
+  color: #1f2328;
+  background: #ffffff;
+}
+
+#custom-wrapper [class*='menu'],
+#custom-wrapper [class*='Menu'] {
+  background: #f3f3f3;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+#custom-wrapper [class*='sidebar'],
+#custom-wrapper [class*='SideBar'],
+#custom-wrapper [class*='explorer'],
+#custom-wrapper [class*='Explorer'] {
+  background: #f6f8fa;
+  border-right: 1px solid #e5e7eb;
+}
+
+#custom-wrapper [class*='panel'],
+#custom-wrapper [class*='Panel'],
+#custom-wrapper [class*='bottom'],
+#custom-wrapper [class*='Bottom'] {
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+#custom-wrapper [class*='statusBar'],
+#custom-wrapper [class*='status-bar'],
+#custom-wrapper [class*='StatusBar'] {
+  background: #007acc !important;
+  color: #ffffff !important;
+  border-top: 0 !important;
+}
+
+#custom-wrapper .monaco-editor,
+#custom-wrapper .monaco-editor-background,
+#custom-wrapper .monaco-editor .inputarea.ime-input,
+#custom-wrapper .monaco-editor .margin,
+#custom-wrapper .overflow-guard {
+  background: #ffffff !important;
+}
+
+#custom-wrapper .monaco-editor {
+  color: #1f2328;
+}
+
+#custom-wrapper .monaco-editor .margin {
+  border-right: 1px solid #edf1f5;
+}
+
+#custom-wrapper .monaco-editor .line-numbers {
+  color: #8c959f !important;
+}
+
+#custom-wrapper .monaco-editor .line-numbers.active-line-number {
+  color: #57606a !important;
+}
+
+#custom-wrapper .monaco-editor .current-line,
+#custom-wrapper .monaco-editor .margin-view-overlays .current-line-margin {
+  background: rgba(9, 105, 218, 0.05);
+  border-color: rgba(9, 105, 218, 0.16) !important;
+}
+
+#custom-wrapper .monaco-editor .selected-text {
+  background: rgba(9, 105, 218, 0.16) !important;
+}
+
+#custom-wrapper .monaco-editor .cursors-layer .cursor {
+  background: #1f2328 !important;
+  border-color: #1f2328 !important;
+}
+
+#custom-wrapper .monaco-editor .bracket-highlighting-0,
+#custom-wrapper .monaco-editor .bracket-highlighting-1,
+#custom-wrapper .monaco-editor .bracket-highlighting-2,
+#custom-wrapper .monaco-editor .bracket-highlighting-3,
+#custom-wrapper .monaco-editor .bracket-highlighting-4,
+#custom-wrapper .monaco-editor .bracket-highlighting-5 {
+  font-weight: 600;
+}
+
+#custom-wrapper .monaco-list-row.focused,
+#custom-wrapper .monaco-list-row.selected {
+  background: rgba(9, 105, 218, 0.1) !important;
+}
+
+#custom-wrapper .monaco-list-row:hover {
+  background: rgba(31, 35, 40, 0.04) !important;
+}
+
+#custom-wrapper .monaco-scrollable-element > .scrollbar > .slider {
+  background: rgba(31, 35, 40, 0.16) !important;
+  border-radius: 999px;
+}
+
+#custom-wrapper .monaco-scrollable-element > .scrollbar > .slider:hover {
+  background: rgba(31, 35, 40, 0.28) !important;
+}
+
+#custom-wrapper ::selection {
+  background: rgba(9, 105, 218, 0.22);
 }

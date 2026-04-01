@@ -12,6 +12,10 @@ import {
 import { FormContainer, FormPropLabel } from "../utils/components";
 import { useStoreComponents } from "@/shared/hooks/useStoreComponents";
 
+type PickerColor = {
+  toHex: () => string;
+};
+
 export default function QrcodeComponentProps(_props: IQrcodeComponentProps) {
   const { updateCurrentComponent } = useStoreComponents();
   const props = useMemo(() => {
@@ -27,14 +31,12 @@ export default function QrcodeComponentProps(_props: IQrcodeComponentProps) {
 
       updateCurrentComponent({
         bgColor: `#${(
-          changedValues["bgColor"] as unknown as ColorFactory
+          changedValues["bgColor"] as unknown as PickerColor
         ).toHex()}`,
       });
     } else if (changedValues["color"] !== undefined) {
       updateCurrentComponent({
-        color: `#${(
-          changedValues["color"] as unknown as ColorFactory
-        ).toHex()}`,
+        color: `#${(changedValues["color"] as unknown as PickerColor).toHex()}`,
       });
     }
   }

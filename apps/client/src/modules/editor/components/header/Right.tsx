@@ -44,8 +44,8 @@ export default observer(function Right() {
         placement="bottomRight"
         trigger={["click"]}
       >
-        <button className="rounded-2xl border border-slate-200/80 bg-white/85 px-3 py-2 shadow-[0_14px_30px_-24px_rgba(15,23,42,0.55)] transition-all hover:border-emerald-200 hover:shadow-[0_16px_36px_-24px_rgba(16,185,129,0.45)]">
-          <Space size={10}>
+        <button className="rounded-xl border border-slate-200/80 bg-white/85 px-2.5 py-1.5 shadow-[0_12px_24px_-22px_rgba(15,23,42,0.5)] transition-all hover:border-emerald-200 hover:shadow-[0_14px_28px_-22px_rgba(16,185,129,0.4)]">
+          <Space size={8}>
             <Avatar
               src={
                 storeAuth.details?.head_img ? (
@@ -59,16 +59,16 @@ export default observer(function Right() {
               icon={!storeAuth.details?.head_img && <UserOutlined />}
               className={
                 !storeAuth.details?.head_img
-                  ? "bg-emerald-500 border border-emerald-500/20"
-                  : "border border-emerald-500/20"
+                  ? "!h-8 !w-8 bg-emerald-500 border border-emerald-500/20"
+                  : "!h-8 !w-8 border border-emerald-500/20"
               }
             />
             <div className="text-left">
-              <div className="max-w-[120px] truncate text-sm font-medium text-slate-900">
+              <div className="max-w-[110px] truncate text-sm font-medium leading-4 text-slate-900">
                 {storeAuth.details?.username || "未登录用户"}
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
+              <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-slate-400">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 <span>{roleLabel}</span>
               </div>
             </div>

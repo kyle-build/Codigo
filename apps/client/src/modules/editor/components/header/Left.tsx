@@ -57,14 +57,15 @@ export default function Left(props: { title: string }) {
 
   if (isEditState) {
     return (
-      <Space size={10}>
+      <Space size={8}>
         <Input
           value={props.title}
           onChange={handleEdit}
-          className="w-64 !rounded-xl !border-slate-200 !bg-white !text-slate-900 focus:!border-emerald-500"
+          size="small"
+          className="w-56 !rounded-lg !border-slate-200 !bg-white !text-slate-900 focus:!border-emerald-500"
         />
         <div
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all cursor-pointer"
+          className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 transition-all hover:bg-emerald-500 hover:text-white cursor-pointer"
           onClick={() => setIsEditState(false)}
         >
           <CheckOutlined />
@@ -73,15 +74,15 @@ export default function Left(props: { title: string }) {
     );
   } else {
     return (
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
-          <button className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 shadow-[0_10px_30px_-18px_rgba(16,185,129,0.85)] transition-all hover:-translate-y-0.5 hover:bg-emerald-500 hover:text-white">
-            <span className="font-mono text-lg font-bold">C</span>
+          <button className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 shadow-[0_10px_24px_-18px_rgba(16,185,129,0.75)] transition-all hover:-translate-y-0.5 hover:bg-emerald-500 hover:text-white">
+            <span className="font-mono text-base font-bold">C</span>
           </button>
         </Dropdown>
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h1 className="truncate text-lg font-semibold tracking-tight text-slate-900">
+            <h1 className="truncate text-base font-semibold tracking-tight text-slate-900">
               {props.title}
             </h1>
             <EditOutlined {...publicProps} />

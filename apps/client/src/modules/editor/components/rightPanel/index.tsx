@@ -79,7 +79,7 @@ export default function EditorRightPanel() {
   const activeItem = items.find((item) => item.key === activeKey) ?? items[0];
 
   return (
-    <div className="flex h-full w-full flex-col bg-transparent">
+    <div className="flex h-full min-h-0 w-full flex-col bg-transparent">
       <div className="border-b border-slate-200/80 px-5 py-5">
         <div className="mb-2 flex items-center gap-2">
           <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
@@ -100,7 +100,7 @@ export default function EditorRightPanel() {
         onChange={handleTabChange}
         items={items}
         centered
-        className="editor-right-tabs h-full [&>.ant-tabs-nav]:mb-0 [&>.ant-tabs-nav]:px-3 [&>.ant-tabs-nav]:pt-3 [&>.ant-tabs-nav::before]:border-b-slate-100 [&>.ant-tabs-content-holder]:overflow-y-auto [&>.ant-tabs-content-holder]:px-5 [&>.ant-tabs-content-holder]:py-4 [&_.ant-tabs-nav-list]:gap-1 [&_.ant-tabs-tab]:!m-0 [&_.ant-tabs-tab]:!p-1 [&_.ant-tabs-tab-active_div]:bg-emerald-500/10 [&_.ant-tabs-tab-active_div]:text-emerald-600 [&_.ant-tabs-tab-active_div]:shadow-[0_10px_24px_-18px_rgba(16,185,129,0.9)] [&_.ant-tabs-ink-bar]:bg-emerald-500 scrollbar-thin scrollbar-thumb-slate-200/60 hover:scrollbar-thumb-slate-300 scrollbar-track-transparent"
+        className="editor-right-tabs flex min-h-0 flex-1 flex-col [&>.ant-tabs-nav]:mb-0 [&>.ant-tabs-nav]:shrink-0 [&>.ant-tabs-nav]:px-3 [&>.ant-tabs-nav]:pt-3 [&>.ant-tabs-nav::before]:border-b-slate-100 [&>.ant-tabs-content-holder]:min-h-0 [&>.ant-tabs-content-holder]:flex-1 [&>.ant-tabs-content-holder]:overflow-y-auto [&>.ant-tabs-content-holder]:px-5 [&>.ant-tabs-content-holder]:py-4 [&>.ant-tabs-content-holder]:scrollbar-thin [&>.ant-tabs-content-holder]:scrollbar-thumb-slate-200/60 hover:[&>.ant-tabs-content-holder]:scrollbar-thumb-slate-300 [&>.ant-tabs-content-holder]:scrollbar-track-transparent [&_.ant-tabs-content]:h-full [&_.ant-tabs-content]:min-h-0 [&_.ant-tabs-tabpane]:h-full [&_.ant-tabs-tabpane]:min-h-0 [&_.ant-tabs-nav-list]:gap-1 [&_.ant-tabs-tab]:!m-0 [&_.ant-tabs-tab]:!p-1 [&_.ant-tabs-tab-active_div]:bg-emerald-500/10 [&_.ant-tabs-tab-active_div]:text-emerald-600 [&_.ant-tabs-tab-active_div]:shadow-[0_10px_24px_-18px_rgba(16,185,129,0.9)] [&_.ant-tabs-ink-bar]:bg-emerald-500"
       />
     </div>
   );

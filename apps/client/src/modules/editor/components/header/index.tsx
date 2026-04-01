@@ -7,7 +7,7 @@ import Right from "./Right";
 const Header = observer(({}) => {
   const { store: storePage } = useStorePage();
   return (
-    <div className="flex w-full items-center gap-4 px-2">
+    <div className="flex w-full items-center gap-3 px-1">
       <div className="min-w-0 flex-[1.1]">
         <Left title={storePage.title} />
       </div>
@@ -22,15 +22,3 @@ const Header = observer(({}) => {
 });
 
 export default Header;
-
-
-
-
-
-
-
-
-
-
-
-

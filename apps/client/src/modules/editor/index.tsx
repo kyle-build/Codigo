@@ -1,4 +1,4 @@
-import { createRef, useEffect, useRef, useState } from "react";
+import { createRef, useCallback, useEffect, useRef, useState } from "react";
 import { useTitle } from "ahooks";
 import { observer } from "mobx-react-lite";
 import { useSearchParams } from "react-router-dom";
@@ -16,6 +16,80 @@ import {
   useStoreAuth,
 } from "@/shared/hooks";
 import { getLowCodePage } from "@/modules/editor/api/low-code";
+
+const LEFT_PANEL_DEFAULT_WIDTH = 308;
+const RIGHT_PANEL_DEFAULT_WIDTH = 356;
+const LEFT_PANEL_MIN_WIDTH = 260;
+const RIGHT_PANEL_MIN_WIDTH = 300;
+const LEFT_PANEL_MAX_WIDTH = 460;
+const RIGHT_PANEL_MAX_WIDTH = 520;
+const CENTER_MIN_WIDTH = 720;
+const LEFT_PANEL_STORAGE_KEY = "codigo:editor:left-panel-width";
+const RIGHT_PANEL_STORAGE_KEY = "codigo:editor:right-panel-width";
+
+type ResizeSide = "left" | "right";
+
+function readStoredWidth(key: string, fallback: number) {
+  if (typeof window === "undefined") {
+    return fallback;
+  }
+
+  const stored = Number(window.localStorage.getItem(key));
+  return Number.isFinite(stored) ? stored : fallback;
+}
+
+function clampWidth(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function getPanelBounds(
+  side: ResizeSide,
+  viewportWidth: number,
+  oppositeWidth: number,
+) {
+  const minWidth =
+    side === "left" ? LEFT_PANEL_MIN_WIDTH : RIGHT_PANEL_MIN_WIDTH;
+  const maxWidth =
+    side === "left" ? LEFT_PANEL_MAX_WIDTH : RIGHT_PANEL_MAX_WIDTH;
+  const remainingWidth = Math.max(
+    minWidth,
+    viewportWidth - CENTER_MIN_WIDTH - oppositeWidth,
+  );
+
+  return {
+    minWidth,
+    maxWidth: Math.max(minWidth, Math.min(maxWidth, remainingWidth)),
+  };
+}
+
+function normalizePanelWidths(
+  viewportWidth: number,
+  leftWidth: number,
+  rightWidth: number,
+) {
+  const leftBounds = getPanelBounds("left", viewportWidth, rightWidth);
+  const nextLeftWidth = clampWidth(
+    leftWidth,
+    leftBounds.minWidth,
+    leftBounds.maxWidth,
+  );
+  const rightBounds = getPanelBounds("right", viewportWidth, nextLeftWidth);
+  const nextRightWidth = clampWidth(
+    rightWidth,
+    rightBounds.minWidth,
+    rightBounds.maxWidth,
+  );
+  const finalLeftBounds = getPanelBounds("left", viewportWidth, nextRightWidth);
+
+  return {
+    leftWidth: clampWidth(
+      nextLeftWidth,
+      finalLeftBounds.minWidth,
+      finalLeftBounds.maxWidth,
+    ),
+    rightWidth: nextRightWidth,
+  };
+}
 
 const Editor = observer(() => {
   useTitle("codigo - 页面编辑");
@@ -38,8 +112,41 @@ const Editor = observer(() => {
 
   const canvasRef = createRef<any>();
   const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const resizeStateRef = useRef<{
+    side: ResizeSide;
+    startX: number;
+    startWidth: number;
+    oppositeWidth: number;
+  } | null>(null);
 
   const [scrolling, setScrolling] = useState(false);
+  const [leftPanelWidth, setLeftPanelWidth] = useState(() =>
+    readStoredWidth(LEFT_PANEL_STORAGE_KEY, LEFT_PANEL_DEFAULT_WIDTH),
+  );
+  const [rightPanelWidth, setRightPanelWidth] = useState(() =>
+    readStoredWidth(RIGHT_PANEL_STORAGE_KEY, RIGHT_PANEL_DEFAULT_WIDTH),
+  );
+
+  const applyPanelWidths = useCallback(
+    (nextLeftWidth: number, nextRightWidth: number) => {
+      const normalized = normalizePanelWidths(
+        window.innerWidth,
+        nextLeftWidth,
+        nextRightWidth,
+      );
+      setLeftPanelWidth(normalized.leftWidth);
+      setRightPanelWidth(normalized.rightWidth);
+      window.localStorage.setItem(
+        LEFT_PANEL_STORAGE_KEY,
+        String(Math.round(normalized.leftWidth)),
+      );
+      window.localStorage.setItem(
+        RIGHT_PANEL_STORAGE_KEY,
+        String(Math.round(normalized.rightWidth)),
+      );
+    },
+    [],
+  );
 
   useEffect(() => {
     loadPageData(getLowCodePage).then((data) => {
@@ -87,12 +194,123 @@ const Editor = observer(() => {
     };
   }, [scrolling]);
 
+  useEffect(() => {
+    const normalized = normalizePanelWidths(
+      window.innerWidth,
+      leftPanelWidth,
+      rightPanelWidth,
+    );
+
+    if (
+      normalized.leftWidth !== leftPanelWidth ||
+      normalized.rightWidth !== rightPanelWidth
+    ) {
+      setLeftPanelWidth(normalized.leftWidth);
+      setRightPanelWidth(normalized.rightWidth);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handlePointerMove = (event: PointerEvent) => {
+      const resizeState = resizeStateRef.current;
+      if (!resizeState) {
+        return;
+      }
+
+      const deltaX = event.clientX - resizeState.startX;
+
+      if (resizeState.side === "left") {
+        const bounds = getPanelBounds(
+          "left",
+          window.innerWidth,
+          resizeState.oppositeWidth,
+        );
+        setLeftPanelWidth(
+          clampWidth(
+            resizeState.startWidth + deltaX,
+            bounds.minWidth,
+            bounds.maxWidth,
+          ),
+        );
+        return;
+      }
+
+      const bounds = getPanelBounds(
+        "right",
+        window.innerWidth,
+        resizeState.oppositeWidth,
+      );
+      setRightPanelWidth(
+        clampWidth(
+          resizeState.startWidth - deltaX,
+          bounds.minWidth,
+          bounds.maxWidth,
+        ),
+      );
+    };
+
+    const finishResize = () => {
+      if (!resizeStateRef.current) {
+        return;
+      }
+
+      resizeStateRef.current = null;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      applyPanelWidths(leftPanelWidth, rightPanelWidth);
+    };
+
+    const handleWindowResize = () => {
+      applyPanelWidths(leftPanelWidth, rightPanelWidth);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", finishResize);
+    window.addEventListener("pointercancel", finishResize);
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", finishResize);
+      window.removeEventListener("pointercancel", finishResize);
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, [applyPanelWidths, leftPanelWidth, rightPanelWidth]);
+
+  const startResize = useCallback(
+    (side: ResizeSide) => (event: React.PointerEvent<HTMLDivElement>) => {
+      resizeStateRef.current = {
+        side,
+        startX: event.clientX,
+        startWidth: side === "left" ? leftPanelWidth : rightPanelWidth,
+        oppositeWidth: side === "left" ? rightPanelWidth : leftPanelWidth,
+      };
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+      event.currentTarget.setPointerCapture(event.pointerId);
+    },
+    [leftPanelWidth, rightPanelWidth],
+  );
+
   return (
     <div className="relative flex h-full w-full overflow-hidden bg-[#F8FAFC]">
-      <div className="flex w-[308px] shrink-0 flex-col border-r border-slate-200/80 bg-white/88 px-4 py-4 shadow-[14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl">
+      <div
+        className="flex shrink-0 flex-col border-r border-slate-200/80 bg-white/88 px-4 py-4 shadow-[14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
+        style={{ width: leftPanelWidth }}
+      >
         <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200/60 hover:scrollbar-thumb-slate-300 scrollbar-track-transparent">
           <EditorLeftPanel />
         </div>
+      </div>
+      <div
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="调整左侧边栏宽度"
+        onPointerDown={startResize("left")}
+        className="group relative z-20 w-3 shrink-0 cursor-col-resize bg-transparent touch-none"
+      >
+        <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-slate-200 transition-colors group-hover:bg-emerald-400 group-active:bg-emerald-500" />
+        <div className="absolute left-1/2 top-1/2 h-14 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-300/70 transition-all group-hover:h-20 group-hover:bg-emerald-400/80 group-active:bg-emerald-500" />
       </div>
 
       <div className="relative flex min-w-0 flex-1 flex-col">
@@ -145,7 +363,20 @@ const Editor = observer(() => {
         </div>
       </div>
 
-      <div className="flex w-[356px] shrink-0 flex-col border-l border-slate-200/80 bg-white/88 shadow-[-14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl">
+      <div
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="调整右侧边栏宽度"
+        onPointerDown={startResize("right")}
+        className="group relative z-20 w-3 shrink-0 cursor-col-resize bg-transparent touch-none"
+      >
+        <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-slate-200 transition-colors group-hover:bg-sky-400 group-active:bg-sky-500" />
+        <div className="absolute left-1/2 top-1/2 h-14 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-300/70 transition-all group-hover:h-20 group-hover:bg-sky-400/80 group-active:bg-sky-500" />
+      </div>
+      <div
+        className="flex shrink-0 flex-col border-l border-slate-200/80 bg-white/88 shadow-[-14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
+        style={{ width: rightPanelWidth }}
+      >
         <div className="flex min-h-0 w-full flex-1 flex-col">
           <EditorRightPanel />
         </div>

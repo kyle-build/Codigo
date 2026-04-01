@@ -61,7 +61,7 @@ export const StudioLayout = observer(() => {
       <div className="flex flex-col h-full bg-[#F8FAFC] text-slate-900 overflow-hidden font-sans">
         <div className="fixed inset-0 pointer-events-none z-0 bg-[linear-gradient(rgba(0,0,0,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.015)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]"></div>
 
-        <header className="relative z-20 flex h-16 items-center border-b border-slate-200/80 bg-white/90 px-5 shadow-[0_20px_40px_-36px_rgba(15,23,42,0.65)] backdrop-blur-xl">
+        <header className="relative z-20 flex h-14 items-center border-b border-slate-200/80 bg-white/92 px-4 shadow-[0_16px_32px_-32px_rgba(15,23,42,0.55)] backdrop-blur-xl">
           <div className="w-full">
             <EditorHeader />
           </div>

@@ -21,7 +21,6 @@ export const VersionHistoryDrawer = observer(({ open, onClose }: Props) => {
   const {
     data: versions,
     loading,
-    run: fetchVersions,
   } = useRequest(
     async () => {
       if (!pageId) return [];
