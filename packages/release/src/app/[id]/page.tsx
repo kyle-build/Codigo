@@ -21,13 +21,18 @@ async function getData(id: string) {
 
 interface PageType {
   params: { id: string };
+  searchParams?: { page?: string };
 }
-export default async function Page({ params }: PageType) {
+export default async function Page({ params, searchParams }: PageType) {
   const data = await getData(params.id);
 
   return (
     <div className="App">
-      <ComponentRender data={data} id={params.id} />
+      <ComponentRender
+        data={data}
+        id={params.id}
+        initialPagePath={searchParams?.page ?? null}
+      />
     </div>
   );
 }

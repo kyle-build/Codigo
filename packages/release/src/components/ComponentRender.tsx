@@ -9,6 +9,7 @@ import {
   getComponentByType,
   initBuiltinComponents,
 } from "@codigo/materials";
+import type { IPageSchema } from "@codigo/schema";
 import { useRequest } from "ahooks";
 import { useImmer } from "use-immer";
 import { useEffect, useMemo, useState } from "react";
@@ -166,20 +167,23 @@ function getQuestionComponentValueField(component: any) {
 interface ComponentRenderType {
   id: string;
   data: GetReleaseDataResponse;
+  initialPagePath?: string | null;
 }
 
-export default function ComponentRender({ data, id }: ComponentRenderType) {
-  const [isPosted, setIsPosted] = useState(false);
-  const [localData, setLocalData] = useImmer(
-    JSON.parse(JSON.stringify(data)) as ComponentRenderType["data"],
-  );
-  const pageSchema = useMemo(() => {
-    if (localData.schema?.components?.length) {
-      return localData.schema.components;
-    }
+function resolveRuntimeSchema(data: GetReleaseDataResponse): IPageSchema {
+  if (data.schema) {
+    return {
+      version: data.schema.version ?? 3,
+      components: data.schema.components ?? [],
+      pages: data.schema.pages,
+      activePageId: data.schema.activePageId,
+    };
+  }
 
-    return buildComponentTree(
-      localData.components.map((component) => ({
+  return {
+    version: data.schema_version ?? 1,
+    components: buildComponentTree(
+      data.components.map((component) => ({
         id: component.node_id,
         type: component.type,
         name: component.name,
@@ -189,9 +193,40 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
         meta: component.meta,
         parentId: component.parent_node_id,
       })),
-      localData.componentIds,
+      data.componentIds,
+    ),
+  };
+}
+
+function resolveActivePage(schema: IPageSchema, requestedPath?: string | null) {
+  if (Array.isArray(schema.pages) && schema.pages.length) {
+    return (
+      schema.pages.find((page) => page.path === requestedPath) ??
+      schema.pages.find((page) => page.id === schema.activePageId) ??
+      schema.pages.find((page) => page.path === "home") ??
+      schema.pages[0]
     );
-  }, [localData.componentIds, localData.components, localData.schema]);
+  }
+
+  return null;
+}
+
+export default function ComponentRender({
+  data,
+  id,
+  initialPagePath,
+}: ComponentRenderType) {
+  const [isPosted, setIsPosted] = useState(false);
+  const [localData, setLocalData] = useImmer(
+    JSON.parse(JSON.stringify(data)) as ComponentRenderType["data"],
+  );
+  const runtimeSchema = useMemo(() => resolveRuntimeSchema(localData), [localData]);
+  const [currentPagePath, setCurrentPagePath] = useState(initialPagePath ?? null);
+  const activePage = useMemo(
+    () => resolveActivePage(runtimeSchema, currentPagePath),
+    [currentPagePath, runtimeSchema],
+  );
+  const pageSchema = activePage?.components ?? runtimeSchema.components;
 
   const componentValueMap = useMemo(() => {
     return new Map(
@@ -207,6 +242,24 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
     setPageState(initialPageState);
   }, [initialPageState]);
 
+  useEffect(() => {
+    setCurrentPagePath(initialPagePath ?? null);
+  }, [initialPagePath]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const nextUrl = new URL(window.location.href);
+    if (currentPagePath) {
+      nextUrl.searchParams.set("page", currentPagePath);
+    } else {
+      nextUrl.searchParams.delete("page");
+    }
+    window.history.replaceState({}, "", nextUrl.toString());
+  }, [currentPagePath]);
+
   const shouldRenderNode = (node: ComponentNode) => {
     const props = (node.props ?? {}) as Record<string, unknown>;
     if (
@@ -221,6 +274,36 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
     return pageState[props.visibleStateKey] === props.visibleStateValue;
   };
 
+  const handleAction = (action: RuntimeAction) => {
+    if (action.type === "set-state" || action.type === "setState") {
+      setPageState((prev) => ({
+        ...prev,
+        [action.key]: action.value,
+      }));
+      return;
+    }
+
+    if (action.type === "navigate") {
+      if (action.path.startsWith("page:")) {
+        setCurrentPagePath(action.path.slice(5));
+        return;
+      }
+      window.location.assign(action.path);
+      return;
+    }
+
+    if (action.type === "openUrl") {
+      window.open(action.url, action.target ?? "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    const targetElement = document.getElementById(action.targetId);
+    targetElement?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   function renderNode(node: ComponentNode) {
     if (!shouldRenderNode(node)) {
       return null;
@@ -232,15 +315,16 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
       type: node.type,
       props: sourceComponent?.options ?? node.props ?? {},
     };
-    const renderedChildren =
-      node.children?.map((child) => renderNode(child)) ?? [];
+    const renderedChildrenMap = new Map(
+      (node.children ?? []).map((child) => [child.id, renderNode(child)]),
+    );
     const groupedSlots = groupChildrenBySlot(node);
     const slots = Object.fromEntries(
       Object.entries(groupedSlots).map(([slotName, nodes]) => [
         slotName,
-        nodes.map((child) =>
-          renderedChildren.find((item) => String(item.key) === child.id),
-        ),
+        nodes
+          .map((child) => renderedChildrenMap.get(child.id))
+          .filter((item): item is NonNullable<typeof item> => item != null),
       ]),
     );
 
@@ -249,7 +333,7 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
         key={node.id}
         className="relative"
         onClick={() => {
-          getClickActions(node).forEach((action) => onAction(action));
+          getClickActions(node).forEach((action) => handleAction(action));
         }}
         style={{
           ...(node.styles ?? {}),
@@ -270,35 +354,7 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
               }
             });
           },
-          (action) => {
-            if (action.type === "set-state" || action.type === "setState") {
-              setPageState((prev) => ({
-                ...prev,
-                [action.key]: action.value,
-              }));
-              return;
-            }
-
-            if (action.type === "navigate") {
-              window.location.assign(action.path);
-              return;
-            }
-
-            if (action.type === "openUrl") {
-              window.open(
-                action.url,
-                action.target ?? "_blank",
-                "noopener,noreferrer",
-              );
-              return;
-            }
-
-            const targetElement = document.getElementById(action.targetId);
-            targetElement?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          },
+          handleAction,
           slots,
           node.id,
         )}

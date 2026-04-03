@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import { FloatButton } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { CaretLeftOutlined } from "@ant-design/icons";
 import {
   generateComponent,
@@ -9,11 +9,32 @@ import {
   type RuntimeAction,
 } from "@/modules/editor/components/canvas";
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
-import type { ComponentNode } from "@codigo/schema";
+import type { ComponentNode, IEditorPageSchema } from "@codigo/schema";
+
+function resolvePreviewPage(
+  pages: IEditorPageSchema[],
+  requestedPath: string | null,
+) {
+  if (!pages.length) {
+    return null;
+  }
+
+  return (
+    pages.find((page) => page.path === requestedPath) ??
+    pages.find((page) => page.path === "home") ??
+    pages[0]
+  );
+}
 
 const PreviewCanvas = observer(() => {
-  const { store, getComponentTree, loadPageData } = useStoreComponents();
-  const componentTree = getComponentTree.get();
+  const { getPages, loadPageData } = useStoreComponents();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pages = getPages.get();
+  const activePage = useMemo(
+    () => resolvePreviewPage(pages, searchParams.get("page")),
+    [pages, searchParams],
+  );
+  const componentTree = activePage?.components ?? [];
   const initialPageState = useMemo(
     () => resolveInitialPageState(componentTree),
     [componentTree],
@@ -49,6 +70,15 @@ const PreviewCanvas = observer(() => {
         }
 
         if (action.type === "navigate") {
+          if (action.path.startsWith("page:")) {
+            const pagePath = action.path.slice(5);
+            setSearchParams((prev) => {
+              const nextParams = new URLSearchParams(prev);
+              nextParams.set("page", pagePath);
+              return nextParams;
+            });
+            return;
+          }
           window.location.assign(action.path);
           return;
         }
@@ -66,14 +96,14 @@ const PreviewCanvas = observer(() => {
         targetElement?.scrollIntoView({ behavior: "smooth", block: "start" });
       },
     }),
-    [pageState],
+    [pageState, setSearchParams],
   );
 
   return (
     <div
       className="relative"
       style={{
-        minHeight: `${Math.max(700, Object.keys(store.compConfigs).length * 220)}px`,
+        minHeight: `${Math.max(700, componentTree.length * 220)}px`,
       }}
     >
       {componentTree.map(function renderTreeNode(node: ComponentNode) {
@@ -99,7 +129,6 @@ const PreviewCanvas = observer(() => {
 });
 
 export default observer(function Preview() {
-  // 返回编辑页面
   const nav = useNavigate();
   const { store } = useStorePage();
 
@@ -116,7 +145,6 @@ export default observer(function Preview() {
           height: store.canvasHeight,
         }}
       >
-        {/* Mobile Status Bar Simulation */}
         {store.deviceType === "mobile" && (
           <div className="sticky top-0 z-50 h-6 bg-black/90 text-white text-[10px] flex items-center justify-between px-4 font-mono">
             <span>9:41</span>
@@ -126,9 +154,7 @@ export default observer(function Preview() {
             </div>
           </div>
         )}
-        {/* 预览的组件页面 */}
         <PreviewCanvas />
-        {/* 返回按钮 */}
         <FloatButton icon={<CaretLeftOutlined />} onClick={() => nav(-1)} />
       </div>
     </div>

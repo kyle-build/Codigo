@@ -150,6 +150,13 @@ export function useStorePermission() {
             } else if (type === "replace_all") {
               store.compConfigs = data.compConfigs;
               store.sortableCompConfig = data.sortableCompConfig;
+              store.pages = data.pages ?? store.pages;
+              store.activePageId = data.activePageId ?? store.activePageId;
+              store.currentCompConfig =
+                store.currentCompConfig &&
+                data.compConfigs?.[store.currentCompConfig]
+                  ? store.currentCompConfig
+                  : (data.sortableCompConfig?.[0] ?? null);
             }
           }),
         );

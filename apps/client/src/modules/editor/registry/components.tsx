@@ -23,8 +23,9 @@ import {
   UnorderedListOutlined,
   WarningOutlined,
 } from "@ant-design/icons";
+import { getComponentByType as getBuiltinComponentByType } from "@codigo/materials";
 import type { PageCategory, TComponentTypes } from "@codigo/schema";
-import type { FC, ReactNode } from "react";
+import type { ComponentType, FC, ReactNode } from "react";
 import { AlertComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeAlert";
 import { BreadcrumbBarComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeBreadcrumbBar";
 import { ButtonComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeButton";
@@ -39,7 +40,6 @@ import { ImageComponentProps } from "@/modules/editor/components/LowCodeComponen
 import { InputComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeInput";
 import { ListComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeList";
 import { PageHeaderComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodePageHeader";
-import { QrcodeComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeQrcode";
 import { QueryFilterComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeQueryFilter";
 import { RadioComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeRadio";
 import { RichTextComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeRichText";
@@ -59,6 +59,7 @@ export interface EditorComponentMeta {
   icon: ReactNode;
   sectionKey: EditorComponentSectionKey;
   propsEditor: FC<any>;
+  renderComponent: ComponentType<any>;
   quickInsert?: boolean;
   hiddenFromPalette?: boolean;
   codeSync?: boolean;
@@ -97,6 +98,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <ApartmentOutlined />,
     sectionKey: "basic",
     propsEditor: BreadcrumbBarComponentProps,
+    renderComponent: getBuiltinComponentByType("breadcrumbBar"),
   },
   {
     type: "pageHeader",
@@ -104,6 +106,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <BarsOutlined />,
     sectionKey: "basic",
     propsEditor: PageHeaderComponentProps,
+    renderComponent: getBuiltinComponentByType("pageHeader"),
   },
   {
     type: "queryFilter",
@@ -111,6 +114,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <FilterOutlined />,
     sectionKey: "basic",
     propsEditor: QueryFilterComponentProps,
+    renderComponent: getBuiltinComponentByType("queryFilter"),
   },
   {
     type: "statCard",
@@ -118,6 +122,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <DashboardOutlined />,
     sectionKey: "basic",
     propsEditor: StatCardComponentProps,
+    renderComponent: getBuiltinComponentByType("statCard"),
   },
   {
     type: "cardGrid",
@@ -125,6 +130,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <CreditCardOutlined />,
     sectionKey: "basic",
     propsEditor: CardGridComponentProps,
+    renderComponent: getBuiltinComponentByType("cardGrid"),
   },
   {
     type: "dataTable",
@@ -132,6 +138,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <TableOutlined />,
     sectionKey: "basic",
     propsEditor: DataTableComponentProps,
+    renderComponent: getBuiltinComponentByType("dataTable"),
   },
   {
     type: "container",
@@ -139,6 +146,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <LayoutOutlined />,
     sectionKey: "basic",
     propsEditor: ContainerComponentProps,
+    renderComponent: getBuiltinComponentByType("container"),
   },
   {
     type: "twoColumn",
@@ -146,6 +154,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <LayoutOutlined />,
     sectionKey: "basic",
     propsEditor: TwoColumnComponentProps,
+    renderComponent: getBuiltinComponentByType("twoColumn"),
   },
   {
     type: "button",
@@ -153,6 +162,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <BorderOutlined />,
     sectionKey: "basic",
     propsEditor: ButtonComponentProps,
+    renderComponent: getBuiltinComponentByType("button"),
     quickInsert: true,
   },
   {
@@ -161,6 +171,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <SplitCellsOutlined />,
     sectionKey: "basic",
     propsEditor: SwiperComponentProps,
+    renderComponent: getBuiltinComponentByType("swiper"),
   },
   {
     type: "card",
@@ -168,6 +179,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <CreditCardOutlined />,
     sectionKey: "basic",
     propsEditor: CardComponentProps,
+    renderComponent: getBuiltinComponentByType("card"),
   },
   {
     type: "list",
@@ -175,6 +187,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <UnorderedListOutlined />,
     sectionKey: "basic",
     propsEditor: ListComponentProps,
+    renderComponent: getBuiltinComponentByType("list"),
   },
   {
     type: "image",
@@ -182,6 +195,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <FundViewOutlined />,
     sectionKey: "basic",
     propsEditor: ImageComponentProps,
+    renderComponent: getBuiltinComponentByType("image"),
     quickInsert: true,
   },
   {
@@ -190,6 +204,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <FontSizeOutlined />,
     sectionKey: "basic",
     propsEditor: TextComponentProps,
+    renderComponent: getBuiltinComponentByType("titleText"),
     quickInsert: true,
   },
   {
@@ -198,6 +213,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <MinusOutlined />,
     sectionKey: "basic",
     propsEditor: SplitComponentProps,
+    renderComponent: getBuiltinComponentByType("split"),
   },
   {
     type: "richText",
@@ -205,6 +221,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <FontColorsOutlined />,
     sectionKey: "basic",
     propsEditor: RichTextComponentProps,
+    renderComponent: getBuiltinComponentByType("richText"),
   },
   {
     type: "empty",
@@ -212,6 +229,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <ExpandOutlined />,
     sectionKey: "basic",
     propsEditor: EmptyComponentProps,
+    renderComponent: getBuiltinComponentByType("empty"),
   },
   {
     type: "alert",
@@ -219,6 +237,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <WarningOutlined />,
     sectionKey: "basic",
     propsEditor: AlertComponentProps,
+    renderComponent: getBuiltinComponentByType("alert"),
   },
   {
     type: "input",
@@ -226,6 +245,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <EditOutlined />,
     sectionKey: "form",
     propsEditor: InputComponentProps,
+    renderComponent: getBuiltinComponentByType("input"),
   },
   {
     type: "textArea",
@@ -233,6 +253,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <FormOutlined />,
     sectionKey: "form",
     propsEditor: InputComponentProps,
+    renderComponent: getBuiltinComponentByType("textArea"),
   },
   {
     type: "radio",
@@ -240,6 +261,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <CheckCircleOutlined />,
     sectionKey: "form",
     propsEditor: RadioComponentProps,
+    renderComponent: getBuiltinComponentByType("radio"),
   },
   {
     type: "checkbox",
@@ -247,6 +269,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <CheckSquareOutlined />,
     sectionKey: "form",
     propsEditor: CheckboxComponentProps,
+    renderComponent: getBuiltinComponentByType("checkbox"),
   },
   {
     type: "statistic",
@@ -254,6 +277,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <DashboardOutlined />,
     sectionKey: "report",
     propsEditor: StatisticComponentProps,
+    renderComponent: getBuiltinComponentByType("statistic"),
   },
   {
     type: "table",
@@ -261,6 +285,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <TableOutlined />,
     sectionKey: "report",
     propsEditor: TableComponentProps,
+    renderComponent: getBuiltinComponentByType("table"),
   },
   {
     type: "barChart",
@@ -268,6 +293,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <BarChartOutlined />,
     sectionKey: "report",
     propsEditor: ChartComponentProps,
+    renderComponent: getBuiltinComponentByType("barChart"),
   },
   {
     type: "lineChart",
@@ -275,6 +301,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <LineChartOutlined />,
     sectionKey: "report",
     propsEditor: ChartComponentProps,
+    renderComponent: getBuiltinComponentByType("lineChart"),
   },
   {
     type: "pieChart",
@@ -282,6 +309,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <PieChartOutlined />,
     sectionKey: "report",
     propsEditor: ChartComponentProps,
+    renderComponent: getBuiltinComponentByType("pieChart"),
   },
   {
     type: "radarChart",
@@ -289,6 +317,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <PieChartOutlined />,
     sectionKey: "report",
     propsEditor: ChartComponentProps,
+    renderComponent: getBuiltinComponentByType("radarChart"),
     hiddenFromPalette: true,
   },
   {
@@ -297,14 +326,7 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     icon: <BarChartOutlined />,
     sectionKey: "report",
     propsEditor: ChartComponentProps,
-    hiddenFromPalette: true,
-  },
-  {
-    type: "qrcode",
-    name: "二维码",
-    icon: <BorderOutlined />,
-    sectionKey: "basic",
-    propsEditor: QrcodeComponentProps,
+    renderComponent: getBuiltinComponentByType("funnelChart"),
     hiddenFromPalette: true,
   },
 ];
@@ -375,6 +397,10 @@ export function findEditorComponent(type?: string | null) {
 
 export function getComponentPropsByType(type?: string | null) {
   return findEditorComponent(type)?.propsEditor ?? null;
+}
+
+export function getComponentRenderByType(type?: string | null) {
+  return findEditorComponent(type)?.renderComponent ?? null;
 }
 
 export const quickInsertComponents = editorComponentCatalog

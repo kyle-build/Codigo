@@ -32,6 +32,7 @@ export type TComponentTypes =
   | "pieChart"
   | "radarChart"
   | "funnelChart"
+  | "video"
   | "avatar";
 
 /**
@@ -82,14 +83,14 @@ export interface TComponentStyles {
   top?: number | string;
   width?: number | string;
   height?: number | string;
-  marginTop?: number;
-  marginBottom?: number;
-  marginLeft?: number;
-  marginRight?: number;
-  paddingTop?: number;
-  paddingBottom?: number;
-  paddingLeft?: number;
-  paddingRight?: number;
+  marginTop?: number | string;
+  marginBottom?: number | string;
+  marginLeft?: number | string;
+  marginRight?: number | string;
+  paddingTop?: number | string;
+  paddingBottom?: number | string;
+  paddingLeft?: number | string;
+  paddingRight?: number | string;
 }
 
 /**
@@ -117,14 +118,19 @@ export interface TBasicComponentConfig<
 /**
  * 描述页面 schema 中的组件树节点结构。
  */
-export interface ComponentNode {
+export interface ComponentNode<
+  T extends string = TComponentTypes,
+  P extends Record<string, any> = Record<string, any>,
+> {
   id: string;
-  type: string;
-  props: Record<string, unknown>;
-  styles?: Record<string, unknown>;
-  children?: ComponentNode[];
-  meta?: Record<string, unknown>;
+  type: T;
+  name?: string;
+  props: P;
+  styles?: TComponentStyles;
+  children?: ComponentNode<T, P>[];
+  meta?: ComponentMeta;
   events?: ComponentEventMap;
+  slot?: string | null;
   visibleWhen?: {
     key: string;
     equals: string | number | boolean;
@@ -136,8 +142,8 @@ export interface ComponentNode {
  */
 export interface ComponentNodeRecord<
   T extends string = TComponentTypes,
-  P extends Record<string, any> = object,
-> extends Omit<ComponentNode, "children"> {
+  P extends Record<string, any> = Record<string, any>,
+> extends Omit<ComponentNode<T, P>, "children"> {
   parentId: string | null;
   childIds: string[];
 }

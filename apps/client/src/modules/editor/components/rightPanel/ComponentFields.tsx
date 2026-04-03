@@ -11,7 +11,10 @@ import {
 } from "@ant-design/icons";
 import type { ActionConfig, ComponentNode } from "@codigo/schema";
 import type { ReactNode } from "react";
-import { getComponentPropsByType } from "@/modules/editor/registry/components";
+import {
+  findEditorComponent,
+  getComponentPropsByType,
+} from "@/modules/editor/registry/components";
 import type { TStoreComponents } from "@/shared/stores";
 import { useStoreComponents } from "@/shared/hooks";
 import { Button, Collapse, Empty, Form, Input, InputNumber, Select } from "antd";
@@ -28,7 +31,7 @@ const actionTypeOptions = [
 function createDefaultAction(type: ActionConfig["type"]): ActionConfig {
   switch (type) {
     case "navigate":
-      return { type, path: "/admin/users" };
+      return { type, path: "page:home" };
     case "openUrl":
       return { type, url: "https://example.com", target: "_blank" };
     case "scrollTo":
@@ -37,6 +40,102 @@ function createDefaultAction(type: ActionConfig["type"]): ActionConfig {
       return { type: "setState", key: "activePanel", value: "overview" };
   }
 }
+
+export const EditorOutlineTree = observer(function EditorOutlineTree() {
+  const {
+    getActivePage,
+    getComponentTree,
+    getCurrentComponentConfig,
+    setCurrentComponent,
+  } = useStoreComponents();
+  const activePage = getActivePage.get();
+  const currentConfigId = getCurrentComponentConfig.get()?.id ?? null;
+  const componentTree = getComponentTree.get();
+
+  function renderTree(node: ComponentNode, depth = 0): ReactNode {
+    const isActive = node.id === currentConfigId;
+    const componentMeta = findEditorComponent(node.type);
+
+    return (
+      <div
+        key={node.id}
+        className="relative"
+        style={{ marginLeft: depth * 14 }}
+      >
+        {depth > 0 ? (
+          <span className="pointer-events-none absolute -left-2 top-0 h-full w-px bg-slate-200/90" />
+        ) : null}
+        <button
+          type="button"
+          onClick={() => setCurrentComponent(node.id)}
+          className={`mb-2 flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-left transition ${
+            isActive
+              ? "border-emerald-300 bg-emerald-50 text-emerald-700 shadow-[0_16px_30px_-28px_rgba(16,185,129,0.9)]"
+              : "border-transparent bg-white/70 text-slate-600 hover:border-slate-200 hover:bg-white"
+          }`}
+        >
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+            <NodeIndexOutlined />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[12px] font-semibold">
+              {node.name || componentMeta?.name || node.type}
+            </span>
+            <span className="block truncate text-[11px] text-slate-400">
+              {node.type}
+            </span>
+          </span>
+          <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-400">
+            {node.slot ?? "root"}
+          </span>
+        </button>
+        {node.children?.map((child) => renderTree(child, depth + 1))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <div className="rounded-[22px] border border-slate-200/80 bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(255,255,255,0.98))] px-3.5 py-3 shadow-[0_18px_36px_-32px_rgba(15,23,42,0.4)]">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <div className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-600">
+              Outline
+            </div>
+            <div className="mt-2 text-sm font-semibold text-slate-900">
+              大纲树
+            </div>
+          </div>
+          <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 shadow-sm">
+            {componentTree.length} 个根节点
+          </span>
+        </div>
+        <div className="mt-2 text-[12px] leading-5 text-slate-500">
+          {activePage
+            ? `${activePage.name} · page:${activePage.path}`
+            : "当前页面结构"}
+        </div>
+      </div>
+
+      <div className="mt-3 min-h-0 flex-1 rounded-[22px] border border-slate-200/70 bg-white/88 p-3 shadow-[0_20px_40px_-34px_rgba(15,23,42,0.5)] backdrop-blur-xl">
+        <div className="h-full min-h-0 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-200/60 hover:scrollbar-thumb-slate-300 scrollbar-track-transparent">
+          {componentTree.length ? (
+            <div className="space-y-0.5">
+              {componentTree.map((node) => renderTree(node))}
+            </div>
+          ) : (
+            <div className="flex h-full items-center justify-center rounded-[20px] border border-dashed border-slate-200 bg-slate-50/70 py-10">
+              <Empty
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description="当前页面还没有组件"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+});
 
 const ComponentFields: FC<{ store: TStoreComponents }> = observer(
   ({ store }) => {
@@ -53,41 +152,6 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
             <div className="mb-4 text-[13px] leading-5 text-slate-500">
               先在画布中点击一个组件，或从左侧资源库拖入新组件，再在这里完成细节配置。
             </div>
-            <div className="grid grid-cols-3 gap-2.5 text-left">
-              {[
-                {
-                  key: "content",
-                  icon: <AppstoreOutlined />,
-                  title: "编辑内容",
-                  desc: "修改当前组件的文案、数据和事件。",
-                },
-                {
-                  key: "layout",
-                  icon: <DragOutlined />,
-                  title: "调整布局",
-                  desc: "设置位置、尺寸、边距与画布结构。",
-                },
-                {
-                  key: "style",
-                  icon: <ShrinkOutlined />,
-                  title: "细化样式",
-                  desc: "统一页面节奏，让视觉更稳定。",
-                },
-              ].map((item) => (
-                <div
-                  key={item.key}
-                  className="rounded-[18px] border border-white bg-white px-3 py-2.5 shadow-[0_16px_30px_-28px_rgba(15,23,42,0.65)]"
-                >
-                  <div className="mb-1.5 text-emerald-600">{item.icon}</div>
-                  <div className="text-[13px] font-medium text-slate-900">
-                    {item.title}
-                  </div>
-                  <div className="mt-1 text-[11px] leading-5 text-slate-400">
-                    {item.desc}
-                  </div>
-                </div>
-              ))}
-            </div>
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description={false}
@@ -98,10 +162,9 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
       );
 
     const {
-      getComponentTree,
       getCurrentComponentConfig,
       getAvailableSlots,
-      setCurrentComponent,
+      getPages,
       updateCurrentComponentEvents,
       updateCurrentComponentStyles,
     } = useStoreComponents();
@@ -111,36 +174,14 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
 
     const ComponentProps = getComponentPropsByType(config.type);
     const styles = config.styles || {};
-    const currentConfigId = config.id;
     const containerMeta = getComponentContainerMeta(config.type);
     const currentSlots = getAvailableSlots(config.type);
     const childrenCount = config.childIds?.length ?? 0;
     const eventActions = (toJS(config.events?.onClick) ?? []) as ActionConfig[];
-
-    const componentTree = getComponentTree.get();
-
-    function renderTree(node: ComponentNode, depth = 0): ReactNode {
-      const isActive = node.id === currentConfigId;
-      return (
-        <div key={node.id} style={{ marginLeft: depth * 12 }}>
-          <button
-            type="button"
-            onClick={() => setCurrentComponent(node.id)}
-            className={`mb-2 flex w-full items-center justify-between rounded-2xl border px-3 py-2 text-left transition ${
-              isActive
-                ? "border-emerald-300 bg-emerald-50 text-emerald-700"
-                : "border-slate-100 bg-white text-slate-600 hover:border-slate-200 hover:bg-slate-50"
-            }`}
-          >
-            <span className="text-sm font-medium">{node.type}</span>
-            <span className="text-[11px] text-slate-400">
-              {node.slot ?? "root"}
-            </span>
-          </button>
-          {node.children?.map((child) => renderTree(child, depth + 1))}
-        </div>
-      );
-    }
+    const pageOptions = getPages.get().map((page) => ({
+      label: `${page.name} · page:${page.path}`,
+      value: `page:${page.path}`,
+    }));
 
     const handleStyleChange = (_changedValues: any, allValues: any) => {
       const formattedStyles = { ...allValues };
@@ -215,16 +256,24 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
 
     const updateEventAction = (
       index: number,
-      nextAction: ActionConfig | Partial<ActionConfig>,
-      preserveType = true,
+      nextAction: Partial<Record<string, unknown>>,
     ) => {
       updateEventActions(
         eventActions.map((action, actionIndex) => {
           if (actionIndex !== index) return action;
-          if ("type" in nextAction && !preserveType) {
-            return createDefaultAction(nextAction.type);
-          }
           return { ...action, ...nextAction } as ActionConfig;
+        }),
+      );
+    };
+
+    const resetEventActionType = (
+      index: number,
+      nextType: ActionConfig["type"],
+    ) => {
+      updateEventActions(
+        eventActions.map((action, actionIndex) => {
+          if (actionIndex !== index) return action;
+          return createDefaultAction(nextType);
         }),
       );
     };
@@ -323,9 +372,7 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
                             label: string;
                             value: ActionConfig["type"];
                           }>}
-                          onChange={(value) =>
-                            updateEventAction(index, { type: value }, false)
-                          }
+                          onChange={(value) => resetEventActionType(index, value)}
                           className="min-w-[140px]"
                         />
                       </div>
@@ -363,15 +410,32 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
                     ) : null}
 
                     {action.type === "navigate" ? (
-                      <Input
-                        value={action.path}
-                        onChange={(event) =>
-                          updateEventAction(index, {
-                            path: event.target.value,
-                          })
-                        }
-                        placeholder="站内路径，如 /admin/users"
-                      />
+                      <div className="space-y-2.5">
+                        <Select
+                          value={
+                            pageOptions.some((item) => item.value === action.path)
+                              ? action.path
+                              : undefined
+                          }
+                          options={pageOptions}
+                          allowClear
+                          placeholder="直接选择已有页面"
+                          onChange={(value) =>
+                            updateEventAction(index, {
+                              path: value || action.path,
+                            })
+                          }
+                        />
+                        <Input
+                          value={action.path}
+                          onChange={(event) =>
+                            updateEventAction(index, {
+                              path: event.target.value,
+                            })
+                          }
+                          placeholder="填写 page:home 或其他站内路径"
+                        />
+                      </div>
                     ) : null}
 
                     {action.type === "openUrl" ? (
@@ -461,15 +525,6 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
                       ? currentSlots.map((item) => item.name).join(" / ")
                       : "无"}
                   </div>
-                </div>
-              </div>
-
-              <div className="rounded-[18px] border border-slate-100 bg-slate-50/70 p-3.5">
-                <div className="mb-2.5 text-[13px] font-semibold text-slate-900">
-                  组件树
-                </div>
-                <div className="space-y-1">
-                  {componentTree.map((node) => renderTree(node))}
                 </div>
               </div>
             </div>

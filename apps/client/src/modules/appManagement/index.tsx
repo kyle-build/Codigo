@@ -155,10 +155,17 @@ function resolveSchemaFromReleasePayload(
     };
   }
 
-  if (payload.schema?.components?.length) {
+  if (payload.schema) {
+    const activePage =
+      payload.schema.pages?.find(
+        (page: Record<string, any>) => page.id === payload.schema.activePageId,
+      ) ??
+      payload.schema.pages?.[0];
     return {
       version: payload.schema.version ?? 2,
-      components: payload.schema.components as ComponentNode[],
+      components: (activePage?.components ??
+        payload.schema.components ??
+        []) as ComponentNode[],
     };
   }
 

@@ -1,11 +1,22 @@
-import { useEffect, useRef } from "react";
-import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
+import { AppstoreOutlined, FileTextOutlined } from "@ant-design/icons";
+import { useEffect, useRef, useState } from "react";
+import type {
+  PointerEvent as ReactPointerEvent,
+  ReactNode,
+  RefObject,
+} from "react";
 import EditorLeftPanel from "../leftPanel";
+import EditorPageManager from "../pageManager";
 import EditorRightPanel from "../rightPanel";
+import { EditorOutlineTree } from "../rightPanel/ComponentFields";
 import EditorCanvas from "../canvas";
 import { SandboxCanvas } from "../canvas/SandboxCanvas";
 import { WebIDECanvas } from "../canvas/WebIDECanvas";
 import { useEditorPanelLayout } from "./useEditorPanelLayout";
+import {
+  LEFT_PANEL_CONTENT_WIDTH,
+  LEFT_PANEL_RAIL_WIDTH,
+} from "./layout";
 import type { TStoreComponents, TStorePage } from "@/shared/stores";
 
 interface EditorViewportProps {
@@ -13,6 +24,8 @@ interface EditorViewportProps {
   storePage: TStorePage;
   canvasRef: RefObject<any>;
 }
+
+type LeftPanelSection = "pages" | "components";
 
 function PanelResizeHandle({
   side,
@@ -127,15 +140,85 @@ function EditorStage({
 export function EditorViewport(props: EditorViewportProps) {
   const { leftPanelWidth, rightPanelWidth, startResize } =
     useEditorPanelLayout();
+  const [activeLeftSection, setActiveLeftSection] =
+    useState<LeftPanelSection>("components");
+  const outlinePanelWidth =
+    leftPanelWidth - LEFT_PANEL_RAIL_WIDTH - LEFT_PANEL_CONTENT_WIDTH;
+  const leftSectionItems: Array<{
+    key: LeftPanelSection;
+    label: string;
+    icon: ReactNode;
+  }> = [
+    {
+      key: "pages",
+      label: "页面",
+      icon: <FileTextOutlined className="text-base" />,
+    },
+    {
+      key: "components",
+      label: "组件",
+      icon: <AppstoreOutlined className="text-base" />,
+    },
+  ];
 
   return (
     <div className="relative flex h-full w-full overflow-hidden bg-[#F8FAFC]">
       <div
-        className="flex shrink-0 flex-col border-r border-slate-200/80 bg-white/88 px-3 py-3 text-[13px] shadow-[14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
+        className="flex shrink-0 overflow-hidden border-r border-slate-200/80 bg-white/88 text-[13px] shadow-[14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
         style={{ width: leftPanelWidth }}
       >
-        <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200/60 hover:scrollbar-thumb-slate-300 scrollbar-track-transparent">
-          <EditorLeftPanel />
+        <div
+          className="flex h-full shrink-0 flex-col border-r border-slate-200/80 bg-slate-50/75 px-2.5 py-3"
+          style={{ width: LEFT_PANEL_RAIL_WIDTH }}
+        >
+          <div className="mb-3 px-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+            菜单
+          </div>
+          <div className="flex flex-col gap-2">
+            {leftSectionItems.map((item) => {
+              const isActive = item.key === activeLeftSection;
+
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => setActiveLeftSection(item.key)}
+                  className={`flex flex-col items-center gap-1.5 rounded-[18px] px-2 py-3 transition ${
+                    isActive
+                      ? "bg-emerald-500 text-white shadow-[0_20px_36px_-26px_rgba(16,185,129,0.9)]"
+                      : "text-slate-500 hover:bg-white hover:text-slate-900"
+                  }`}
+                >
+                  <span
+                    className={`flex h-9 w-9 items-center justify-center rounded-2xl ${
+                      isActive ? "bg-white/15" : "bg-white text-emerald-600"
+                    }`}
+                  >
+                    {item.icon}
+                  </span>
+                  <span className="text-[11px] font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div
+          className="min-h-0 shrink-0 px-3 py-3"
+          style={{ width: LEFT_PANEL_CONTENT_WIDTH }}
+        >
+          {activeLeftSection === "pages" ? (
+            <EditorPageManager embedded />
+          ) : (
+            <EditorLeftPanel embedded />
+          )}
+        </div>
+
+        <div
+          className="min-h-0 shrink-0 border-l border-slate-200/80 px-3 py-3"
+          style={{ width: outlinePanelWidth }}
+        >
+          <EditorOutlineTree />
         </div>
       </div>
 
@@ -153,9 +236,11 @@ export function EditorViewport(props: EditorViewportProps) {
 
         <div className="relative z-10 flex-1 px-5 pb-5 pt-3">
           <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-[26px] border border-white/70 bg-white/40 shadow-[0_30px_80px_-52px_rgba(15,23,42,0.65)] backdrop-blur-xl">
-            <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden p-5">
+            <div className="relative min-h-0 flex-1 overflow-auto p-5">
               <div className="absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/8 blur-[108px] pointer-events-none" />
-              <EditorStage {...props} />
+              <div className="relative z-10 flex min-h-full min-w-full items-start justify-center">
+                <EditorStage {...props} />
+              </div>
             </div>
           </div>
         </div>

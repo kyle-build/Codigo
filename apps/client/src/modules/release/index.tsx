@@ -1,7 +1,7 @@
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
 import { Empty, FloatButton, QRCode, Result, Spin } from "antd";
-import type { ComponentNode } from "@codigo/schema";
+import type { ComponentNode, IPageSchema } from "@codigo/schema";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getPublishedPage } from "@/modules/editor/api/low-code";
@@ -13,18 +13,20 @@ import {
 
 function resolveSchemaFromReleasePayload(
   payload: Record<string, any> | null | undefined,
-) {
+): IPageSchema {
   if (!payload) {
     return {
-      version: 2,
+      version: 3,
       components: [] as ComponentNode[],
     };
   }
 
-  if (payload.schema?.components?.length) {
+  if (payload.schema) {
     return {
-      version: payload.schema.version ?? 2,
+      version: payload.schema.version ?? 3,
       components: payload.schema.components as ComponentNode[],
+      pages: payload.schema.pages,
+      activePageId: payload.schema.activePageId,
     };
   }
 
@@ -44,7 +46,26 @@ function resolveSchemaFromReleasePayload(
   };
 }
 
-function ReleaseCanvas({ nodes }: { nodes: ComponentNode[] }) {
+function resolveReleasePage(schema: IPageSchema, requestedPath: string | null) {
+  if (Array.isArray(schema.pages) && schema.pages.length) {
+    return (
+      schema.pages.find((page) => page.path === requestedPath) ??
+      schema.pages.find((page) => page.id === schema.activePageId) ??
+      schema.pages.find((page) => page.path === "home") ??
+      schema.pages[0]
+    );
+  }
+
+  return null;
+}
+
+function ReleaseCanvas({
+  nodes,
+  onNavigatePage,
+}: {
+  nodes: ComponentNode[];
+  onNavigatePage: (pagePath: string) => void;
+}) {
   const initialPageState = useMemo(() => resolveInitialPageState(nodes), [nodes]);
   const [pageState, setPageState] = useState(initialPageState);
 
@@ -73,6 +94,10 @@ function ReleaseCanvas({ nodes }: { nodes: ComponentNode[] }) {
         }
 
         if (action.type === "navigate") {
+          if (action.path.startsWith("page:")) {
+            onNavigatePage(action.path.slice(5));
+            return;
+          }
           window.location.assign(action.path);
           return;
         }
@@ -90,7 +115,7 @@ function ReleaseCanvas({ nodes }: { nodes: ComponentNode[] }) {
         targetElement?.scrollIntoView({ behavior: "smooth", block: "start" });
       },
     }),
-    [pageState],
+    [onNavigatePage, pageState],
   );
 
   if (!nodes.length) {
@@ -134,7 +159,7 @@ function ReleaseCanvas({ nodes }: { nodes: ComponentNode[] }) {
 
 export default function Release() {
   const nav = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const pageId = Number(searchParams.get("id"));
 
   const { data, loading, error } = useRequest(
@@ -148,6 +173,11 @@ export default function Release() {
   );
 
   const schema = useMemo(() => resolveSchemaFromReleasePayload(data), [data]);
+  const activePage = useMemo(
+    () => resolveReleasePage(schema, searchParams.get("page")),
+    [schema, searchParams],
+  );
+  const activeNodes = activePage?.components ?? schema.components;
   const deviceType = data?.deviceType === "pc" ? "pc" : "mobile";
   const canvasWidth =
     Number(data?.canvasWidth) || (deviceType === "pc" ? 1024 : 380);
@@ -190,7 +220,18 @@ export default function Release() {
       );
     }
 
-    return <ReleaseCanvas nodes={schema.components} />;
+    return (
+      <ReleaseCanvas
+        nodes={activeNodes}
+        onNavigatePage={(pagePath) => {
+          setSearchParams((prev) => {
+            const nextParams = new URLSearchParams(prev);
+            nextParams.set("page", pagePath);
+            return nextParams;
+          });
+        }}
+      />
+    );
   })();
 
   return (

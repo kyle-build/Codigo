@@ -37,9 +37,18 @@ export interface ILowCode {
 /**
  * 描述页面 schema 的版本号和组件树数据。
  */
+export interface IEditorPageSchema {
+  id: string;
+  name: string;
+  path: string;
+  components: ComponentNode[];
+}
+
 export interface IPageSchema {
   version: number;
   components: ComponentNode[];
+  pages?: IEditorPageSchema[];
+  activePageId?: string;
 }
 
 /**

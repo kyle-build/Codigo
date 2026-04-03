@@ -16,7 +16,6 @@ import {
   useState,
 } from "react";
 import {
-  getComponentByType,
   getComponentContainerMeta,
 } from "@codigo/materials";
 import type {
@@ -44,6 +43,7 @@ import {
 import { Button } from "antd";
 import {
   findEditorComponent,
+  getComponentRenderByType,
   quickInsertComponents,
 } from "@/modules/editor/registry/components";
 
@@ -175,7 +175,10 @@ export function generateComponent(
     return null;
   }
 
-  const Component = getComponentByType(conf.type);
+  const Component = getComponentRenderByType(conf.type);
+  if (!Component) {
+    return null;
+  }
   const slotNodes = groupChildrenBySlot(conf);
   const slotEntries = Object.entries(slotNodes).map(([slotName, items]) => [
     slotName,

@@ -4,14 +4,19 @@ import type {
   TransformedComponentConfig,
 } from "@codigo/schema";
 import { getComponentPlugin, type IComponentSlotDefinition } from "@codigo/plugin-system";
+import { getBuiltinComponentDefinitionByType } from "./registry";
 
 // 获取组件的入口
 export function getComponentByType(type: TBasicComponentConfig["type"]) {
-  return getComponentPlugin(type)?.render;
+  return (
+    getComponentPlugin(type)?.render ??
+    getBuiltinComponentDefinitionByType(type)?.render
+  );
 }
 
 export function getComponentContainerMeta(type: TBasicComponentConfig["type"]) {
-  const plugin = getComponentPlugin(type);
+  const plugin =
+    getComponentPlugin(type) ?? getBuiltinComponentDefinitionByType(type);
   return {
     isContainer: Boolean(plugin?.isContainer),
     slots: (plugin?.slots ?? []) as IComponentSlotDefinition[],

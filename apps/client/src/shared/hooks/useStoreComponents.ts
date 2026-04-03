@@ -4,6 +4,7 @@ import type {
   ActionConfig,
   ComponentNode,
   ComponentNodeRecord,
+  IEditorPageSchema,
   IPageSchema,
   PageCategory,
   TBasicComponentConfig,
@@ -51,6 +52,9 @@ type LayoutPresetNode = ComponentNode & {
   slot?: string;
   children?: LayoutPresetNode[];
 };
+
+const defaultEditorPageName = "页面 1";
+const defaultEditorPagePath = "home";
 
 function getDefaultWidthByType(type: TComponentTypes, isFlow = false): string {
   if (isFlow) {
@@ -325,6 +329,100 @@ function createRecordFromNode(
   };
 }
 
+function serializeComponentTree(store: TStoreComponents) {
+  return store.sortableCompConfig
+    .map((id) => buildTreeNode(store.compConfigs, id))
+    .filter(Boolean) as ComponentNode[];
+}
+
+function sanitizePagePath(path: string) {
+  const normalized = path
+    .trim()
+    .toLowerCase()
+    .replace(/^page:/, "")
+    .replace(/[^\w-]+/g, "-")
+    .replace(/-{2,}/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return normalized || "page";
+}
+
+function ensureUniquePagePath(
+  pages: IEditorPageSchema[],
+  candidate: string,
+  excludeId?: string | null,
+) {
+  const basePath = sanitizePagePath(candidate);
+  let nextPath = basePath;
+  let suffix = 2;
+
+  while (
+    pages.some(
+      (page) => page.id !== excludeId && sanitizePagePath(page.path) === nextPath,
+    )
+  ) {
+    nextPath = `${basePath}-${suffix}`;
+    suffix += 1;
+  }
+
+  return nextPath;
+}
+
+function createEditorPageDefinition(
+  pages: IEditorPageSchema[],
+  options?: Partial<Pick<IEditorPageSchema, "id" | "name" | "path">> & {
+    components?: ComponentNode[];
+  },
+): IEditorPageSchema {
+  const pageIndex = pages.length + 1;
+  const name = options?.name?.trim() || `页面 ${pageIndex}`;
+  const preferredPath =
+    options?.path?.trim() ||
+    (pageIndex === 1 ? defaultEditorPagePath : `page-${pageIndex}`);
+
+  return {
+    id: options?.id ?? ulid(),
+    name,
+    path: ensureUniquePagePath(pages, preferredPath, options?.id ?? null),
+    components: JSON.parse(JSON.stringify(options?.components ?? [])),
+  };
+}
+
+function normalizeEditorPages(schema?: IPageSchema | null) {
+  if (Array.isArray(schema?.pages) && schema.pages.length) {
+    const pages = schema.pages.reduce<IEditorPageSchema[]>((result, page) => {
+      result.push(
+        createEditorPageDefinition(result, {
+          id: page.id,
+          name: page.name,
+          path: page.path,
+          components: page.components ?? [],
+        }),
+      );
+      return result;
+    }, []);
+    const activePageId =
+      pages.find((page) => page.id === schema.activePageId)?.id ?? pages[0]?.id ?? null;
+
+    return {
+      pages,
+      activePageId,
+    };
+  }
+
+  const initialPage = createEditorPageDefinition([], {
+    id: schema?.activePageId ?? ulid(),
+    name: defaultEditorPageName,
+    path: defaultEditorPagePath,
+    components: schema?.components ?? [],
+  });
+
+  return {
+    pages: [initialPage],
+    activePageId: initialPage.id,
+  };
+}
+
 function normalizeFromSchema(
   schema?: IPageSchema | null,
   layoutMode?: "absolute" | "flow",
@@ -387,11 +485,32 @@ function normalizeFromFlatComponents(
 }
 
 function serializeStore(store: TStoreComponents): IPageSchema {
+  const pages =
+    store.pages.length > 0
+      ? store.pages.map((page) => ({
+          ...page,
+          path: sanitizePagePath(page.path),
+          components:
+            page.id === store.activePageId
+              ? serializeComponentTree(store)
+              : JSON.parse(JSON.stringify(page.components ?? [])),
+        }))
+      : [
+          createEditorPageDefinition([], {
+            id: store.activePageId ?? ulid(),
+            name: defaultEditorPageName,
+            path: defaultEditorPagePath,
+            components: serializeComponentTree(store),
+          }),
+        ];
+
   return {
-    version: 2,
-    components: store.sortableCompConfig
-      .map((id) => buildTreeNode(store.compConfigs, id))
-      .filter(Boolean) as ComponentNode[],
+    version: 3,
+    components:
+      pages.find((page) => page.id === store.activePageId)?.components ?? pages[0]?.components ?? [],
+    pages,
+    activePageId:
+      pages.find((page) => page.id === store.activePageId)?.id ?? pages[0]?.id ?? null,
   };
 }
 
@@ -551,8 +670,170 @@ export function useStoreComponents() {
   };
 
   const getComponentTree = computed(() => {
-    return serializeStore(storeComponents).components;
+    return serializeComponentTree(storeComponents);
   });
+
+  const ensureEditorPages = action(() => {
+    if (storeComponents.pages.length) {
+      if (
+        storeComponents.activePageId &&
+        storeComponents.pages.some(
+          (page) => page.id === storeComponents.activePageId,
+        )
+      ) {
+        return;
+      }
+
+      storeComponents.activePageId = storeComponents.pages[0]?.id ?? null;
+      return;
+    }
+
+    const initialPage = createEditorPageDefinition([], {
+      id: storeComponents.activePageId ?? ulid(),
+      name: defaultEditorPageName,
+      path: defaultEditorPagePath,
+      components: serializeComponentTree(storeComponents),
+    });
+
+    storeComponents.pages = [initialPage];
+    storeComponents.activePageId = initialPage.id;
+  });
+
+  const getPages = computed(() => {
+    ensureEditorPages();
+    return serializeStore(storeComponents).pages ?? [];
+  });
+
+  const getActivePage = computed(() => {
+    return (
+      getPages.get().find((page) => page.id === storeComponents.activePageId) ??
+      getPages.get()[0] ??
+      null
+    );
+  });
+
+  const hydrateCanvasFromPage = action((page: IEditorPageSchema) => {
+    const { store: storePage } = useStorePage();
+    const normalized = normalizeFromSchema(
+      {
+        version: 3,
+        components: page.components ?? [],
+      },
+      storePage.layoutMode,
+    );
+
+    storeComponents.compConfigs = normalized.compConfigs;
+    storeComponents.sortableCompConfig = normalized.sortableCompConfig;
+    storeComponents.currentCompConfig =
+      normalized.sortableCompConfig[0] ?? null;
+    storeComponents.activePageId = page.id;
+  });
+
+  const persistActivePageSnapshot = action(() => {
+    ensureEditorPages();
+    const snapshot = serializeComponentTree(storeComponents);
+    storeComponents.pages = getPages.get().map((page) =>
+      page.id === storeComponents.activePageId
+        ? {
+            ...page,
+            components: snapshot,
+          }
+        : page,
+    );
+  });
+
+  const buildReplaceAllPayload = () => ({
+    compConfigs: storeComponents.compConfigs,
+    sortableCompConfig: storeComponents.sortableCompConfig,
+    pages: getPages.get(),
+    activePageId: storeComponents.activePageId,
+  });
+
+  const switchEditorPage = action((pageId: string) => {
+    ensureEditorPages();
+    if (
+      !pageId ||
+      pageId === storeComponents.activePageId ||
+      !getPages.get().some((page) => page.id === pageId)
+    ) {
+      return;
+    }
+
+    persistActivePageSnapshot();
+    const targetPage = getPages.get().find((page) => page.id === pageId);
+    if (!targetPage) {
+      return;
+    }
+
+    hydrateCanvasFromPage(targetPage);
+    const { store: storePermission, broadcastComponentUpdate } =
+      useStorePermission();
+    broadcastComponentUpdate(
+      Number(new URLSearchParams(window.location.hash.split("?")[1]).get("id")),
+      Number(storePermission.currentUserId),
+      "replace_all",
+      buildReplaceAllPayload(),
+    );
+    addOperationLog("update_page", `切换到${targetPage.name}`);
+  });
+
+  const createEditorPage = action(() => {
+    if (!ensurePermission("edit_structure", "当前角色不能新增页面")) {
+      return null;
+    }
+
+    ensureEditorPages();
+    persistActivePageSnapshot();
+    const pages = getPages.get();
+    const nextPage = createEditorPageDefinition(pages);
+    storeComponents.pages = [...pages, nextPage];
+    hydrateCanvasFromPage(nextPage);
+    const { store: storePermission, broadcastComponentUpdate } =
+      useStorePermission();
+    broadcastComponentUpdate(
+      Number(new URLSearchParams(window.location.hash.split("?")[1]).get("id")),
+      Number(storePermission.currentUserId),
+      "replace_all",
+      buildReplaceAllPayload(),
+    );
+    addOperationLog("update_page", `新增页面:${nextPage.name}`);
+    return nextPage;
+  });
+
+  const updateEditorPageMeta = action(
+    (pageId: string, patch: Partial<Pick<IEditorPageSchema, "name" | "path">>) => {
+      if (!ensurePermission("edit_content", "当前角色不能修改页面信息")) {
+        return;
+      }
+
+      ensureEditorPages();
+      persistActivePageSnapshot();
+      const nextPages = getPages.get().map((page) => {
+        if (page.id !== pageId) {
+          return page;
+        }
+
+        return {
+          ...page,
+          name: patch.name?.trim() || page.name,
+          path: patch.path
+            ? ensureUniquePagePath(getPages.get(), patch.path, pageId)
+            : page.path,
+        };
+      });
+
+      storeComponents.pages = nextPages;
+      const { store: storePermission, broadcastComponentUpdate } =
+        useStorePermission();
+      broadcastComponentUpdate(
+        Number(new URLSearchParams(window.location.hash.split("?")[1]).get("id")),
+        Number(storePermission.currentUserId),
+        "replace_all",
+        buildReplaceAllPayload(),
+      );
+      addOperationLog("update_page", patch.path ? "页面路径" : "页面名称");
+    },
+  );
 
   const insertNodeTree = action(
     (
@@ -715,10 +996,7 @@ export function useStoreComponents() {
         ),
         Number(storePermission.currentUserId),
         "replace_all",
-        {
-          compConfigs: storeComponents.compConfigs,
-          sortableCompConfig: storeComponents.sortableCompConfig,
-        },
+        buildReplaceAllPayload(),
       );
 
       addOperationLog(
@@ -822,10 +1100,7 @@ export function useStoreComponents() {
       Number(new URLSearchParams(window.location.hash.split("?")[1]).get("id")),
       Number(storePermission.currentUserId),
       "replace_all",
-      {
-        compConfigs: storeComponents.compConfigs,
-        sortableCompConfig: storeComponents.sortableCompConfig,
-      },
+      buildReplaceAllPayload(),
     );
 
     message.success(
@@ -1187,6 +1462,8 @@ export function useStoreComponents() {
     storeComponents.sortableCompConfig = value.sortableCompConfig;
     storeComponents.copyedCompConig = value.copyedCompConig;
     storeComponents.itemsExpandIndex = value.itemsExpandIndex;
+    storeComponents.pages = value.pages;
+    storeComponents.activePageId = value.activePageId;
     syncSchema(value.currentCompConfig);
   });
 
@@ -1220,10 +1497,7 @@ export function useStoreComponents() {
         ),
         Number(storePermission.currentUserId),
         "replace_all",
-        {
-          compConfigs: normalized.compConfigs,
-          sortableCompConfig: normalized.sortableCompConfig,
-        },
+        buildReplaceAllPayload(),
       );
 
       addOperationLog(
@@ -1269,23 +1543,51 @@ export function useStoreComponents() {
     addOperationLog("save_draft", "本地草稿");
   });
 
+  const hydrateStoreFromSchema = action(
+    (
+      schema: IPageSchema,
+      layoutMode: "absolute" | "flow",
+      preferredCurrentCompId?: string | null,
+    ) => {
+      const { pages, activePageId } = normalizeEditorPages(schema);
+      const activePage =
+        pages.find((page) => page.id === activePageId) ?? pages[0] ?? null;
+      const normalized = normalizeFromSchema(
+        {
+          version: schema.version ?? 3,
+          components: activePage?.components ?? [],
+        },
+        layoutMode,
+      );
+
+      storeComponents.pages = pages;
+      storeComponents.activePageId = activePage?.id ?? null;
+      storeComponents.compConfigs = normalized.compConfigs;
+      storeComponents.sortableCompConfig = normalized.sortableCompConfig;
+      storeComponents.currentCompConfig =
+        preferredCurrentCompId && normalized.compConfigs[preferredCurrentCompId]
+          ? preferredCurrentCompId
+          : (normalized.sortableCompConfig[0] ?? null);
+    },
+  );
+
   const initFromServerData = action((data: any) => {
-    const normalized = data?.schema
-      ? normalizeFromSchema(data.schema, data?.layoutMode ?? "absolute")
-      : normalizeFromFlatComponents(
-          (data?.components ?? []).map((comp: any) => ({
-            id: comp.node_id || ulid(),
-            type: comp.type,
-            props: comp.options ?? {},
-            styles: comp.styles ?? comp.options?.styles,
-            slot: comp.slot,
-          })),
-          data?.layoutMode ?? "absolute",
-        );
-    storeComponents.compConfigs = normalized.compConfigs;
-    storeComponents.sortableCompConfig = normalized.sortableCompConfig;
-    storeComponents.currentCompConfig =
-      normalized.sortableCompConfig[0] ?? null;
+    const schema = data?.schema
+      ? (data.schema as IPageSchema)
+      : ({
+          version: 2,
+          components: sanitizeCodeSyncNodes(
+            (data?.components ?? []).map((comp: any) => ({
+              id: comp.node_id || ulid(),
+              type: comp.type,
+              props: comp.options ?? {},
+              styles: comp.styles ?? comp.options?.styles,
+              slot: comp.slot,
+            })),
+          ),
+        } satisfies IPageSchema);
+
+    hydrateStoreFromSchema(schema, data?.layoutMode ?? "absolute");
     const { updatePage } = useStorePage();
     updatePage({
       tdk: data?.tdk || "",
@@ -1328,15 +1630,11 @@ export function useStoreComponents() {
           Number(storeTime) > (releaseTime ? Number(releaseTime) : 0)
         ) {
           const settings = pageSettings ? JSON.parse(pageSettings) : null;
-          const normalized = normalizeFromSchema(
+          hydrateStoreFromSchema(
             JSON.parse(pageSchema),
             settings?.layoutMode ?? "absolute",
+            currentCompConfig ? JSON.parse(currentCompConfig) : null,
           );
-          storeComponents.compConfigs = normalized.compConfigs;
-          storeComponents.sortableCompConfig = normalized.sortableCompConfig;
-          storeComponents.currentCompConfig = currentCompConfig
-            ? JSON.parse(currentCompConfig)
-            : (normalized.sortableCompConfig[0] ?? null);
 
           if (settings) {
             const { updatePage, setCodeFramework } = useStorePage();
@@ -1372,17 +1670,19 @@ export function useStoreComponents() {
           const legacyComponents = JSON.parse(compConfig);
           const legacyOrder = JSON.parse(sortableCompConfig!);
           const settings = pageSettings ? JSON.parse(pageSettings) : null;
-          const normalized = normalizeFromFlatComponents(
-            legacyOrder
-              .map((id: string) => legacyComponents[id])
-              .filter(Boolean),
+          const legacySchema = {
+            version: 2,
+            components: sanitizeCodeSyncNodes(
+              legacyOrder
+                .map((id: string) => legacyComponents[id])
+                .filter(Boolean),
+            ),
+          } satisfies IPageSchema;
+          hydrateStoreFromSchema(
+            legacySchema,
             settings?.layoutMode ?? "absolute",
+            currentCompConfig ? JSON.parse(currentCompConfig) : null,
           );
-          storeComponents.compConfigs = normalized.compConfigs;
-          storeComponents.sortableCompConfig = normalized.sortableCompConfig;
-          storeComponents.currentCompConfig = currentCompConfig
-            ? JSON.parse(currentCompConfig)
-            : (normalized.sortableCompConfig[0] ?? null);
 
           if (settings) {
             const { updatePage, setCodeFramework } = useStorePage();
@@ -1416,17 +1716,24 @@ export function useStoreComponents() {
     },
   );
 
+  ensureEditorPages();
+
   return {
     _replace,
     applyLayoutPreset,
     replaceByCode,
     push,
+    getPages,
+    getActivePage,
     getComponentById,
     getComponentTree,
     getAvailableSlots,
     isCurrentComponent,
     getCurrentComponentConfig,
     setCurrentComponent,
+    createEditorPage,
+    switchEditorPage,
+    updateEditorPageMeta,
     store: storeComponents,
     updateCurrentComponent,
     updateCurrentComponentEvents,

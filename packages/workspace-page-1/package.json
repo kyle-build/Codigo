@@ -1,9 +1,9 @@
 {
-  "name": "@codigo/template",
+  "name": "@codigo/workspace-page-1",
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "description": "codigo template",
+  "description": "workspace for page Codigo低代码平台",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

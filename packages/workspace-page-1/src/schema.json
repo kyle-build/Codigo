@@ -1,0 +1,99 @@
+[
+  {
+    "id": "tpl_1775055545454_0_yqsj1",
+    "type": "titleText",
+    "name": null,
+    "props": {
+      "title": "用户管理中心",
+      "size": "xl"
+    },
+    "styles": {
+      "position": "absolute",
+      "left": "32px",
+      "top": "24px",
+      "width": "320px"
+    },
+    "parentId": null,
+    "children": []
+  },
+  {
+    "id": "tpl_1775055545454_1_u05m5",
+    "type": "input",
+    "name": null,
+    "props": {
+      "title": "关键词检索",
+      "placeholder": "请输入用户名/手机号",
+      "text": ""
+    },
+    "styles": {
+      "position": "absolute",
+      "left": "412px",
+      "top": "24px",
+      "width": "360px"
+    },
+    "parentId": null,
+    "children": []
+  },
+  {
+    "id": "tpl_1775055545454_2_pwlra",
+    "type": "radio",
+    "name": null,
+    "props": {
+      "title": "用户状态",
+      "options": [
+        {
+          "id": "r1",
+          "value": "全部"
+        },
+        {
+          "id": "r2",
+          "value": "正常"
+        },
+        {
+          "id": "r3",
+          "value": "冻结"
+        }
+      ],
+      "defaultRadio": "r1"
+    },
+    "styles": {
+      "position": "absolute",
+      "left": "792px",
+      "top": "24px",
+      "width": "360px"
+    },
+    "parentId": null,
+    "children": []
+  },
+  {
+    "id": "tpl_1775055545454_3_9ebrv",
+    "type": "list",
+    "name": null,
+    "props": {
+      "items": [
+        {
+          "id": "u1",
+          "title": "张三",
+          "avatar": "https://i.pravatar.cc/80?img=1",
+          "description": "最近登录：今天 10:23",
+          "titleLink": "https://example.com"
+        },
+        {
+          "id": "u2",
+          "title": "李四",
+          "avatar": "https://i.pravatar.cc/80?img=2",
+          "description": "最近登录：昨天 18:10",
+          "titleLink": "https://example.com"
+        }
+      ]
+    },
+    "styles": {
+      "position": "absolute",
+      "left": "32px",
+      "top": "224px",
+      "width": "420px"
+    },
+    "parentId": null,
+    "children": []
+  }
+]

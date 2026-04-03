@@ -1,54 +1,7 @@
-import type { FC } from "react";
+import type { ComponentType } from "react";
 import type { TComponentTypes } from "@codigo/schema";
-import {
-  ButtonComponent,
-  CardComponent,
-  ImageComponent,
-  ListComponent,
-  StatisticComponent,
-  SwiperComponent,
-  TableComponent,
-  VideoComponent,
-  TextComponent,
-  SplitComponent,
-  EmptyComponent,
-  RichTextComponent,
-  QrcodeComponent,
-  AlertComponent,
-  InputComponent,
-  TextAreaComponent,
-  RadioComponent,
-  CheckboxComponent,
-  BarChartComponent,
-  LineChartComponent,
-  PieChartComponent,
-} from "..";
+import { builtinComponentDefinitions } from "../components/registry";
 
-/**
- * 组件导出
- * @returns 组件列表
- */
-// @ts-ignore
-export const componentList: Record<TComponentTypes, FC<any>> = {
-  button: ButtonComponent,
-  video: VideoComponent,
-  image: ImageComponent,
-  swiper: SwiperComponent,
-  card: CardComponent,
-  list: ListComponent,
-  statistic: StatisticComponent,
-  table: TableComponent,
-  titleText: TextComponent,
-  split: SplitComponent,
-  empty: EmptyComponent,
-  richText: RichTextComponent,
-  qrcode: QrcodeComponent,
-  alert: AlertComponent,
-  input: InputComponent,
-  textArea: TextAreaComponent,
-  radio: RadioComponent,
-  checkbox: CheckboxComponent,
-  barChart: BarChartComponent,
-  lineChart: LineChartComponent,
-  pieChart: PieChartComponent,
-};
+export const componentList = Object.fromEntries(
+  builtinComponentDefinitions.map((item) => [item.type, item.render]),
+) as Record<TComponentTypes, ComponentType<any>>;

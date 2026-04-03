@@ -29,20 +29,30 @@ import {
   LineChartComponent as LowCodeLineChart,
   PieChartComponent as LowCodePieChart,
 } from ".";
-import { registerComponent } from "@codigo/plugin-system";
+import type { ComponentType } from "react";
+import type { TComponentTypes } from "@codigo/schema";
+import {
+  registerComponent,
+  type IComponentPlugin,
+} from "@codigo/plugin-system";
 import { initBuiltinEChartsThemes } from "../utils/echartsTheme";
 
-export function initBuiltinComponents() {
-  initBuiltinEChartsThemes();
-  registerComponent({
+type BuiltinComponentDefinition = IComponentPlugin<
+  TComponentTypes,
+  Record<string, any>,
+  ComponentType<any>
+>;
+
+export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
+  {
     type: "container",
     name: "Container",
     defaultConfig: {} as any,
     render: LowCodeContainer,
     isContainer: true,
     slots: [{ name: "default", title: "默认区域", multiple: true }],
-  });
-  registerComponent({
+  },
+  {
     type: "twoColumn",
     name: "TwoColumn",
     defaultConfig: {} as any,
@@ -52,167 +62,187 @@ export function initBuiltinComponents() {
       { name: "left", title: "左区域", multiple: true },
       { name: "right", title: "右区域", multiple: true },
     ],
-  });
-  registerComponent({
+  },
+  {
     type: "button",
     name: "Button",
     defaultConfig: {} as any,
     render: LowCodeButton,
-  });
-  registerComponent({
+  },
+  {
     type: "breadcrumbBar",
     name: "BreadcrumbBar",
     defaultConfig: {} as any,
     render: LowCodeBreadcrumbBar,
-  });
-  registerComponent({
+  },
+  {
     type: "pageHeader",
     name: "PageHeader",
     defaultConfig: {} as any,
     render: LowCodePageHeader,
-  });
-  registerComponent({
+  },
+  {
     type: "queryFilter",
     name: "QueryFilter",
     defaultConfig: {} as any,
     render: LowCodeQueryFilter,
-  });
-  registerComponent({
+  },
+  {
     type: "statCard",
     name: "StatCard",
     defaultConfig: {} as any,
     render: LowCodeStatCard,
-  });
-  registerComponent({
+  },
+  {
     type: "cardGrid",
     name: "CardGrid",
     defaultConfig: {} as any,
     render: LowCodeCardGrid,
-  });
-  registerComponent({
+  },
+  {
     type: "dataTable",
     name: "DataTable",
     defaultConfig: {} as any,
     render: LowCodeDataTable,
-  });
-  registerComponent({
+  },
+  {
     type: "video",
     name: "Video",
     defaultConfig: {} as any,
     render: LowCodeVideo,
-  });
-  registerComponent({
+  },
+  {
     type: "image",
     name: "Image",
     defaultConfig: {} as any,
     render: LowCodeImage,
-  });
-  registerComponent({
+  },
+  {
     type: "swiper",
     name: "Swiper",
     defaultConfig: {} as any,
     render: LowCodeSwiper,
-  });
-  registerComponent({
+  },
+  {
     type: "card",
     name: "Card",
     defaultConfig: {} as any,
     render: LowCodeCard,
-  });
-  registerComponent({
+  },
+  {
     type: "list",
     name: "List",
     defaultConfig: {} as any,
     render: LowCodeList,
-  });
-  registerComponent({
+  },
+  {
     type: "statistic",
     name: "Statistic",
     defaultConfig: {} as any,
     render: LowCodeStatistic,
-  });
-  registerComponent({
+  },
+  {
     type: "table",
     name: "Table",
     defaultConfig: {} as any,
     render: LowCodeTable,
-  });
-  registerComponent({
+  },
+  {
     type: "titleText",
     name: "Text",
     defaultConfig: {} as any,
     render: LowCodeText,
-  });
-  registerComponent({
+  },
+  {
     type: "split",
     name: "Split",
     defaultConfig: {} as any,
     render: LowCodeSplit,
-  });
-  registerComponent({
+  },
+  {
     type: "empty",
     name: "Empty",
     defaultConfig: {} as any,
     render: LowCodeEmpty,
-  });
-  registerComponent({
+  },
+  {
     type: "richText",
     name: "RichText",
     defaultConfig: {} as any,
     render: LowCodeRichText,
-  });
-  registerComponent({
+  },
+  {
     type: "qrcode",
     name: "Qrcode",
     defaultConfig: {} as any,
     render: LowCodeQrcode,
-  });
-  registerComponent({
+  },
+  {
     type: "alert",
     name: "Alert",
     defaultConfig: {} as any,
     render: LowCodeAlert,
-  });
-  registerComponent({
+  },
+  {
     type: "input",
     name: "Input",
     defaultConfig: {} as any,
     render: LowCodeInput,
-  });
-  registerComponent({
+  },
+  {
     type: "textArea",
     name: "TextArea",
     defaultConfig: {} as any,
     render: LowCodeTextArea,
-  });
-  registerComponent({
+  },
+  {
     type: "radio",
     name: "Radio",
     defaultConfig: {} as any,
     render: LowCodeRadio,
-  });
-  registerComponent({
+  },
+  {
     type: "checkbox",
     name: "Checkbox",
     defaultConfig: {} as any,
     render: LowCodeCheckbox,
-  });
-  registerComponent({
+  },
+  {
     type: "barChart",
     name: "BarChart",
     defaultConfig: {} as any,
     render: LowCodeBarChart,
-  });
-  registerComponent({
+  },
+  {
     type: "lineChart",
     name: "LineChart",
     defaultConfig: {} as any,
     render: LowCodeLineChart,
-  });
-  registerComponent({
+  },
+  {
     type: "pieChart",
     name: "PieChart",
     defaultConfig: {} as any,
     render: LowCodePieChart,
-  });
+  },
+];
+
+let builtinComponentsInitialized = false;
+
+export function getBuiltinComponentDefinitionByType(type?: string | null) {
+  if (!type) {
+    return null;
+  }
+
+  return builtinComponentDefinitions.find((item) => item.type === type) ?? null;
+}
+
+export function initBuiltinComponents() {
+  initBuiltinEChartsThemes();
+  if (builtinComponentsInitialized) {
+    return;
+  }
+
+  builtinComponentsInitialized = true;
+  builtinComponentDefinitions.forEach((item) => registerComponent(item));
 }

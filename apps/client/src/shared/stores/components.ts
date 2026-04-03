@@ -1,6 +1,7 @@
 import type {
   ComponentNode,
   ComponentNodeRecord,
+  IEditorPageSchema,
 } from "@codigo/schema";
 import { makeAutoObservable } from "mobx";
 
@@ -10,6 +11,8 @@ interface IStoreComponents {
   currentCompConfig: string | null;
   copyedCompConig: ComponentNode | null;
   itemsExpandIndex: number;
+  pages: IEditorPageSchema[];
+  activePageId: string | null;
 }
 
 export function createStoreComponents() {
@@ -19,11 +22,12 @@ export function createStoreComponents() {
     currentCompConfig: null,
     copyedCompConig: null,
     itemsExpandIndex: 0,
+    pages: [],
+    activePageId: null,
   });
 }
 
 export type TStoreComponents = ReturnType<typeof createStoreComponents>;
-
 
 
 
