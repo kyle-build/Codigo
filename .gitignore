@@ -32,5 +32,6 @@ dist-ssr
 *.crt
 *.key
 *.pfx
+.turbo
 
 .worktrees/*

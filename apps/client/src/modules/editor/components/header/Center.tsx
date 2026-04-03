@@ -131,8 +131,8 @@ const Center = observer(() => {
 
   return (
     <>
-      <div className="flex items-center gap-2.5 rounded-xl border border-slate-200/80 bg-white/90 px-2.5 py-1.5 shadow-[0_14px_30px_-26px_rgba(15,23,42,0.55)] backdrop-blur-xl">
-        <div className="flex items-center gap-1 rounded-xl bg-slate-100/90 p-0.5">
+      <div className="flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white/90 px-2 py-1 shadow-[0_14px_30px_-26px_rgba(15,23,42,0.55)] backdrop-blur-xl">
+        <div className="flex items-center gap-1 rounded-lg bg-slate-100/90 p-0.5">
           <Button
             type={store.deviceType === "mobile" ? "primary" : "text"}
             icon={<MobileOutlined />}
@@ -142,7 +142,7 @@ const Center = observer(() => {
                 return;
               setDeviceType("mobile");
             }}
-            className={`!h-7 !rounded-lg !px-2.5 !text-xs ${store.deviceType === "mobile" ? "!bg-emerald-500" : "!text-slate-500"}`}
+            className={`!h-7 !rounded-lg !px-2 !text-[11px] ${store.deviceType === "mobile" ? "!bg-emerald-500" : "!text-slate-500"}`}
           >
             移动端
           </Button>
@@ -155,13 +155,13 @@ const Center = observer(() => {
                 return;
               setDeviceType("pc");
             }}
-            className={`!h-7 !rounded-lg !px-2.5 !text-xs ${store.deviceType === "pc" ? "!bg-emerald-500" : "!text-slate-500"}`}
+            className={`!h-7 !rounded-lg !px-2 !text-[11px] ${store.deviceType === "pc" ? "!bg-emerald-500" : "!text-slate-500"}`}
           >
             桌面端
           </Button>
         </div>
 
-        <div className="hidden h-6 w-px bg-slate-200 xl:block" />
+        <div className="hidden h-5 w-px bg-slate-200 xl:block" />
 
         <div className="hidden items-center gap-2 xl:flex">
           {store.deviceType === "pc" && (
@@ -179,7 +179,7 @@ const Center = observer(() => {
                     return;
                   setCanvasSize(v || 1024, store.canvasHeight);
                 }}
-                className="w-20"
+                className="w-[76px]"
                 controls={false}
                 addonAfter="W"
               />
@@ -196,7 +196,7 @@ const Center = observer(() => {
                     return;
                   setCanvasSize(store.canvasWidth, v || 768);
                 }}
-                className="w-20"
+                className="w-[76px]"
                 controls={false}
                 addonAfter="H"
               />
@@ -204,26 +204,26 @@ const Center = observer(() => {
           )}
         </div>
 
-        <div className="hidden h-6 w-px bg-slate-200 lg:block" />
+        <div className="hidden h-5 w-px bg-slate-200 lg:block" />
 
         <div className="flex items-center gap-1">
           <Button
             type="text"
-            className="!h-7 !rounded-lg !px-2.5 !text-xs !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
+            className="!h-7 !rounded-lg !px-2 !text-[11px] !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
             onClick={() => setHistoryOpen(true)}
           >
             <HistoryOutlined /> 版本
           </Button>
           <Button
             type="text"
-            className="!h-7 !rounded-lg !px-2.5 !text-xs !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
+            className="!h-7 !rounded-lg !px-2 !text-[11px] !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
             onClick={handleGoPreview}
           >
             <FundViewOutlined /> 预览
           </Button>
           <Button
             type="text"
-            className="!h-7 !rounded-lg !px-2.5 !text-xs !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
+            className="!h-7 !rounded-lg !px-2 !text-[11px] !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
             onClick={storeInLocalStorage}
             disabled={!can("save_draft")}
           >
@@ -231,7 +231,7 @@ const Center = observer(() => {
           </Button>
           <Button
             type="text"
-            className="!h-7 !rounded-lg !px-2 !text-xs !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
+            className="!h-7 !rounded-lg !px-1.5 !text-[11px] !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
             onClick={undo}
             disabled={!hasUndo || !can("edit_content")}
           >
@@ -239,7 +239,7 @@ const Center = observer(() => {
           </Button>
           <Button
             type="text"
-            className="!h-7 !rounded-lg !px-2 !text-xs !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
+            className="!h-7 !rounded-lg !px-1.5 !text-[11px] !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
             onClick={redo}
             disabled={!hasRedo || !can("edit_content")}
           >
@@ -249,7 +249,7 @@ const Center = observer(() => {
 
         <Button
           loading={editorSwitching}
-          className={`!ml-0.5 !h-8 !rounded-lg !px-3 !text-xs !font-medium ${
+          className={`!ml-0.5 !h-7 !rounded-lg !px-2.5 !text-[11px] !font-medium ${
             store.editorMode === "webide"
               ? "!border-emerald-200 !bg-emerald-50 !text-emerald-700 hover:!border-emerald-300 hover:!bg-emerald-100"
               : "!border-slate-200 !bg-white !text-slate-700 hover:!border-emerald-200 hover:!text-emerald-700"
@@ -272,7 +272,7 @@ const Center = observer(() => {
 
         <Button
           loading={loading}
-          className="!h-8 !rounded-lg !border-none !bg-emerald-500 !px-3 !text-xs !font-medium !text-white shadow-[0_14px_26px_-18px_rgba(16,185,129,0.82)] hover:!bg-emerald-400"
+          className="!h-7 !rounded-lg !border-none !bg-emerald-500 !px-2.5 !text-[11px] !font-medium !text-white shadow-[0_14px_26px_-18px_rgba(16,185,129,0.82)] hover:!bg-emerald-400"
           type="primary"
           onClick={handleGoRelease}
           disabled={!can("publish")}

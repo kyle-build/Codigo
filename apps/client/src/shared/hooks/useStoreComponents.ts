@@ -19,36 +19,10 @@ import { message } from "antd";
 import type { TStoreComponents } from "@/shared/stores";
 import { useStorePage } from ".";
 import { useStorePermission } from "./useStorePermission";
+import { codeSyncComponentTypes } from "@/modules/editor/registry/components";
 
 const storeComponents = createStoreComponents();
-const codeSupportedTypes: TComponentTypes[] = [
-  "container",
-  "twoColumn",
-  "button",
-  "breadcrumbBar",
-  "pageHeader",
-  "queryFilter",
-  "statCard",
-  "cardGrid",
-  "dataTable",
-  "video",
-  "swiper",
-  "qrcode",
-  "card",
-  "list",
-  "statistic",
-  "table",
-  "image",
-  "titleText",
-  "split",
-  "richText",
-  "input",
-  "textArea",
-  "radio",
-  "checkbox",
-  "empty",
-  "alert",
-];
+const codeSupportedTypes: TComponentTypes[] = codeSyncComponentTypes;
 
 const layoutGapX = 380;
 const layoutGapY = 200;

@@ -32,7 +32,6 @@ import {
   useStorePermission,
 } from "@/shared/hooks";
 import type { TStoreComponents } from "@/shared/stores";
-import { components } from "../leftPanel/ComponentList";
 import {
   AppstoreOutlined,
   DeleteOutlined,
@@ -41,6 +40,10 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { Button } from "antd";
+import {
+  findEditorComponent,
+  quickInsertComponents,
+} from "@/modules/editor/registry/components";
 
 export function generateComponent(
   conf: ComponentNode,
@@ -92,15 +95,6 @@ export function generateComponent(
     </div>
   );
 }
-
-const quickInsertComponents: Array<{
-  type: TComponentTypes;
-  label: string;
-}> = [
-  { type: "titleText", label: "标题组件" },
-  { type: "button", label: "按钮组件" },
-  { type: "image", label: "图片组件" },
-];
 
 interface ComponentWrapperProps {
   id: string;
@@ -197,11 +191,7 @@ const EditorChooiseToolbar: FC<{
   useImperativeHandle(onRef, () => ({ setRefrash }));
 
   const componentName = useMemo(() => {
-    return (
-      components.find(
-        (item) => item.type === getCurrentComponentConfig.get()?.type,
-      )?.name ?? "组件名称"
-    );
+    return findEditorComponent(getCurrentComponentConfig.get()?.type)?.name;
   }, [getCurrentComponentConfig.get()]);
 
   function getCurrentCompConfig() {
@@ -287,7 +277,7 @@ const EditorChooiseToolbar: FC<{
           top: `${currentComponentRect?.top}px`,
         }}
       >
-        <span className="mr-1">{componentName}</span>
+        <span className="mr-1">{componentName ?? "组件名称"}</span>
         <div className="w-px h-3 bg-white/30 mx-1"></div>
 
         {canEditStructure ? (
@@ -706,9 +696,7 @@ const EditorCanvas: FC<{
                   ? undefined
                   : (node.styles?.top as string | number | undefined),
               position:
-                storePage.layoutMode === "flow"
-                  ? "relative"
-                  : "absolute",
+                storePage.layoutMode === "flow" ? "relative" : "absolute",
               width: node.styles?.width as string | number | undefined,
             }}
           >

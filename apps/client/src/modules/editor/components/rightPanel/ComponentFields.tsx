@@ -22,18 +22,18 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
   ({ store }) => {
     if (!store.currentCompConfig)
       return (
-        <div className="py-8">
-          <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50/80 p-6 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-2xl text-emerald-600">
+        <div className="py-6">
+          <div className="rounded-[22px] border border-dashed border-slate-200 bg-slate-50/80 p-5 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-xl text-emerald-600">
               <AppstoreOutlined />
             </div>
-            <div className="mb-2 text-base font-semibold text-slate-900">
+            <div className="mb-1.5 text-sm font-semibold text-slate-900">
               暂未选中组件
             </div>
-            <div className="mb-5 text-sm leading-6 text-slate-500">
+            <div className="mb-4 text-[13px] leading-5 text-slate-500">
               先在画布中点击一个组件，或从左侧资源库拖入新组件，再在这里完成细节配置。
             </div>
-            <div className="grid grid-cols-3 gap-3 text-left">
+            <div className="grid grid-cols-3 gap-2.5 text-left">
               {[
                 {
                   key: "content",
@@ -56,13 +56,13 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
               ].map((item) => (
                 <div
                   key={item.key}
-                  className="rounded-2xl border border-white bg-white px-3 py-3 shadow-[0_16px_30px_-28px_rgba(15,23,42,0.65)]"
+                  className="rounded-[18px] border border-white bg-white px-3 py-2.5 shadow-[0_16px_30px_-28px_rgba(15,23,42,0.65)]"
                 >
-                  <div className="mb-2 text-emerald-600">{item.icon}</div>
-                  <div className="text-sm font-medium text-slate-900">
+                  <div className="mb-1.5 text-emerald-600">{item.icon}</div>
+                  <div className="text-[13px] font-medium text-slate-900">
                     {item.title}
                   </div>
-                  <div className="mt-1 text-xs leading-5 text-slate-400">
+                  <div className="mt-1 text-[11px] leading-5 text-slate-400">
                     {item.desc}
                   </div>
                 </div>
@@ -184,17 +184,17 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
     ];
 
     return (
-      <div className="component-fields-container space-y-4 pb-10">
-        <div className="rounded-3xl border border-slate-200/80 bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(255,255,255,0.98))] p-4 shadow-[0_20px_40px_-32px_rgba(16,185,129,0.85)]">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
+      <div className="component-fields-container space-y-3 pb-8">
+        <div className="rounded-[22px] border border-slate-200/80 bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(255,255,255,0.98))] p-3.5 shadow-[0_20px_40px_-32px_rgba(16,185,129,0.85)]">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="rounded-full bg-white/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
               Active
             </span>
-            <span className="rounded-full bg-slate-900/5 px-2.5 py-1 text-xs text-slate-500">
+            <span className="rounded-full bg-slate-900/5 px-2.5 py-1 text-[11px] text-slate-500">
               ID · {config.id.slice(-6)}
             </span>
           </div>
-          <div className="text-base font-semibold text-slate-900">
+          <div className="text-sm font-semibold text-slate-900">
             {config.type}
           </div>
         </div>
@@ -203,7 +203,7 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
           defaultActiveKey={["props", "structure", "styles"]}
           ghost
           expandIconPosition="end"
-          className="[&_.ant-collapse-item]:mb-3 [&_.ant-collapse-item]:overflow-hidden [&_.ant-collapse-item]:rounded-3xl [&_.ant-collapse-item]:border [&_.ant-collapse-item]:border-slate-200/80 [&_.ant-collapse-item]:bg-white [&_.ant-collapse-header]:!items-center [&_.ant-collapse-header]:!px-5 [&_.ant-collapse-header]:!py-4 [&_.ant-collapse-content-box]:!px-5 [&_.ant-collapse-content-box]:!pb-5 [&_.ant-collapse-content-box]:!pt-1"
+          className="[&_.ant-collapse-item]:mb-2.5 [&_.ant-collapse-item]:overflow-hidden [&_.ant-collapse-item]:rounded-[22px] [&_.ant-collapse-item]:border [&_.ant-collapse-item]:border-slate-200/80 [&_.ant-collapse-item]:bg-white [&_.ant-collapse-header]:!items-center [&_.ant-collapse-header]:!px-4 [&_.ant-collapse-header]:!py-3 [&_.ant-collapse-content-box]:!px-4 [&_.ant-collapse-content-box]:!pb-4 [&_.ant-collapse-content-box]:!pt-1"
         >
           <Panel
             header={
@@ -216,7 +216,7 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
             }
             key="props"
           >
-            <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+            <div className="rounded-[18px] border border-slate-100 bg-slate-50/70 p-3.5">
               <ComponentProps {...toJS(config.props)} id={config.id} />
             </div>
           </Panel>
@@ -232,28 +232,28 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
             }
             key="structure"
           >
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-[18px] border border-slate-100 bg-slate-50/70 p-3.5">
                   <div className="mb-2 text-xs text-slate-400">当前插槽</div>
-                  <div className="text-sm font-semibold text-slate-900">
+                  <div className="text-[13px] font-semibold text-slate-900">
                     {config.slot ?? "root"}
                   </div>
                 </div>
-                <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+                <div className="rounded-[18px] border border-slate-100 bg-slate-50/70 p-3.5">
                   <div className="mb-2 text-xs text-slate-400">子节点数量</div>
-                  <div className="text-sm font-semibold text-slate-900">
+                  <div className="text-[13px] font-semibold text-slate-900">
                     {childrenCount}
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
-                <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <div className="rounded-[18px] border border-slate-100 bg-slate-50/70 p-3.5">
+                <div className="mb-2.5 flex items-center gap-2 text-[13px] font-semibold text-slate-900">
                   <NodeIndexOutlined className="text-emerald-600" />
                   容器信息
                 </div>
-                <div className="space-y-2 text-sm text-slate-600">
+                <div className="space-y-1.5 text-[13px] text-slate-600">
                   <div>
                     类型：{containerMeta.isContainer ? "容器组件" : "普通组件"}
                   </div>
@@ -266,8 +266,8 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
-                <div className="mb-3 text-sm font-semibold text-slate-900">
+              <div className="rounded-[18px] border border-slate-100 bg-slate-50/70 p-3.5">
+                <div className="mb-2.5 text-[13px] font-semibold text-slate-900">
                   组件树
                 </div>
                 <div className="space-y-1">
@@ -292,30 +292,30 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
               layout="vertical"
               initialValues={initialValues}
               onValuesChange={handleStyleChange}
-              className="[&_.ant-form-item]:mb-4 [&_.ant-form-item-label>label]:text-slate-500 [&_.ant-input-number]:!h-11 [&_.ant-input-number]:!w-full [&_.ant-input-number]:!rounded-2xl [&_.ant-input-number]:!border-slate-200 [&_.ant-input-number]:!bg-slate-50/70"
+              className="[&_.ant-form-item]:mb-3.5 [&_.ant-form-item-label>label]:text-[13px] [&_.ant-form-item-label>label]:text-slate-500 [&_.ant-input-number]:!h-9 [&_.ant-input-number]:!w-full [&_.ant-input-number]:!rounded-xl [&_.ant-input-number]:!border-slate-200 [&_.ant-input-number]:!bg-slate-50/70"
             >
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {styleSections.map((section) => (
                   <div
                     key={section.key}
-                    className="rounded-2xl border border-slate-100 bg-slate-50/60 p-4"
+                    className="rounded-[18px] border border-slate-100 bg-slate-50/60 p-3.5"
                   >
-                    <div className="mb-4 flex items-center gap-2">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white text-emerald-600 shadow-sm">
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-emerald-600 shadow-sm">
                         {section.icon}
                       </span>
                       <div>
-                        <div className="text-sm font-semibold text-slate-900">
+                        <div className="text-[13px] font-semibold text-slate-900">
                           {section.title}
                         </div>
-                        <div className="text-xs text-slate-400">
+                        <div className="text-[11px] text-slate-400">
                           {section.fields.length === 2
                             ? "双字段精确控制"
                             : "四向数值统一调整"}
                         </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2.5">
                       {section.fields.map((field) => (
                         <Form.Item
                           key={String(field.name)}

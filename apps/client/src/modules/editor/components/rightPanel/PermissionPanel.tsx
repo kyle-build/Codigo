@@ -5,7 +5,7 @@ import { Button, Input, List, Select, Switch, Tag, Typography } from "antd";
 import type { PermissionRole } from "@/shared/stores";
 import { useStorePermission, useStoreAuth } from "@/shared/hooks";
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 const roleOptions: { label: string; value: PermissionRole }[] = [
   { label: "所有者", value: "owner" },
@@ -35,7 +35,7 @@ const eventLabelMap: Record<string, string> = {
   toggle_lock: "切换编辑锁",
 };
 
-export default observer(function PermissionPanel() {
+const PermissionPanel = observer(function PermissionPanel() {
   const [searchParams] = useSearchParams();
   const pageId = Number(searchParams.get("id"));
 
@@ -70,10 +70,6 @@ export default observer(function PermissionPanel() {
   return (
     <div className="flex flex-col h-full overflow-hidden bg-white">
       <div className="p-4 border-b border-slate-200">
-        <Title level={5} className="!mb-4 !mt-0">
-          协作与权限
-        </Title>
-
         {isOwner && (
           <div className="flex flex-col gap-2 p-3 bg-slate-50 rounded-md mb-4 border border-slate-100">
             <div className="flex items-center justify-between">
@@ -272,3 +268,5 @@ export default observer(function PermissionPanel() {
     </div>
   );
 });
+
+export default PermissionPanel;

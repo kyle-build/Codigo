@@ -227,7 +227,7 @@ function buildDraftByPrompt(prompt: string): DraftComponent[] {
 
 const { Text } = Typography;
 
-export default observer(function AIChatPanel() {
+const AIChatPanel = observer(function AIChatPanel() {
   const { store, getComponentById, replaceByCode } = useStoreComponents();
   const [prompt, setPrompt] = useState("");
   const [appendMode, setAppendMode] = useState(false);
@@ -327,14 +327,4 @@ export default observer(function AIChatPanel() {
   );
 });
 
-
-
-
-
-
-
-
-
-
-
-
+export default AIChatPanel;

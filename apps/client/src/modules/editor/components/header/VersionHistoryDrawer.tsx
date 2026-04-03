@@ -18,10 +18,7 @@ export const VersionHistoryDrawer = observer(({ open, onClose }: Props) => {
   const { initPageData } = useStoreComponents();
   const { can, ensurePermission } = useStorePermission();
 
-  const {
-    data: versions,
-    loading,
-  } = useRequest(
+  const { data: versions, loading } = useRequest(
     async () => {
       if (!pageId) return [];
       const res = await getPageVersions(pageId);
@@ -50,7 +47,7 @@ export const VersionHistoryDrawer = observer(({ open, onClose }: Props) => {
             message.error("版本数据异常");
           }
         } catch (err) {
-          message.error("获取版本详情失败");
+          message.error(`获取版本详情失败: ${err}`);
         }
       },
     });

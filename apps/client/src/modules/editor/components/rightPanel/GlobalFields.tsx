@@ -13,6 +13,8 @@ import { getBuiltinEChartsThemeOptions } from "@codigo/materials";
 
 const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
   const { updatePage } = useStorePage();
+  //todo: 优化图表主题选项 暂时没有统一option
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartThemeOptions = getBuiltinEChartsThemeOptions() as any;
 
   function handleValuesChange(changedValues: Partial<TStorePage>) {
@@ -24,10 +26,6 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
       key: "basic",
       title: "页面信息",
       icon: <FileTextOutlined />,
-      description:
-        store.pageCategory === "admin"
-          ? "定义后台页面的类型、布局与业务说明。"
-          : "定义页面标题与简介，让工作台表达更完整。",
       fields: [
         {
           label: "页面类型",
@@ -124,13 +122,13 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
   ];
 
   return (
-    <div className="space-y-4 pb-10">
-      <div className="rounded-3xl border border-slate-200/80 bg-[linear-gradient(135deg,rgba(56,189,248,0.12),rgba(255,255,255,0.98))] p-4 shadow-[0_20px_40px_-32px_rgba(56,189,248,0.7)]">
-        <div className="mb-3 flex items-center justify-between">
-          <span className="rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700">
+    <div className="space-y-3 pb-8">
+      <div className="rounded-[22px] border border-slate-200/80 bg-[linear-gradient(135deg,rgba(56,189,248,0.12),rgba(255,255,255,0.98))] p-3.5 shadow-[0_20px_40px_-32px_rgba(56,189,248,0.7)]">
+        <div className="mb-2 flex items-center justify-between">
+          <span className="rounded-full bg-white/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-sky-700">
             Global
           </span>
-          <span className="rounded-full bg-slate-900/5 px-2.5 py-1 text-xs text-slate-500">
+          <span className="rounded-full bg-slate-900/5 px-2.5 py-1 text-[11px] text-slate-500">
             {store.pageCategory === "admin"
               ? "后台页"
               : store.deviceType === "mobile"
@@ -138,13 +136,8 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
                 : "桌面端页面"}
           </span>
         </div>
-        <div className="text-base font-semibold text-slate-900">
+        <div className="text-sm font-semibold text-slate-900">
           {store.title || "未命名页面"}
-        </div>
-        <div className="mt-1 text-sm leading-6 text-slate-500">
-          {store.pageCategory === "admin"
-            ? "统一维护后台页面的类型、布局和关键词，让模板、物料与画布行为保持一致。"
-            : "统一维护页面级信息、关键词与图表主题，让设计输出更完整、更适合发布。"}
         </div>
       </div>
 
@@ -153,23 +146,23 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
         layout="vertical"
         initialValues={store}
         onValuesChange={handleValuesChange}
-        className="[&_.ant-form-item]:mb-4 [&_.ant-form-item-label>label]:text-slate-500 [&_.ant-input]:!rounded-2xl [&_.ant-input]:!border-slate-200 [&_.ant-input]:!bg-slate-50/70 [&_.ant-input]:!px-4 [&_.ant-input]:!py-2.5 [&_.ant-input-affix-wrapper]:!rounded-2xl [&_.ant-input-affix-wrapper]:!border-slate-200 [&_.ant-input-affix-wrapper]:!bg-slate-50/70 [&_.ant-select-selector]:!h-11 [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border-slate-200 [&_.ant-select-selector]:!bg-slate-50/70 [&_.ant-select-selection-wrap]:!items-center"
+        className="[&_.ant-form-item]:mb-3.5 [&_.ant-form-item-label>label]:text-[13px] [&_.ant-form-item-label>label]:text-slate-500 [&_.ant-input]:!rounded-xl [&_.ant-input]:!border-slate-200 [&_.ant-input]:!bg-slate-50/70 [&_.ant-input]:!px-3.5 [&_.ant-input]:!py-2 [&_.ant-input-affix-wrapper]:!rounded-xl [&_.ant-input-affix-wrapper]:!border-slate-200 [&_.ant-input-affix-wrapper]:!bg-slate-50/70 [&_.ant-select-selector]:!h-9 [&_.ant-select-selector]:!rounded-xl [&_.ant-select-selector]:!border-slate-200 [&_.ant-select-selector]:!bg-slate-50/70 [&_.ant-select-selection-wrap]:!items-center"
       >
-        <div className="space-y-4 mb-20">
+        <div className="mb-14 space-y-3">
           {fieldGroups.map((group) => (
             <div
               key={group.key}
-              className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-[0_18px_36px_-32px_rgba(15,23,42,0.55)]"
+              className="rounded-[22px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_36px_-32px_rgba(15,23,42,0.55)]"
             >
-              <div className="mb-4 flex items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-600">
+              <div className="mb-3 flex items-start gap-2.5">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600">
                   {group.icon}
                 </span>
                 <div>
-                  <div className="text-sm font-semibold text-slate-900">
+                  <div className="text-[13px] font-semibold text-slate-900">
                     {group.title}
                   </div>
-                  <div className="mt-1 text-xs leading-5 text-slate-400">
+                  <div className="mt-1 text-[11px] leading-5 text-slate-400">
                     {group.description}
                   </div>
                 </div>

@@ -16,7 +16,8 @@ export default function RichTextComponent(_props: IRichTextComponentProps) {
   if (!props.content)
     return (
       <div id="placeholder" className="w-full h-20">
-        请在富文本输入内�?      </div>
+        请在富文本输入内输入内容
+      </div>
     );
 
   return <div dangerouslySetInnerHTML={{ __html: props.content }} />;
