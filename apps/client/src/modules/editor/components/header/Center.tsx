@@ -1,4 +1,5 @@
 import {
+  ApartmentOutlined,
   AppstoreOutlined,
   CheckOutlined,
   CodeOutlined,
@@ -12,7 +13,7 @@ import {
 } from "@ant-design/icons";
 import type { PostReleaseRequest } from "@codigo/materials";
 import { useRequest } from "ahooks";
-import { Button, InputNumber, Space, message } from "antd";
+import { Button, InputNumber, Space, Switch, message } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   postRelease,
@@ -38,6 +39,7 @@ const Center = observer(() => {
     setCanvasSize,
     setDeviceType,
     setEditorMode,
+    setOutlineTreeVisible,
     setWorkspace,
     setWorkspaceIDEConfig,
     setWorkspaceRuntime,
@@ -164,6 +166,19 @@ const Center = observer(() => {
         <div className="hidden h-5 w-px bg-slate-200 xl:block" />
 
         <div className="hidden items-center gap-2 xl:flex">
+          <div className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 px-2 py-1">
+            <span className="flex items-center gap-1 text-[11px] text-slate-500">
+              <ApartmentOutlined />
+              大纲树
+            </span>
+            <Switch
+              size="small"
+              checked={store.showOutlineTree}
+              onChange={(checked) => setOutlineTreeVisible(checked, pageId)}
+              disabled={store.editorMode !== "visual"}
+            />
+          </div>
+
           {store.deviceType === "pc" && (
             <Space size="small">
               <InputNumber

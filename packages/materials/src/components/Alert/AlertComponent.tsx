@@ -4,6 +4,9 @@ import { getDefaultValueByConfig } from "..";
 import type { IAlertComponentProps } from ".";
 import { alertComponentDefaultConfig } from ".";
 
+/**
+ * 渲染提示信息物料，统一封装图标、关闭按钮与提示类型配置。
+ */
 export default function AlertComponent(_props: IAlertComponentProps) {
   const props = useMemo(() => {
     return {
@@ -15,7 +18,6 @@ export default function AlertComponent(_props: IAlertComponentProps) {
   return (
     <Alert
       type={props.type}
-      message={props.title || "请输入文案"}
       showIcon={props.showIcon}
       closable={props.showClose}
     />

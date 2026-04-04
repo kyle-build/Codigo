@@ -8,6 +8,9 @@ import {
 import { getDefaultEChartsTheme } from "../../../utils/echartsTheme";
 import { deepMerge } from "../../../utils/deepMerge";
 
+/**
+ * 安全解析图表配置中的 JSON 文本，避免异常导致渲染中断。
+ */
 function parseJsonText<T>(text: string, fallback: T): T {
   try {
     return JSON.parse(text) as T;
@@ -16,6 +19,9 @@ function parseJsonText<T>(text: string, fallback: T): T {
   }
 }
 
+/**
+ * 渲染折线图物料，并将默认配置与用户传入的 ECharts 配置深度合并。
+ */
 export default function LineChartComponent(_props: IChartComponentProps) {
   const echartsTheme = _props.echartsTheme ?? getDefaultEChartsTheme();
   const props = useMemo(() => {

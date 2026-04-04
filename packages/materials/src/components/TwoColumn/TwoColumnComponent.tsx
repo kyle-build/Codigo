@@ -9,6 +9,9 @@ interface TwoColumnRuntimeProps extends ITwoColumnComponentProps {
   editorNodeId?: string;
 }
 
+/**
+ * 渲染双栏布局中的单个插槽区域，并提供空态占位与拖拽标识。
+ */
 function SlotBox(props: {
   title: string;
   slotName: string;
@@ -41,6 +44,9 @@ function SlotBox(props: {
   );
 }
 
+/**
+ * 渲染左右双栏容器物料，分别暴露 left 与 right 两个插槽区域。
+ */
 export default function TwoColumnComponent(_props: TwoColumnRuntimeProps) {
   const props = useMemo(() => {
     return {

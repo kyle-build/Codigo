@@ -1,6 +1,7 @@
 import {
   ContainerComponent as LowCodeContainer,
   TwoColumnComponent as LowCodeTwoColumn,
+  AccordionComponent as LowCodeAccordion,
   ButtonComponent as LowCodeButton,
   BreadcrumbBarComponent as LowCodeBreadcrumbBar,
   PageHeaderComponent as LowCodePageHeader,
@@ -10,6 +11,7 @@ import {
   DataTableComponent as LowCodeDataTable,
   CardComponent as LowCodeCard,
   ImageComponent as LowCodeImage,
+  AvatarComponent as LowCodeAvatar,
   ListComponent as LowCodeList,
   StatisticComponent as LowCodeStatistic,
   SwiperComponent as LowCodeSwiper,
@@ -64,6 +66,12 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
+    type: "accordion",
+    name: "Accordion",
+    defaultConfig: {} as any,
+    render: LowCodeAccordion,
+  },
+  {
     type: "button",
     name: "Button",
     defaultConfig: {} as any,
@@ -116,6 +124,12 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     name: "Image",
     defaultConfig: {} as any,
     render: LowCodeImage,
+  },
+  {
+    type: "avatar",
+    name: "Avatar",
+    defaultConfig: {} as any,
+    render: LowCodeAvatar,
   },
   {
     type: "swiper",
@@ -229,6 +243,9 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
 
 let builtinComponentsInitialized = false;
 
+/**
+ * 根据物料类型查找对应的内置组件定义，供注册和运行时渲染复用。
+ */
 export function getBuiltinComponentDefinitionByType(type?: string | null) {
   if (!type) {
     return null;
@@ -237,6 +254,9 @@ export function getBuiltinComponentDefinitionByType(type?: string | null) {
   return builtinComponentDefinitions.find((item) => item.type === type) ?? null;
 }
 
+/**
+ * 初始化内置物料与图表主题，并确保组件注册只执行一次。
+ */
 export function initBuiltinComponents() {
   initBuiltinEChartsThemes();
   if (builtinComponentsInitialized) {

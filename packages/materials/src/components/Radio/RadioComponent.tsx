@@ -3,6 +3,9 @@ import { Radio } from "antd";
 import { getDefaultValueByConfig } from "..";
 import { type IRadioComponentProps, radioComponentDefaultConfig } from ".";
 
+/**
+ * 渲染单选框物料，并将配置选项映射为可选项列表。
+ */
 export default function RadioComponent(_props: IRadioComponentProps) {
   const props = useMemo(() => {
     return {

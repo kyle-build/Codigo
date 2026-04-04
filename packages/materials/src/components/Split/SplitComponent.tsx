@@ -6,6 +6,9 @@ import { objectOmit } from "../..";
 import { splitComponentDefaultConfig } from ".";
 import type { ISplitComponentProps } from ".";
 
+/**
+ * 渲染分割线物料，有文本时展示带文案的分隔效果，无文本时退化为纯分割线。
+ */
 export default function SplitComponent(_props: ISplitComponentProps) {
   const props = useMemo(() => {
     return {

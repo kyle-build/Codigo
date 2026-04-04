@@ -5,6 +5,9 @@ import { type IDataTableComponentProps, dataTableComponentDefaultConfig } from "
 
 const { Title } = Typography;
 
+/**
+ * 安全解析表格配置中的 JSON 字符串，解析失败时返回兜底数组。
+ */
 function safeParse(value: string, fallback: unknown[]) {
   try {
     const parsed = JSON.parse(value);
@@ -14,6 +17,9 @@ function safeParse(value: string, fallback: unknown[]) {
   }
 }
 
+/**
+ * 渲染数据表格物料，并将字符串化的列配置与数据源转换为 Ant Design Table 可用结构。
+ */
 export default function DataTableComponent(_props: IDataTableComponentProps) {
   const props = useMemo(() => {
     return {

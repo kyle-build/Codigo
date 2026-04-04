@@ -3,6 +3,9 @@ import { getDefaultValueByConfig } from "..";
 import { textComponentDefaultConfig } from ".";
 import type { ITextComponentProps } from ".";
 
+/**
+ * 渲染文本物料，并根据字号配置映射为对应的 Tailwind 文本样式。
+ */
 export default function TextComponent(_props: ITextComponentProps) {
   const props = useMemo(() => {
     return {

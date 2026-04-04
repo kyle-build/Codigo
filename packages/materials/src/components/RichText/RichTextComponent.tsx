@@ -5,6 +5,9 @@ import {
   richTextComponentDefaultConfig,
 } from ".";
 
+/**
+ * 渲染富文本物料，内容为空时展示占位提示。
+ */
 export default function RichTextComponent(_props: IRichTextComponentProps) {
   const props = useMemo(() => {
     return {

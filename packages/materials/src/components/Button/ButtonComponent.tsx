@@ -16,11 +16,17 @@ interface ButtonRuntimeProps extends IButtonComponentProps {
   onAction?: (action: ButtonRuntimeAction) => void;
 }
 
+/**
+ * 渲染按钮物料，并根据配置执行跳转、锚点滚动或状态派发。
+ */
 export default function ButtonComponent(_props: ButtonRuntimeProps) {
   const props = useMemo(() => {
     return { ...getDefaultValueByConfig(buttonComponentDefaultConfig), ..._props };
   }, [_props]);
 
+  /**
+   * 统一处理按钮点击行为，按 actionType 路由到对应的交互逻辑。
+   */
   function handleClick() {
     if (props.actionType === "open-url" && props.link) {
       if (props.link.startsWith("#")) {

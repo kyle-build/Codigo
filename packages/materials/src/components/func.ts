@@ -6,7 +6,9 @@ import type {
 import { getComponentPlugin, type IComponentSlotDefinition } from "@codigo/plugin-system";
 import { getBuiltinComponentDefinitionByType } from "./registry";
 
-// 获取组件的入口
+/**
+ * 按组件类型获取最终渲染入口，优先返回插件注册组件，其次回退到内置物料。
+ */
 export function getComponentByType(type: TBasicComponentConfig["type"]) {
   return (
     getComponentPlugin(type)?.render ??
@@ -14,6 +16,9 @@ export function getComponentByType(type: TBasicComponentConfig["type"]) {
   );
 }
 
+/**
+ * 获取组件是否为容器以及可用插槽定义，供编辑器布局与拖拽能力使用。
+ */
 export function getComponentContainerMeta(type: TBasicComponentConfig["type"]) {
   const plugin =
     getComponentPlugin(type) ?? getBuiltinComponentDefinitionByType(type);
@@ -23,7 +28,9 @@ export function getComponentContainerMeta(type: TBasicComponentConfig["type"]) {
   };
 }
 
-// 将组件配置属性的深层对象，转成一维，直接拿到defaultValue值作为配置属性值
+/**
+ * 将物料配置中的包装结构拍平成普通属性对象，只保留各字段的默认值。
+ */
 export function getDefaultValueByConfig(
   componentPropsWrapper: TransformedComponentConfig<Record<string, any>>,
 ) {
@@ -36,12 +43,9 @@ export function getDefaultValueByConfig(
   );
 }
 
-// 转换组件的属性键值对数据
-// {src:'xxx'} => {src:{
-//                  defaultValue:'xxx',
-//                  isHidden:'xxx',
-//                  value:'xx'
-//                 }}
+/**
+ * 将普通属性值重新填充回配置包装结构，便于编辑器统一处理显隐、默认值与当前值。
+ */
 export function fillComponentPropsByConfig<
   T extends TransformedComponentConfig<Record<string, any>>,
 >(props: Record<string, any>, componentPropsWrapper: T): T {

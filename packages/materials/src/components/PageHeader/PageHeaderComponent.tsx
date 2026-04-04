@@ -8,6 +8,9 @@ import {
 
 const { Title, Text } = Typography;
 
+/**
+ * 将标签文本按常见分隔符拆分为标签数组。
+ */
 function parseTags(tagsText: string) {
   return tagsText
     .split(/[、,，|]/)
@@ -15,6 +18,9 @@ function parseTags(tagsText: string) {
     .filter(Boolean);
 }
 
+/**
+ * 渲染页面头部物料，聚合标题、副标题、标签与补充信息。
+ */
 export default function PageHeaderComponent(_props: IPageHeaderComponentProps) {
   const props = useMemo(() => {
     return {

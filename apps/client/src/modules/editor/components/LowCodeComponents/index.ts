@@ -1,6 +1,7 @@
 export * from "./utils";
 export * from "./LowCodeContainer";
 export * from "./LowCodeTwoColumn";
+export * from "./LowCodeAccordion";
 export * from "./LowCodeButton";
 export * from "./LowCodeBreadcrumbBar";
 export * from "./LowCodePageHeader";
@@ -10,6 +11,7 @@ export * from "./LowCodeCardGrid";
 export * from "./LowCodeDataTable";
 export * from "./LowCodeVideo";
 export * from "./LowCodeImage";
+export * from "./LowCodeAvatar";
 export * from "./LowCodeSwiper";
 export * from "./LowCodeCard";
 export * from "./LowCodeList";

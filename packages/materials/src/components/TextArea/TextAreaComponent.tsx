@@ -5,6 +5,9 @@ import { type ITextAreaComponentProps } from '.'
 
 const { TextArea } = Input
 
+/**
+ * 渲染多行文本输入物料，适合承载备注或长文本编辑场景。
+ */
 export default function TextAreaComponent(_props: ITextAreaComponentProps) {
   const props = useMemo(() => {
     return { ...getDefaultValueByConfig(inputComponentDefaultConfig), ..._props }

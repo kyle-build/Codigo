@@ -5,6 +5,9 @@ import { chartComponentDefaultConfig, type IChartComponentProps } from "./type";
 import { getDefaultEChartsTheme } from "../../utils/echartsTheme";
 import { deepMerge } from "../../utils/deepMerge";
 
+/**
+ * 安全解析图表配置中的 JSON 文本，避免异常导致渲染中断。
+ */
 function parseJsonText<T>(text: string, fallback: T): T {
   try {
     return JSON.parse(text) as T;
@@ -13,6 +16,9 @@ function parseJsonText<T>(text: string, fallback: T): T {
   }
 }
 
+/**
+ * 渲染环形饼图物料，并将数据字段映射为 ECharts 所需的 name/value 结构。
+ */
 export default function PieChartComponent(_props: IChartComponentProps) {
   const echartsTheme = _props.echartsTheme ?? getDefaultEChartsTheme();
   const props = useMemo(() => {

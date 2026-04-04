@@ -4,6 +4,9 @@ import { ImageComponent, getDefaultValueByConfig } from "..";
 import { swiperComponentDefaultConfig } from ".";
 import type { ISwiperComponentProps } from ".";
 
+/**
+ * 渲染轮播图物料，并复用图片物料展示每一张轮播内容。
+ */
 export default function SwiperComponent(_props: ISwiperComponentProps) {
   // 当配置属性发生变化，重置属性并且重新渲染
   const props = useMemo(() => {

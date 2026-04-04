@@ -1,8 +1,5 @@
 /**
- * 深合并
- * @param base 基础对象
- * @param override 覆盖对象
- * @returns 合并后的对象
+ * 判断传入值是否为可递归合并的普通对象。
  */
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (value === null || typeof value !== "object") return false;
@@ -11,6 +8,9 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return proto === Object.prototype || proto === null;
 }
 
+/**
+ * 深度合并基础配置与覆盖配置，数组直接替换，对象递归合并。
+ */
 export function deepMerge<T>(base: T, override: unknown): T {
   if (override === undefined) return base;
   if (!isPlainObject(base) || !isPlainObject(override)) {

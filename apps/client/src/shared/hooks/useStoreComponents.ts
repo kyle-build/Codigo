@@ -673,6 +673,14 @@ export function useStoreComponents() {
     return serializeComponentTree(storeComponents);
   });
 
+  const syncLayoutMode = action((layoutMode: "absolute" | "flow") => {
+    normalizeLayout(
+      storeComponents.compConfigs,
+      storeComponents.sortableCompConfig,
+      layoutMode,
+    );
+  });
+
   const ensureEditorPages = action(() => {
     if (storeComponents.pages.length) {
       if (
@@ -1764,5 +1772,6 @@ export function useStoreComponents() {
     initPageData: initFromServerData,
     serializeSchema: () => serializeStore(storeComponents),
     insertNodeIntoContainer,
+    syncLayoutMode,
   };
 }

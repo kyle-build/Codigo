@@ -5,6 +5,9 @@ import { type ICardGridComponentProps, cardGridComponentDefaultConfig } from "."
 
 const { Text, Title } = Typography;
 
+/**
+ * 按配置列数渲染统计卡片网格，适合展示多项摘要指标。
+ */
 export default function CardGridComponent(_props: ICardGridComponentProps) {
   const props = useMemo(() => {
     return {

@@ -5,6 +5,9 @@ import { chartComponentDefaultConfig, type IChartComponentProps } from "./type";
 import { getDefaultEChartsTheme } from "../../utils/echartsTheme";
 import { deepMerge } from "../../utils/deepMerge";
 
+/**
+ * 安全解析图表配置中的 JSON 文本，避免异常导致渲染中断。
+ */
 function parseJsonText<T>(text: string, fallback: T): T {
   try {
     return JSON.parse(text) as T;
@@ -13,6 +16,9 @@ function parseJsonText<T>(text: string, fallback: T): T {
   }
 }
 
+/**
+ * 渲染柱状图物料，并将内置图表配置与自定义 option 合并后输出。
+ */
 export default function BarChartComponent(_props: IChartComponentProps) {
   const echartsTheme = _props.echartsTheme ?? getDefaultEChartsTheme();
   const props = useMemo(() => {

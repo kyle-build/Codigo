@@ -5,6 +5,7 @@ import type {
   ReactNode,
   RefObject,
 } from "react";
+import { observer } from "mobx-react-lite";
 import EditorLeftPanel from "../leftPanel";
 import EditorPageManager from "../pageManager";
 import EditorRightPanel from "../rightPanel";
@@ -137,13 +138,21 @@ function EditorStage({
   );
 }
 
-export function EditorViewport(props: EditorViewportProps) {
+export const EditorViewport = observer(function EditorViewport(
+  props: EditorViewportProps,
+) {
   const { leftPanelWidth, rightPanelWidth, startResize } =
     useEditorPanelLayout();
   const [activeLeftSection, setActiveLeftSection] =
     useState<LeftPanelSection>("components");
-  const outlinePanelWidth =
-    leftPanelWidth - LEFT_PANEL_RAIL_WIDTH - LEFT_PANEL_CONTENT_WIDTH;
+  const outlinePanelWidth = Math.max(
+    0,
+    leftPanelWidth - LEFT_PANEL_RAIL_WIDTH - LEFT_PANEL_CONTENT_WIDTH,
+  );
+  const showOutlineTree = props.storePage.showOutlineTree;
+  const effectiveLeftPanelWidth = showOutlineTree
+    ? leftPanelWidth
+    : LEFT_PANEL_RAIL_WIDTH + LEFT_PANEL_CONTENT_WIDTH;
   const leftSectionItems: Array<{
     key: LeftPanelSection;
     label: string;
@@ -165,7 +174,7 @@ export function EditorViewport(props: EditorViewportProps) {
     <div className="relative flex h-full w-full overflow-hidden bg-[#F8FAFC]">
       <div
         className="flex shrink-0 overflow-hidden border-r border-slate-200/80 bg-white/88 text-[13px] shadow-[14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
-        style={{ width: leftPanelWidth }}
+        style={{ width: effectiveLeftPanelWidth }}
       >
         <div
           className="flex h-full shrink-0 flex-col border-r border-slate-200/80 bg-slate-50/75 px-2.5 py-3"
@@ -214,20 +223,24 @@ export function EditorViewport(props: EditorViewportProps) {
           )}
         </div>
 
-        <div
-          className="min-h-0 shrink-0 border-l border-slate-200/80 px-3 py-3"
-          style={{ width: outlinePanelWidth }}
-        >
-          <EditorOutlineTree />
-        </div>
+        {showOutlineTree && (
+          <div
+            className="min-h-0 shrink-0 border-l border-slate-200/80 px-3 py-3"
+            style={{ width: outlinePanelWidth }}
+          >
+            <EditorOutlineTree />
+          </div>
+        )}
       </div>
 
-      <PanelResizeHandle
-        side="left"
-        lineClassName="group-hover:bg-emerald-400 group-active:bg-emerald-500"
-        gripClassName="group-hover:bg-emerald-400/80 group-active:bg-emerald-500"
-        onPointerDown={startResize("left")}
-      />
+      {showOutlineTree && (
+        <PanelResizeHandle
+          side="left"
+          lineClassName="group-hover:bg-emerald-400 group-active:bg-emerald-500"
+          gripClassName="group-hover:bg-emerald-400/80 group-active:bg-emerald-500"
+          onPointerDown={startResize("left")}
+        />
+      )}
 
       <div className="relative flex min-w-0 flex-1 flex-col">
         <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:20px_20px] opacity-32 pointer-events-none" />
@@ -263,4 +276,4 @@ export function EditorViewport(props: EditorViewportProps) {
       </div>
     </div>
   );
-}
+});

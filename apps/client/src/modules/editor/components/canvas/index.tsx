@@ -454,6 +454,7 @@ const EditorCanvas: FC<{
     isCurrentComponent,
     moveExistingNode,
     setCurrentComponent,
+    syncLayoutMode,
     updateComponentPosition,
     push,
   } = useStoreComponents();
@@ -716,6 +717,30 @@ const EditorCanvas: FC<{
     setShowToolbar,
   }));
 
+  useEffect(() => {
+    if (storePage.layoutMode !== "absolute") {
+      return;
+    }
+
+    const tree = getComponentTree.get();
+    if (!tree.length) {
+      return;
+    }
+
+    const needsRecover = tree.every((node) => {
+      const position = node.styles?.position;
+      return (
+        position !== "absolute" &&
+        node.styles?.left === undefined &&
+        node.styles?.top === undefined
+      );
+    });
+
+    if (needsRecover) {
+      syncLayoutMode("absolute");
+    }
+  }, [getComponentTree, storePage.layoutMode, syncLayoutMode]);
+
   return (
     <div
       ref={canvasRef}
@@ -801,10 +826,15 @@ const EditorCanvas: FC<{
       {getComponentTree.get().map(function renderTreeNode(node: ComponentNode) {
         const renderedChildren =
           node.children?.map((child) => renderTreeNode(child)) ?? [];
+        const nodePosition = node.styles?.position;
+        const isFlowLayout =
+          nodePosition !== undefined
+            ? nodePosition !== "absolute"
+            : storePage.layoutMode === "flow";
         return (
           <ComponentWrapper
             key={node.id}
-            isFlowLayout={storePage.layoutMode === "flow"}
+            isFlowLayout={isFlowLayout}
             isDragable={isDragable}
             canDrag={canEditStructure}
             onMouseDown={(event) => handleDragComponentStart(event, node.id)}
@@ -823,16 +853,13 @@ const EditorCanvas: FC<{
                 ?.slot ?? null
             }
             style={{
-              left:
-                storePage.layoutMode === "flow"
-                  ? undefined
-                  : (node.styles?.left as string | number | undefined),
-              top:
-                storePage.layoutMode === "flow"
-                  ? undefined
-                  : (node.styles?.top as string | number | undefined),
-              position:
-                storePage.layoutMode === "flow" ? "relative" : "absolute",
+              left: isFlowLayout
+                ? undefined
+                : (node.styles?.left as string | number | undefined),
+              top: isFlowLayout
+                ? undefined
+                : (node.styles?.top as string | number | undefined),
+              position: isFlowLayout ? "relative" : "absolute",
               width: node.styles?.width as string | number | undefined,
             }}
           >

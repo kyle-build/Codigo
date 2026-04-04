@@ -1,6 +1,7 @@
 export * from "./func";
 export * from "./Container";
 export * from "./TwoColumn";
+export * from "./Accordion";
 export * from "./Button";
 export * from "./BreadcrumbBar";
 export * from "./PageHeader";
@@ -10,6 +11,7 @@ export * from "./CardGrid";
 export * from "./DataTable";
 export * from "./Video";
 export * from "./Image";
+export * from "./Avatar";
 export * from "./Swiper";
 export * from "./Card";
 export * from "./List";

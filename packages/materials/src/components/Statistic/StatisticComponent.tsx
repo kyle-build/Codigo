@@ -12,6 +12,9 @@ const trendColorMap = {
   none: "#64748b",
 } as const;
 
+/**
+ * 渲染基础统计指标卡片，并按趋势类型展示对应颜色提示。
+ */
 export default function StatisticComponent(_props: IStatisticComponentProps) {
   const props = useMemo(() => {
     return {

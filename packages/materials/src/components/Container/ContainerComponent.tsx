@@ -10,6 +10,9 @@ interface ContainerRuntimeProps extends IContainerComponentProps {
   editorNodeId?: string;
 }
 
+/**
+ * 渲染带默认插槽的容器物料，支持编辑器拖拽区域与运行时子节点承载。
+ */
 export default function ContainerComponent(_props: ContainerRuntimeProps) {
   const props = useMemo(() => {
     return {

@@ -15,6 +15,7 @@ export const supportedComponentTypes: TComponentTypes[] = [
   "statistic",
   "table",
   "image",
+  "avatar",
   "titleText",
   "split",
   "richText",

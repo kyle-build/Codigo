@@ -20,8 +20,13 @@ import type {
 } from "@codigo/schema";
 
 const storePage = createStorePage();
+const OUTLINE_TREE_STORAGE_KEY = "editor:outline-tree";
 
 setDefaultEChartsTheme(storePage.chartTheme || undefined);
+
+function getOutlineTreeStorageKey(pageId: number) {
+  return `${OUTLINE_TREE_STORAGE_KEY}:${pageId}`;
+}
 
 export function useStorePage() {
   const { ensurePermission, addOperationLog } = useStorePermission();
@@ -95,6 +100,24 @@ export function useStorePage() {
 
   const setEditorMode = action((mode: EditorMode) => {
     storePage.editorMode = mode;
+  });
+
+  const setOutlineTreeVisible = action((visible: boolean, pageId?: number) => {
+    storePage.showOutlineTree = visible;
+
+    if (pageId && Number.isFinite(pageId) && pageId > 0) {
+      localStorage.setItem(getOutlineTreeStorageKey(pageId), String(visible));
+    }
+  });
+
+  const hydrateOutlineTreeVisible = action((pageId?: number | null) => {
+    if (!pageId || !Number.isFinite(pageId) || pageId <= 0) {
+      storePage.showOutlineTree = true;
+      return;
+    }
+
+    const savedValue = localStorage.getItem(getOutlineTreeStorageKey(pageId));
+    storePage.showOutlineTree = savedValue ? savedValue === "true" : true;
   });
 
   const setWorkspace = action((workspace: PageWorkspaceResponse | null) => {
@@ -222,6 +245,8 @@ export function useStorePage() {
     setCanvasSize,
     setCodeFramework,
     setEditorMode,
+    setOutlineTreeVisible,
+    hydrateOutlineTreeVisible,
     setWorkspace,
     setWorkspaceExplorer,
     setWorkspaceSession,

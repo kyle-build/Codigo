@@ -15,7 +15,7 @@ import { getPageLayoutPresets } from "@/modules/editor/registry/components";
 
 const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
   const { updatePage } = useStorePage();
-  const { applyLayoutPreset } = useStoreComponents();
+  const { applyLayoutPreset, syncLayoutMode } = useStoreComponents();
   const { can } = useStorePermission();
   const canEditStructure = can("edit_structure");
   //todo: 优化图表主题选项 暂时没有统一option
@@ -28,6 +28,9 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
 
   function handleValuesChange(changedValues: Partial<TStorePage>) {
     updatePage(changedValues);
+    if (changedValues.layoutMode || changedValues.pageCategory) {
+      syncLayoutMode(store.layoutMode);
+    }
   }
 
   const fieldGroups = [

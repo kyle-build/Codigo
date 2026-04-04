@@ -235,20 +235,32 @@ export const codigoEChartsTheme = {
 let builtinThemesInitialized = false;
 let defaultTheme: EChartsThemeName = "codigoTheme";
 
+/**
+ * 注册物料包内置的 ECharts 主题，并保证初始化过程仅执行一次。
+ */
 export function initBuiltinEChartsThemes() {
   if (builtinThemesInitialized) return;
   registerTheme("codigoTheme", codigoEChartsTheme);
   builtinThemesInitialized = true;
 }
 
+/**
+ * 设置图表物料默认使用的主题名称。
+ */
 export function setDefaultEChartsTheme(theme: EChartsThemeName) {
   defaultTheme = theme;
 }
 
+/**
+ * 获取当前图表物料默认主题名称。
+ */
 export function getDefaultEChartsTheme(): EChartsThemeName {
   return defaultTheme;
 }
 
+/**
+ * 返回内置图表主题下拉选项，供表单配置直接使用。
+ */
 export function getBuiltinEChartsThemeOptions() {
   return [
     { value: "codigoTheme", label: "Codigo" },

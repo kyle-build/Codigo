@@ -1,5 +1,6 @@
 import {
   ApartmentOutlined,
+  UserOutlined,
   BarChartOutlined,
   BarsOutlined,
   BorderOutlined,
@@ -26,7 +27,9 @@ import {
 import { getComponentByType as getBuiltinComponentByType } from "@codigo/materials";
 import type { PageCategory, TComponentTypes } from "@codigo/schema";
 import type { ComponentType, FC, ReactNode } from "react";
+import { AccordionComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeAccordion";
 import { AlertComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeAlert";
+import { AvatarComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeAvatar";
 import { BreadcrumbBarComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeBreadcrumbBar";
 import { ButtonComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeButton";
 import { CardComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeCard";
@@ -92,6 +95,14 @@ const sectionLabelMap: Record<EditorComponentSectionKey, string> = {
 };
 
 export const editorComponentCatalog: EditorComponentMeta[] = [
+  {
+    type: "accordion",
+    name: "手风琴",
+    icon: <BarsOutlined />,
+    sectionKey: "basic",
+    propsEditor: AccordionComponentProps,
+    renderComponent: getBuiltinComponentByType("accordion"),
+  },
   {
     type: "breadcrumbBar",
     name: "面包屑",
@@ -196,6 +207,15 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     sectionKey: "basic",
     propsEditor: ImageComponentProps,
     renderComponent: getBuiltinComponentByType("image"),
+    quickInsert: true,
+  },
+  {
+    type: "avatar",
+    name: "头像",
+    icon: <UserOutlined />,
+    sectionKey: "basic",
+    propsEditor: AvatarComponentProps,
+    renderComponent: getBuiltinComponentByType("avatar"),
     quickInsert: true,
   },
   {

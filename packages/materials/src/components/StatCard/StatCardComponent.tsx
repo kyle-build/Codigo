@@ -11,6 +11,9 @@ const trendColorMap = {
   flat: "default",
 } as const;
 
+/**
+ * 渲染带趋势标签的统计卡片，用于突出展示单个核心指标。
+ */
 export default function StatCardComponent(_props: IStatCardComponentProps) {
   const props = useMemo(() => {
     return {

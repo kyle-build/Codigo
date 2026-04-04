@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useTitle } from "ahooks";
 import { observer } from "mobx-react-lite";
 import { useSearchParams } from "react-router-dom";
@@ -18,10 +18,14 @@ const Editor = observer(() => {
   const pageId = Number(searchParams.get("id"));
 
   const { store: storeComps, loadPageData } = useStoreComponents();
-  const { store: storePage } = useStorePage();
+  const { store: storePage, hydrateOutlineTreeVisible } = useStorePage();
   const { initCollaboration, cleanupCollaboration } = useStorePermission();
   const { store: storeAuth } = useStoreAuth();
   const canvasRef = useRef<any>(null);
+
+  useEffect(() => {
+    hydrateOutlineTreeVisible(pageId || null);
+  }, [pageId]);
 
   useEditorBootstrap({
     pageId,

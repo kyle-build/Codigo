@@ -3,6 +3,9 @@ import { Checkbox } from 'antd'
 import { getDefaultValueByConfig } from '../func'
 import { type ICheckboxComponentProps, checkboxComponentDefaultConfig } from '.'
 
+/**
+ * 渲染复选框组物料，支持多选值回传与选项列表配置。
+ */
 export default function CheckboxComponent(_props: ICheckboxComponentProps) {
   const props = useMemo(() => {
     return { ...getDefaultValueByConfig(checkboxComponentDefaultConfig), ..._props }

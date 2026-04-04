@@ -33,6 +33,7 @@ interface IStorePage {
   canvasHeight: number;
   codeFramework: CodeFramework;
   editorMode: EditorMode;
+  showOutlineTree: boolean;
   chartTheme: EChartsThemeSetting;
   workspace: PageWorkspaceResponse | null;
   workspaceExplorer: PageWorkspaceExplorerResponse | null;
@@ -56,6 +57,7 @@ export function createStorePage() {
     canvasHeight: 700,
     codeFramework: "react",
     editorMode: "visual",
+    showOutlineTree: true,
     chartTheme: "codigoTheme",
     workspace: null,
     workspaceExplorer: null,

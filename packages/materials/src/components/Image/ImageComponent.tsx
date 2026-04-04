@@ -2,6 +2,9 @@ import React, { useMemo } from "react";
 import { getDefaultValueByConfig } from "..";
 import { type IImageComponentProps, imageComponentDefaultConfig } from ".";
 
+/**
+ * 渲染图片物料，并按点击配置支持外链打开或锚点滚动。
+ */
 export default function ImageComponent(_props: IImageComponentProps) {
   // 当配置属性发生变化，重置属性并且重新渲染
   const props = useMemo(() => {

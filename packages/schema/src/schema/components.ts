@@ -4,6 +4,7 @@
 export type TComponentTypes =
   | "container"
   | "twoColumn"
+  | "accordion"
   | "button"
   | "breadcrumbBar"
   | "pageHeader"
@@ -149,7 +150,7 @@ export interface ComponentNodeRecord<
 }
 
 /**
- * 将组件属性配置转换为全部必填的包装结构。
+ * 将组件属性配置转换为必选属性的包装结构。
  */
 export type TransformedComponentConfig<P extends Record<string, any>> = {
   [key in keyof P]-?: IComponentPropWarpper<P[key]>;

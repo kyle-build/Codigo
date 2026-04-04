@@ -6,6 +6,9 @@ import {
   queryFilterComponentDefaultConfig,
 } from ".";
 
+/**
+ * 将配置里的选项文本拆分为下拉框可用的 label/value 结构。
+ */
 function parseOptions(optionsText: string) {
   return optionsText
     .split(/[、,，|]/)
@@ -14,6 +17,9 @@ function parseOptions(optionsText: string) {
     .map((value) => ({ label: value, value }));
 }
 
+/**
+ * 渲染查询筛选区物料，按字段配置动态生成输入框与下拉项。
+ */
 export default function QueryFilterComponent(_props: IQueryFilterComponentProps) {
   const props = useMemo(() => {
     return {

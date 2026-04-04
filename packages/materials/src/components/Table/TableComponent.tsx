@@ -8,6 +8,9 @@ type TableColumn = {
   dataIndex: string;
 };
 
+/**
+ * 安全解析表格配置中的 JSON 文本，解析失败时返回兜底数据。
+ */
 function parseJsonText<T>(text: string, fallback: T): T {
   try {
     const parsed = JSON.parse(text) as T;
@@ -17,6 +20,9 @@ function parseJsonText<T>(text: string, fallback: T): T {
   }
 }
 
+/**
+ * 渲染通用表格物料，并将字符串配置转换为表头与数据源结构。
+ */
 export default function TableComponent(_props: ITableComponentProps) {
   const props = useMemo(() => {
     return { ...getDefaultValueByConfig(tableComponentDefaultConfig), ..._props };

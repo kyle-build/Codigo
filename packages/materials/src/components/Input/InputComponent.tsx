@@ -3,6 +3,9 @@ import { Input } from 'antd'
 import { getDefaultValueByConfig } from '..'
 import { type IInputComponentProps, inputComponentDefaultConfig } from '.'
 
+/**
+ * 渲染单行输入框物料，适合基础文本采集场景。
+ */
 export default function InputComponent(_props: IInputComponentProps) {
   const props = useMemo(() => {
     return { ...getDefaultValueByConfig(inputComponentDefaultConfig), ..._props }

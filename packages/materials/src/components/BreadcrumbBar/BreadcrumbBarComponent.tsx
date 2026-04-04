@@ -6,6 +6,9 @@ import {
   breadcrumbBarComponentDefaultConfig,
 } from ".";
 
+/**
+ * 渲染页面顶部的面包屑导航物料，用于展示当前层级路径。
+ */
 export default function BreadcrumbBarComponent(
   _props: IBreadcrumbBarComponentProps,
 ) {
