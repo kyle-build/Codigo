@@ -4,12 +4,11 @@ import { Form, Input, Button, Card, Tabs, message, Avatar } from "antd";
 import {
   UserOutlined,
   LockOutlined,
-  ArrowLeftOutlined,
 } from "@ant-design/icons";
 import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
 import { updateProfile, updatePassword } from "@/modules/auth/api/user";
 import { useNavigate } from "react-router-dom";
-import { HomeHeader } from "@/modules/home/components/homeHeader/homeHeader";
+import { ProfilePageHeader } from "./components/ProfilePageHeader";
 
 const Profile = observer(
   ({
@@ -246,17 +245,12 @@ const Profile = observer(
 
     return (
       <div className="min-h-screen bg-slate-50">
-        <HomeHeader />
-        <div className="pt-20 pb-10">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 mt-10">
-            <Button
-              type="link"
-              icon={<ArrowLeftOutlined />}
-              onClick={() => navigate(-1)}
-              className="mb-4 text-slate-500 hover:text-slate-800"
-            >
-              返回
-            </Button>
+        <ProfilePageHeader
+          onBack={() => navigate(-1)}
+          onHome={() => navigate("/")}
+        />
+        <div className="pb-10 pt-10">
+          <div className="mx-auto mt-10 max-w-4xl px-4 sm:px-6 lg:px-8">
             {content}
           </div>
         </div>

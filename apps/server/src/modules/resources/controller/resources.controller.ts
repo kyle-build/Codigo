@@ -21,9 +21,8 @@ import type { ResourcesRequest, DeleteResourcesRequest } from '@codigo/schema';
 @Controller('resources')
 export class ResourcesController {
   constructor(private readonly resourcesService: ResourcesService) {}
-
   /**
-   * 资源上传控制器
+   * 涓婁紶璧勬簮
    */
   @Post('upload')
   @UseGuards(AuthGuard('jwt'))
@@ -47,7 +46,9 @@ export class ResourcesController {
     return this.resourcesService.upload(file, body.type, user.id);
   }
 
-  // 删除资源控制器
+  /**
+   * 鍒犻櫎璧勬簮
+   */
   @Delete()
   @UseGuards(AuthGuard('jwt'))
   async deleteResource(
@@ -66,7 +67,9 @@ export class ResourcesController {
     return this.resourcesService.deleteResource(id, user.id);
   }
 
-  // 资源获取的控制器
+  /**
+   * 鑾峰彇璧勬簮
+   */
   @Get()
   @UseGuards(AuthGuard('jwt'))
   async getResources(

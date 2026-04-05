@@ -1,4 +1,4 @@
-import { createHashRouter, Navigate } from "react-router-dom";
+import { createHashRouter } from "react-router-dom";
 import Editor from "@/modules/editor";
 import Home from "@/modules/home/index";
 import DataCount from "@/modules/dataCount";
@@ -7,15 +7,11 @@ import Preview from "@/modules/preview";
 import LoginOrRegister from "@/modules/auth";
 import Flow from "@/modules/flow";
 import DevDoc from "@/modules/devDocument";
-import AppManagement from "@/modules/appManagement";
+import AppManagement from "@/modules/appManagement/index";
 import { StudioLayout } from "@/app/layouts/StudioLayout";
-import AdminLayout from "@/modules/admin/components/AdminLayout";
-import { AdminPermissionRoute } from "@/modules/admin/components/AdminPermissionRoute";
-import AdminComponents from "@/modules/admin/pages/components";
-import AdminPages from "@/modules/admin/pages/pages";
-import AdminUsers from "@/modules/admin/pages/users";
-import { AdminRouteGuard } from "@/modules/admin/components/AdminRouteGuard";
+import { AdminPortalRedirect } from "@/app/router/AdminPortalRedirect";
 import { EditorRouteGuard } from "@/modules/editor/components/EditorRouteGuard";
+import Profile from "@/modules/profile";
 
 export const router = createHashRouter([
   {
@@ -37,6 +33,10 @@ export const router = createHashRouter([
   {
     path: "/dataCount",
     element: <DataCount />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
   {
     path: "/preview",
@@ -64,49 +64,7 @@ export const router = createHashRouter([
     ],
   },
   {
-    path: "/admin",
-    element: (
-      <AdminRouteGuard>
-        <AdminLayout />
-      </AdminRouteGuard>
-    ),
-    children: [
-      {
-        index: true,
-        element: <Navigate to="users" replace />,
-      },
-      {
-        path: "users",
-        element: (
-          <AdminPermissionRoute permission="USER_MANAGE">
-            <AdminUsers />
-          </AdminPermissionRoute>
-        ),
-      },
-      {
-        path: "permissions",
-        element: (
-          <AdminPermissionRoute permission="PERMISSION_ASSIGN">
-            <AdminUsers />
-          </AdminPermissionRoute>
-        ),
-      },
-      {
-        path: "pages",
-        element: (
-          <AdminPermissionRoute permission="PAGE_MANAGE">
-            <AdminPages />
-          </AdminPermissionRoute>
-        ),
-      },
-      {
-        path: "components",
-        element: (
-          <AdminPermissionRoute permission="COMPONENT_MANAGE">
-            <AdminComponents />
-          </AdminPermissionRoute>
-        ),
-      },
-    ],
+    path: "/admin/*",
+    element: <AdminPortalRedirect />,
   },
 ]);

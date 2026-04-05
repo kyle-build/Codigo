@@ -98,7 +98,7 @@ export class PageReleaseService {
   private async buildReleaseData(page: Page) {
     const components = await this.componentRepository.find({
       where: {
-        page_id: page.id,
+        page_id: Number(page.id),
       },
       order: {
         id: 'ASC',
@@ -335,7 +335,7 @@ export class PageReleaseService {
     const page = user
       ? await this.pageRepository.findOneBy({
           id,
-          account_id: user.id,
+          account_id: Number(user.id),
         })
       : await this.pageRepository.findOneBy({ id });
     if (!page) return null;
@@ -345,7 +345,7 @@ export class PageReleaseService {
 
   async getMyReleaseData(user: TCurrentUser) {
     const page = await this.pageRepository.findOneBy({
-      account_id: user.id,
+      account_id: Number(user.id),
     });
     if (!page) return null;
 
