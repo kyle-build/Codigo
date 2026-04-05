@@ -240,6 +240,7 @@ interface ComponentWrapperProps {
   canDrag: boolean;
   onClick: () => void;
   onMouseDown: (event: ReactMouseEvent) => void;
+  onResizeMouseDown: (event: ReactMouseEvent) => void;
   isCurrentComponent: boolean;
   style?: CSSProperties;
 }
@@ -256,6 +257,7 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
   isCurrentComponent,
   onClick,
   onMouseDown,
+  onResizeMouseDown,
   style,
 }) => {
   const classNames = useMemo(() => {
@@ -282,6 +284,15 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
       data-slot={slot ?? "root"}
     >
       <div className={classNames} />
+      {isCurrentComponent && canDrag && (
+        <button
+          type="button"
+          className="absolute -bottom-2 -right-2 z-[1001] flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-se-resize"
+          onMouseDown={onResizeMouseDown}
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-white" />
+        </button>
+      )}
       <div>{children}</div>
     </div>
   );
@@ -441,6 +452,14 @@ interface MovingComponentState {
   pointerOffsetY: number;
 }
 
+interface ResizeComponentState {
+  id: string;
+  startX: number;
+  startY: number;
+  origWidth: number;
+  origHeight: number;
+}
+
 function getPositioningRect(
   element: HTMLElement,
   fallback: HTMLDivElement | null,
@@ -465,6 +484,7 @@ const EditorCanvas: FC<{
     setCurrentComponent,
     syncLayoutMode,
     updateComponentPosition,
+    updateComponentSize,
     push,
   } = useStoreComponents();
   const { can } = useStorePermission();
@@ -475,10 +495,16 @@ const EditorCanvas: FC<{
   const [showToolbar, setShowToolbar] = useState(true);
   const [movingComponent, setMovingComponent] =
     useState<MovingComponentState | null>(null);
+  const [resizingComponent, setResizingComponent] =
+    useState<ResizeComponentState | null>(null);
   const toolbarRef = createRef<any>();
   const canvasRef = useRef<HTMLDivElement>(null);
   const dragFrameRef = useRef<number | null>(null);
+  const resizeFrameRef = useRef<number | null>(null);
   const pendingDragPositionRef = useRef<{ left: number; top: number } | null>(
+    null,
+  );
+  const pendingResizeSizeRef = useRef<{ width: number; height: number } | null>(
     null,
   );
 
@@ -623,6 +649,26 @@ const EditorCanvas: FC<{
     event.stopPropagation();
   }
 
+  function handleResizeComponentStart(event: ReactMouseEvent, id: string) {
+    if (!canEditStructure || event.button !== 0) return;
+    const wrapperElement = (event.currentTarget as HTMLElement).closest(
+      ".component-warpper",
+    ) as HTMLDivElement | null;
+    if (!wrapperElement) return;
+
+    const rect = wrapperElement.getBoundingClientRect();
+    setCurrentComponent(id);
+    setResizingComponent({
+      id,
+      startX: event.clientX,
+      startY: event.clientY,
+      origWidth: rect.width,
+      origHeight: rect.height,
+    });
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   useEffect(() => {
     if (!movingComponent || !canEditStructure) return;
 
@@ -706,6 +752,64 @@ const EditorCanvas: FC<{
     movingComponent,
     updateComponentPosition,
   ]);
+
+  useEffect(() => {
+    if (!resizingComponent || !canEditStructure) return;
+
+    const onMouseMove = (event: MouseEvent) => {
+      const width =
+        resizingComponent.origWidth + event.clientX - resizingComponent.startX;
+      const height =
+        resizingComponent.origHeight + event.clientY - resizingComponent.startY;
+      pendingResizeSizeRef.current = { width, height };
+      if (resizeFrameRef.current !== null) {
+        return;
+      }
+
+      resizeFrameRef.current = window.requestAnimationFrame(() => {
+        resizeFrameRef.current = null;
+        const pendingSize = pendingResizeSizeRef.current;
+        if (!pendingSize) {
+          return;
+        }
+
+        updateComponentSize(
+          resizingComponent.id,
+          pendingSize.width,
+          pendingSize.height,
+          true,
+        );
+      });
+    };
+
+    const onMouseUp = (event: MouseEvent) => {
+      if (resizeFrameRef.current !== null) {
+        window.cancelAnimationFrame(resizeFrameRef.current);
+        resizeFrameRef.current = null;
+      }
+      pendingResizeSizeRef.current = null;
+      const width =
+        resizingComponent.origWidth + event.clientX - resizingComponent.startX;
+      const height =
+        resizingComponent.origHeight + event.clientY - resizingComponent.startY;
+      updateComponentSize(resizingComponent.id, width, height, false);
+      setResizingComponent(null);
+      toolbarRef.current?.setRefrash(true);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      if (resizeFrameRef.current !== null) {
+        window.cancelAnimationFrame(resizeFrameRef.current);
+        resizeFrameRef.current = null;
+      }
+      pendingResizeSizeRef.current = null;
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [canEditStructure, resizingComponent, updateComponentSize]);
 
   function handleDragOver(e: React.DragEvent) {
     e.preventDefault();
@@ -820,7 +924,7 @@ const EditorCanvas: FC<{
     >
       <EditorChooiseToolbar
         onRef={toolbarRef}
-        hidden={!showToolbar || isDragable}
+        hidden={!showToolbar || isDragable || Boolean(resizingComponent)}
       />
       {!store.sortableCompConfig.length && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-10">
@@ -907,6 +1011,9 @@ const EditorCanvas: FC<{
             isMoving={movingComponent?.id === node.id}
             canDrag={canEditStructure}
             onMouseDown={(event) => handleDragComponentStart(event, node.id)}
+            onResizeMouseDown={(event) =>
+              handleResizeComponentStart(event, node.id)
+            }
             onClick={() => handleComponentClick(node)}
             isCurrentComponent={isCurrentComponent(node)}
             id={node.id}

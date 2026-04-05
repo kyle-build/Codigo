@@ -1255,6 +1255,37 @@ export function useStoreComponents() {
     },
   );
 
+  const updateComponentSize = action(
+    (id: string, width: number, height: number, silent: boolean = false) => {
+      if (!ensurePermission("edit_structure", "当前角色不能调整组件尺寸"))
+        return;
+      const curCompConfig = storeComponents.compConfigs[id];
+      if (!curCompConfig) return;
+
+      if (!curCompConfig.styles) {
+        curCompConfig.styles = {};
+      }
+
+      curCompConfig.styles.width = `${Math.max(80, Math.round(width))}px`;
+      curCompConfig.styles.height = `${Math.max(40, Math.round(height))}px`;
+
+      const { store: storePermission, broadcastComponentUpdate } =
+        useStorePermission();
+
+      if (!silent) {
+        broadcastComponentUpdate(
+          Number(
+            new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
+          ),
+          Number(storePermission.currentUserId),
+          "update",
+          curCompConfig,
+        );
+        addOperationLog("resize_component", curCompConfig.type);
+      }
+    },
+  );
+
   type TUpdateCurrentCompConfigWithArray = (args: {
     key: string;
     index: number;
@@ -1746,6 +1777,7 @@ export function useStoreComponents() {
     updateCurrentComponentEvents,
     updateCurrentComponentStyles,
     updateComponentPosition,
+    updateComponentSize,
     updateCurrentCompConfigWithArray,
     removeComponentByIdWithArray,
     setItemsExpandIndex,

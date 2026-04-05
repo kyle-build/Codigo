@@ -1,6 +1,7 @@
 import { AppstoreOutlined, FileTextOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import type {
+  MouseEvent as ReactMouseEvent,
   PointerEvent as ReactPointerEvent,
   ReactNode,
   RefObject,
@@ -66,7 +67,7 @@ function EditorStage({
 }: EditorViewportProps) {
   if (storePage.editorMode === "code") {
     return (
-      <div className="relative z-0 h-full w-full overflow-hidden rounded-[24px] border border-slate-200/80 bg-white/95 shadow-[0_24px_60px_-38px_rgba(15,23,42,0.45)]">
+      <div className="relative z-0 h-full w-full overflow-hidden border border-slate-200/80 bg-white/95 shadow-[0_24px_60px_-38px_rgba(15,23,42,0.45)]">
         <SandboxCanvas />
       </div>
     );
@@ -77,8 +78,8 @@ function EditorStage({
     <div
       className={`editor-canvas-container relative z-0 overflow-hidden bg-white text-left ring-1 ring-slate-900/5 transition-all duration-500 ease-out ${
         storePage.deviceType === "mobile"
-          ? "rounded-[42px] border-[12px] border-slate-900 shadow-[0_30px_70px_-30px_rgba(15,23,42,0.45)]"
-          : "rounded-[24px] shadow-[0_28px_70px_-42px_rgba(15,23,42,0.45)] hover:shadow-[0_30px_80px_-42px_rgba(15,23,42,0.52)]"
+          ? "border-[12px] border-slate-900 shadow-[0_30px_70px_-30px_rgba(15,23,42,0.45)]"
+          : "shadow-[0_28px_70px_-42px_rgba(15,23,42,0.45)] hover:shadow-[0_30px_80px_-42px_rgba(15,23,42,0.52)]"
       }`}
       style={{
         width: storePage.canvasWidth,
@@ -107,12 +108,14 @@ export const EditorViewport = observer(function EditorViewport(
   const { leftPanelWidth, rightPanelWidth, startResize } =
     useEditorPanelLayout();
   const workspaceViewportRef = useRef<HTMLDivElement>(null);
+  const workspaceSurfaceRef = useRef<HTMLDivElement>(null);
+  const shouldCenterWorkspaceRef = useRef(true);
+  const workspaceOffsetRef = useRef({ x: 0, y: 0 });
   const workspacePanRef = useRef<{
-    pointerId: number;
     startX: number;
     startY: number;
-    scrollLeft: number;
-    scrollTop: number;
+    originX: number;
+    originY: number;
   } | null>(null);
   const [activeLeftSection, setActiveLeftSection] =
     useState<LeftPanelSection>("components");
@@ -151,12 +154,18 @@ export const EditorViewport = observer(function EditorViewport(
   const stageFrameHeight =
     props.storePage.canvasHeight +
     (props.storePage.deviceType === "mobile" ? MOBILE_FRAME_SIZE : 0);
+  const hasMeasuredWorkspaceViewport =
+    workspaceViewportSize.width > 0 && workspaceViewportSize.height > 0;
   const workspaceWidth = Math.max(
-    workspaceViewportSize.width,
+    hasMeasuredWorkspaceViewport
+      ? workspaceViewportSize.width + WORKSPACE_STAGE_PADDING * 2
+      : 0,
     stageFrameWidth + WORKSPACE_STAGE_PADDING * 2,
   );
-  const workspaceMinHeight = Math.max(
-    workspaceViewportSize.height,
+  const workspaceHeight = Math.max(
+    hasMeasuredWorkspaceViewport
+      ? workspaceViewportSize.height + WORKSPACE_STAGE_PADDING * 2
+      : 0,
     stageFrameHeight + WORKSPACE_STAGE_PADDING * 2,
   );
 
@@ -187,40 +196,107 @@ export const EditorViewport = observer(function EditorViewport(
   }, []);
 
   useEffect(() => {
-    const target = workspaceViewportRef.current;
-    if (!target) {
+    shouldCenterWorkspaceRef.current = true;
+  }, [stageFrameWidth, stageFrameHeight, props.storePage.deviceType]);
+
+  function resolveWorkspaceBounds() {
+    const viewportWidth = workspaceViewportSize.width;
+    const viewportHeight = workspaceViewportSize.height;
+    const centerX = (viewportWidth - workspaceWidth) / 2;
+    const centerY = (viewportHeight - workspaceHeight) / 2;
+
+    return {
+      minX: workspaceWidth > viewportWidth ? viewportWidth - workspaceWidth : centerX,
+      maxX: workspaceWidth > viewportWidth ? 0 : centerX,
+      minY:
+        workspaceHeight > viewportHeight
+          ? viewportHeight - workspaceHeight
+          : centerY,
+      maxY: workspaceHeight > viewportHeight ? 0 : centerY,
+      centerX,
+      centerY,
+    };
+  }
+
+  function applyWorkspaceOffset(x: number, y: number) {
+    workspaceOffsetRef.current = { x, y };
+    if (workspaceSurfaceRef.current) {
+      workspaceSurfaceRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }
+  }
+
+  function clampWorkspaceOffset(x: number, y: number) {
+    const bounds = resolveWorkspaceBounds();
+    return {
+      x: Math.min(bounds.maxX, Math.max(bounds.minX, x)),
+      y: Math.min(bounds.maxY, Math.max(bounds.minY, y)),
+    };
+  }
+
+  useEffect(() => {
+    if (
+      !hasMeasuredWorkspaceViewport ||
+      !shouldCenterWorkspaceRef.current ||
+      isWorkspacePanning
+    ) {
       return;
     }
 
-    let scrollTimeout: number | null = null;
-
-    const handleScroll = () => {
-      if (scrollTimeout !== null) {
-        window.clearTimeout(scrollTimeout);
-      }
-
-      props.canvasRef.current?.setShowToolbar(false);
-      scrollTimeout = window.setTimeout(() => {
-        props.canvasRef.current?.setShowToolbar(true);
-      }, 300);
-    };
-
-    target.addEventListener("scroll", handleScroll, { passive: true });
+    const frameId = window.requestAnimationFrame(() => {
+      const bounds = resolveWorkspaceBounds();
+      applyWorkspaceOffset(bounds.centerX, bounds.centerY);
+      shouldCenterWorkspaceRef.current = false;
+    });
 
     return () => {
-      target.removeEventListener("scroll", handleScroll);
-      if (scrollTimeout !== null) {
-        window.clearTimeout(scrollTimeout);
-      }
+      window.cancelAnimationFrame(frameId);
     };
-  }, [props.canvasRef]);
+  }, [
+    hasMeasuredWorkspaceViewport,
+    isWorkspacePanning,
+    workspaceHeight,
+    workspaceViewportSize.height,
+    workspaceViewportSize.width,
+    workspaceWidth,
+  ]);
 
-  function finishWorkspacePan(event?: ReactPointerEvent<HTMLDivElement>) {
-    const target = workspaceViewportRef.current;
-    const currentPan = workspacePanRef.current;
-    if (target && event && currentPan?.pointerId === event.pointerId) {
-      target.releasePointerCapture(event.pointerId);
+  useEffect(() => {
+    if (!isWorkspacePanning) {
+      return;
     }
+
+    const onMouseMove = (event: MouseEvent) => {
+      const currentPan = workspacePanRef.current;
+      const target = workspaceViewportRef.current;
+      if (!currentPan || !target) {
+        return;
+      }
+
+      const deltaX = event.clientX - currentPan.startX;
+      const deltaY = event.clientY - currentPan.startY;
+      const nextOffset = clampWorkspaceOffset(
+        currentPan.originX + deltaX,
+        currentPan.originY + deltaY,
+      );
+
+      applyWorkspaceOffset(nextOffset.x, nextOffset.y);
+      event.preventDefault();
+    };
+
+    const onMouseUp = () => {
+      finishWorkspacePan();
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [isWorkspacePanning, props.canvasRef]);
+
+  function finishWorkspacePan() {
     workspacePanRef.current = null;
     setIsWorkspacePanning(false);
     props.canvasRef.current?.setShowToolbar(true);
@@ -234,8 +310,8 @@ export const EditorViewport = observer(function EditorViewport(
     return !target.closest(".component-warpper, .editor-choice-toolbar");
   }
 
-  function handleWorkspacePointerDown(
-    event: ReactPointerEvent<HTMLDivElement>,
+  function handleWorkspaceMouseDown(
+    event: ReactMouseEvent<HTMLDivElement>,
   ) {
     if (props.storePage.editorMode !== "visual" || event.button !== 0) {
       return;
@@ -251,32 +327,15 @@ export const EditorViewport = observer(function EditorViewport(
     }
 
     workspacePanRef.current = {
-      pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      scrollLeft: target.scrollLeft,
-      scrollTop: target.scrollTop,
+      originX: workspaceOffsetRef.current.x,
+      originY: workspaceOffsetRef.current.y,
     };
+    shouldCenterWorkspaceRef.current = false;
     setIsWorkspacePanning(true);
     props.canvasRef.current?.setShowToolbar(false);
-    target.setPointerCapture(event.pointerId);
     event.preventDefault();
-  }
-
-  function handleWorkspacePointerMove(
-    event: ReactPointerEvent<HTMLDivElement>,
-  ) {
-    const currentPan = workspacePanRef.current;
-    const target = workspaceViewportRef.current;
-    if (!currentPan || !target || currentPan.pointerId !== event.pointerId) {
-      return;
-    }
-
-    const deltaX = event.clientX - currentPan.startX;
-    const deltaY = event.clientY - currentPan.startY;
-
-    target.scrollLeft = currentPan.scrollLeft - deltaX;
-    target.scrollTop = currentPan.scrollTop - deltaY;
   }
 
   return (
@@ -360,24 +419,22 @@ export const EditorViewport = observer(function EditorViewport(
           <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-[26px] border border-white/70 bg-white/40 shadow-[0_30px_80px_-52px_rgba(15,23,42,0.65)] backdrop-blur-xl">
             <div
               ref={workspaceViewportRef}
-              className={`editor-stage-scroll relative min-h-0 flex-1 overflow-auto p-5 touch-none ${
+              className={`editor-stage-scroll relative min-h-0 flex-1 overflow-hidden p-5 touch-none ${
                 isWorkspacePanning
                   ? "cursor-grabbing select-none"
                   : props.storePage.editorMode === "visual"
                     ? "cursor-grab"
                     : ""
               }`}
-              onPointerDown={handleWorkspacePointerDown}
-              onPointerMove={handleWorkspacePointerMove}
-              onPointerUp={finishWorkspacePan}
-              onPointerCancel={finishWorkspacePan}
+              onMouseDown={handleWorkspaceMouseDown}
             >
               <div className="absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/8 blur-[108px] pointer-events-none" />
               <div
-                className="relative z-0 flex items-start justify-center"
+                ref={workspaceSurfaceRef}
+                className="absolute left-0 top-0 z-0 flex items-start justify-center will-change-transform"
                 style={{
                   width: workspaceWidth,
-                  minHeight: workspaceMinHeight,
+                  height: workspaceHeight,
                   padding: WORKSPACE_STAGE_PADDING,
                 }}
               >
