@@ -10,19 +10,19 @@ export const pageLayoutPresetCatalog: PageLayoutPresetMeta[] = [
   {
     key: "sectionStack",
     name: "分区布局",
-    description: "头部、内容、页脚三段式骨架",
+    description: "适合详情、配置、审批等后台页面的三段式骨架",
     icon: <LayoutOutlined />,
   },
   {
     key: "sidebarLayout",
     name: "侧栏布局",
-    description: "单页面左侧导航切换右侧内容容器",
+    description: "适合菜单切换、主从视图与设置中心的后台骨架",
     icon: <ApartmentOutlined />,
   },
   {
     key: "dashboardLayout",
     name: "工作台布局",
-    description: "适合后台页的信息总览与操作区",
+    description: "适合管理系统首页的信息总览、筛选和操作区",
     icon: <DashboardOutlined />,
     categories: ["admin"],
   },

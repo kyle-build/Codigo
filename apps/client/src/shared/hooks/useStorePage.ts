@@ -34,19 +34,23 @@ function normalizePageLayoutMode() {
   return "absolute" as const;
 }
 
+/**
+ * 兼容历史营销页分类，统一收口到管理系统页面。
+ */
+function normalizePageCategory(category: PageCategory) {
+  return category === "marketing" ? "admin" : category;
+}
+
 export function useStorePage() {
   const syncPageCategoryDefaults = action((category: PageCategory) => {
-    if (category === "admin") {
+    const normalizedCategory = normalizePageCategory(category);
+
+    if (normalizedCategory === "admin") {
       storePage.deviceType = "pc";
       storePage.canvasWidth = 1280;
       storePage.canvasHeight = 900;
-      storePage.layoutMode = normalizePageLayoutMode();
-      return;
     }
 
-    storePage.deviceType = "mobile";
-    storePage.canvasWidth = 380;
-    storePage.canvasHeight = 700;
     storePage.layoutMode = normalizePageLayoutMode();
   });
 
@@ -64,8 +68,8 @@ export function useStorePage() {
       storePage.canvasWidth = 380;
       storePage.canvasHeight = 700;
     } else {
-      storePage.canvasWidth = storePage.pageCategory === "admin" ? 1280 : 1024;
-      storePage.canvasHeight = storePage.pageCategory === "admin" ? 900 : 768;
+      storePage.canvasWidth = 1280;
+      storePage.canvasHeight = 900;
     }
   });
 
@@ -79,8 +83,9 @@ export function useStorePage() {
   });
 
   const setPageCategory = action((category: PageCategory) => {
-    storePage.pageCategory = category;
-    syncPageCategoryDefaults(category);
+    const normalizedCategory = normalizePageCategory(category);
+    storePage.pageCategory = normalizedCategory;
+    syncPageCategoryDefaults(normalizedCategory);
   });
 
   const setLayoutMode = action((mode: PageLayoutMode) => {
@@ -202,25 +207,27 @@ export function useStorePage() {
    */
   const updatePage = action((page: Partial<TStorePage>) => {
     if (!page) return;
-    for (const [key, value] of Object.entries(page))
+    const nextPage = { ...page };
+    if (nextPage.pageCategory) {
+      nextPage.pageCategory = normalizePageCategory(nextPage.pageCategory);
+    }
+
+    for (const [key, value] of Object.entries(nextPage))
       // @ts-ignore
       storePage[key as keyof TStorePage] = value;
 
-    if (page.pageCategory) {
-      if (page.pageCategory === "admin") {
-        storePage.deviceType = page.deviceType ?? "pc";
-        storePage.canvasWidth = page.canvasWidth ?? 1280;
-        storePage.canvasHeight = page.canvasHeight ?? 900;
-        storePage.layoutMode = normalizePageLayoutMode();
-      } else {
-        storePage.deviceType = page.deviceType ?? storePage.deviceType;
+    if (nextPage.pageCategory) {
+      if (nextPage.pageCategory === "admin") {
+        storePage.deviceType = nextPage.deviceType ?? "pc";
+        storePage.canvasWidth = nextPage.canvasWidth ?? 1280;
+        storePage.canvasHeight = nextPage.canvasHeight ?? 900;
         storePage.layoutMode = normalizePageLayoutMode();
       }
-    } else if (Object.prototype.hasOwnProperty.call(page, "layoutMode")) {
+    } else if (Object.prototype.hasOwnProperty.call(nextPage, "layoutMode")) {
       storePage.layoutMode = normalizePageLayoutMode();
     }
 
-    if (Object.prototype.hasOwnProperty.call(page, "chartTheme")) {
+    if (Object.prototype.hasOwnProperty.call(nextPage, "chartTheme")) {
       setDefaultEChartsTheme(storePage.chartTheme || undefined);
     }
   });
