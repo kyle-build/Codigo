@@ -44,8 +44,7 @@ function getCollaborationContext(currentUserId: string) {
  * 暴露 editor 域的组件树读写能力。
  */
 export function useEditorComponents() {
-  const { store: pageStore, updatePage, setCodeFramework, setLayoutMode } =
-    useEditorPage();
+  const { store: pageStore, updatePage, setCodeFramework } = useEditorPage();
   const {
     ensurePermission,
     addOperationLog,
@@ -143,7 +142,6 @@ export function useEditorComponents() {
     insertNodeTree,
     pageStore,
     setCurrentComponent,
-    setLayoutMode,
     storeComponents,
   });
 

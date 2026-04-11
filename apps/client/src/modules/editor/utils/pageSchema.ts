@@ -192,7 +192,7 @@ export function normalizeEditorPages(schema?: IPageSchema | null) {
  */
 export function normalizeFromSchema(
   schema: IPageSchema | null | undefined,
-  layoutMode: "absolute" | "flow",
+  _layoutMode: "absolute",
 ) {
   const nextCompConfigs: Record<string, ComponentNodeRecord> = {};
   const nextSortableCompConfig: string[] = [];
@@ -217,7 +217,7 @@ export function normalizeFromSchema(
     nextSortableCompConfig.push(node.id);
   }
 
-  normalizeLayout(nextCompConfigs, nextSortableCompConfig, layoutMode);
+  normalizeLayout(nextCompConfigs, nextSortableCompConfig);
   return {
     compConfigs: nextCompConfigs,
     sortableCompConfig: nextSortableCompConfig,
@@ -246,7 +246,7 @@ export function sanitizeCodeSyncNodes(nodes: CodeSyncNode[]): ComponentNode[] {
  */
 export function normalizeFromFlatComponents(
   components: CodeSyncNode[],
-  layoutMode: "absolute" | "flow",
+  layoutMode: "absolute",
 ) {
   return normalizeFromSchema(
     {

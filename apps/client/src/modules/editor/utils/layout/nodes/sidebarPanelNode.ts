@@ -7,6 +7,10 @@ export function createSidebarPanelNode(
   title: string,
   stateKey: string,
   stateValue: string,
+  styles?: {
+    left?: string;
+    top?: string;
+  },
 ) {
   return createContainerNode(title, {
     minHeight: 320,
@@ -17,7 +21,7 @@ export function createSidebarPanelNode(
     visibleStateValue: stateValue,
     styles: {
       marginBottom: 16,
+      ...(styles ?? {}),
     },
   });
 }
-

@@ -1,3 +1,4 @@
+import type { ComponentNode } from "@codigo/schema";
 import { ulid } from "ulid";
 import type { LayoutPresetNode } from "../types";
 
@@ -10,6 +11,7 @@ export function createStateButtonNode(
   stateValue: string,
   options?: {
     slot?: string;
+    styles?: ComponentNode["styles"];
   },
 ): LayoutPresetNode {
   return {
@@ -31,8 +33,8 @@ export function createStateButtonNode(
     styles: {
       width: "100%",
       marginBottom: 12,
+      ...(options?.styles ?? {}),
     },
     slot: options?.slot,
   };
 }
-

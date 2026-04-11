@@ -32,8 +32,8 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
 
   function handleValuesChange(changedValues: Partial<TStorePage>) {
     updatePage(changedValues);
-    if (changedValues.layoutMode || changedValues.pageCategory) {
-      syncLayoutMode(store.layoutMode);
+    if (changedValues.pageCategory) {
+      syncLayoutMode("absolute");
     }
   }
 
@@ -51,18 +51,6 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
               options={[
                 { label: "营销页", value: "marketing" },
                 { label: "后台页", value: "admin" },
-              ]}
-            />
-          ),
-        },
-        {
-          label: "布局模式",
-          name: "layoutMode",
-          node: (
-            <Select
-              options={[
-                { label: "自由布局", value: "absolute" },
-                { label: "流式布局", value: "flow" },
               ]}
             />
           ),
@@ -101,7 +89,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
                 ))}
               </div>
               <div className="rounded-2xl border border-dashed border-sky-100 bg-sky-50/60 px-3.5 py-3 text-[11px] leading-5 text-slate-500">
-                先配置页面整体布局，再从左侧拖拽组件到容器区域，搭建效率会比自由拖拽更高。
+                整体布局会先生成可自由拖拽的容器骨架，后续组件仍按自由布局摆放，但默认会避免同层重叠。
               </div>
             </div>
           ),

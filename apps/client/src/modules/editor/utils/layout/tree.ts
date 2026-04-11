@@ -7,9 +7,7 @@ import { getDefaultPosition, getDefaultWidthByType } from "./defaults";
 export function normalizeLayout(
   compConfigs: Record<string, ComponentNodeRecord>,
   ids: string[],
-  layoutMode: "absolute" | "flow",
 ) {
-  const isFlow = layoutMode === "flow";
   ids.forEach((id, index) => {
     const comp = compConfigs[id];
     if (!comp) return;
@@ -18,24 +16,16 @@ export function normalizeLayout(
       nextStyles.left !== undefined && nextStyles.top !== undefined;
     const fallbackPosition = getDefaultPosition(index);
 
-    if (isFlow) {
-      nextStyles.position = "relative";
-      delete nextStyles.left;
-      delete nextStyles.top;
-      nextStyles.width =
-        nextStyles.width ?? getDefaultWidthByType(comp.type, true);
-    } else {
-      nextStyles.position = "absolute";
-      nextStyles.left = hasPosition ? nextStyles.left : fallbackPosition.left;
-      nextStyles.top = hasPosition ? nextStyles.top : fallbackPosition.top;
-      nextStyles.width =
-        nextStyles.width === "100%" && !hasPosition
-          ? getDefaultWidthByType(comp.type)
-          : (nextStyles.width ?? getDefaultWidthByType(comp.type));
-    }
+    nextStyles.position = "absolute";
+    nextStyles.left = hasPosition ? nextStyles.left : fallbackPosition.left;
+    nextStyles.top = hasPosition ? nextStyles.top : fallbackPosition.top;
+    nextStyles.width =
+      nextStyles.width === "100%" && !hasPosition
+        ? getDefaultWidthByType(comp.type)
+        : (nextStyles.width ?? getDefaultWidthByType(comp.type));
 
     comp.styles = nextStyles;
-    normalizeLayout(compConfigs, comp.childIds, layoutMode);
+    normalizeLayout(compConfigs, comp.childIds);
   });
 }
 
@@ -55,4 +45,3 @@ export function gatherSubtreeIds(
     ),
   ];
 }
-

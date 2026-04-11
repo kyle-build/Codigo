@@ -27,20 +27,27 @@ function getOutlineTreeStorageKey(pageId: number) {
   return `${OUTLINE_TREE_STORAGE_KEY}:${pageId}`;
 }
 
+/**
+ * 兼容旧草稿中的流式布局配置，并统一收口到自由布局。
+ */
+function normalizePageLayoutMode() {
+  return "absolute" as const;
+}
+
 export function useStorePage() {
   const syncPageCategoryDefaults = action((category: PageCategory) => {
     if (category === "admin") {
       storePage.deviceType = "pc";
       storePage.canvasWidth = 1280;
       storePage.canvasHeight = 900;
-      storePage.layoutMode = "flow";
+      storePage.layoutMode = normalizePageLayoutMode();
       return;
     }
 
     storePage.deviceType = "mobile";
     storePage.canvasWidth = 380;
     storePage.canvasHeight = 700;
-    storePage.layoutMode = "absolute";
+    storePage.layoutMode = normalizePageLayoutMode();
   });
 
   /**
@@ -77,10 +84,7 @@ export function useStorePage() {
   });
 
   const setLayoutMode = action((mode: PageLayoutMode) => {
-    storePage.layoutMode = mode;
-    if (mode === "flow" && storePage.pageCategory === "marketing") {
-      storePage.deviceType = "pc";
-    }
+    storePage.layoutMode = mode ?? normalizePageLayoutMode();
   });
 
   const setEditorMode = action((mode: EditorMode) => {
@@ -207,11 +211,13 @@ export function useStorePage() {
         storePage.deviceType = page.deviceType ?? "pc";
         storePage.canvasWidth = page.canvasWidth ?? 1280;
         storePage.canvasHeight = page.canvasHeight ?? 900;
-        storePage.layoutMode = page.layoutMode ?? "flow";
+        storePage.layoutMode = normalizePageLayoutMode();
       } else {
         storePage.deviceType = page.deviceType ?? storePage.deviceType;
-        storePage.layoutMode = page.layoutMode ?? "absolute";
+        storePage.layoutMode = normalizePageLayoutMode();
       }
+    } else if (Object.prototype.hasOwnProperty.call(page, "layoutMode")) {
+      storePage.layoutMode = normalizePageLayoutMode();
     }
 
     if (Object.prototype.hasOwnProperty.call(page, "chartTheme")) {

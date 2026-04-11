@@ -13,7 +13,7 @@ export type PageCategory = "marketing" | "admin";
 /**
  * 描述页面在画布中的布局模式。
  */
-export type PageLayoutMode = "absolute" | "flow";
+export type PageLayoutMode = "absolute";
 
 /**
  * 描述低代码页面实体的基础信息。

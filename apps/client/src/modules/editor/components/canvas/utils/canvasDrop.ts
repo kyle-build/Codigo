@@ -1,5 +1,10 @@
 import { getComponentContainerMeta } from "@codigo/materials";
 import type { ComponentNodeRecord, TComponentTypes } from "@codigo/schema";
+import {
+  collectSiblingRects,
+  getEstimatedRectByType,
+  resolveCollisionFreeRect,
+} from "./collision";
 
 export interface CanvasDropResult {
   type: TComponentTypes;
@@ -40,6 +45,30 @@ export function resolveCanvasDropResult({
   }
 
   const type = rawType as TComponentTypes;
+  /**
+   * 根据候选位置和容器上下文计算最终不重叠的插入坐标。
+   */
+  function resolveSafePosition(
+    left: number,
+    top: number,
+    rect: DOMRect,
+    parentId: string | null,
+    slot: string | null,
+  ) {
+    const estimatedRect = getEstimatedRectByType(type, left, top);
+    const safeRect = resolveCollisionFreeRect(
+      estimatedRect,
+      collectSiblingRects(parentId, slot, rect),
+      {
+        width: rect.width,
+        height: Math.max(rect.height, estimatedRect.top + estimatedRect.height + 24),
+      },
+    );
+    return {
+      left: safeRect.left,
+      top: safeRect.top,
+    };
+  }
   const targetElement = document.elementFromPoint(
     clientX,
     clientY,
@@ -51,12 +80,16 @@ export function resolveCanvasDropResult({
     const parentId = slotZone.dataset.containerId;
     const slot = slotZone.dataset.slotName;
     if (parentId) {
+      const safePosition = resolveSafePosition(
+        clientX - slotRect.left,
+        clientY - slotRect.top,
+        slotRect,
+        parentId,
+        slot ?? "default",
+      );
       return {
         type,
-        position: {
-          left: clientX - slotRect.left,
-          top: clientY - slotRect.top,
-        },
+        position: safePosition,
         containerTarget: {
           parentId,
           slot: slot ?? "default",
@@ -84,11 +117,11 @@ export function resolveCanvasDropResult({
   }
 
   const rect = canvasElement?.getBoundingClientRect();
+  const safePosition = rect
+    ? resolveSafePosition(clientX - rect.left, clientY - rect.top, rect, null, null)
+    : { left: 32, top: 24 };
   return {
     type,
-    position: {
-      left: rect ? clientX - rect.left : 32,
-      top: rect ? clientY - rect.top : 24,
-    },
+    position: safePosition,
   };
 }

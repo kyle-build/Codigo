@@ -6,7 +6,7 @@ import {
 /**
  * 构建工作台/仪表盘布局预设。
  */
-export function createDashboardLayoutPreset() {
+export function createDashboardLayoutPreset(_canvasWidth: number) {
   const summary = createContainerNode("概览区", {
     minHeight: 180,
     backgroundColor: "#f8fafc",
@@ -44,4 +44,3 @@ export function createDashboardLayoutPreset() {
     focusId: workspace.id,
   };
 }
-

@@ -8,25 +8,7 @@ const layoutStartY = 24;
 /**
  * 计算组件的默认宽度。
  */
-export function getDefaultWidthByType(
-  type: TComponentTypes,
-  isFlow = false,
-): string {
-  if (isFlow) {
-    switch (type) {
-      case "statCard":
-        return "320px";
-      case "breadcrumbBar":
-      case "pageHeader":
-      case "queryFilter":
-      case "cardGrid":
-      case "dataTable":
-        return "100%";
-      default:
-        return "100%";
-    }
-  }
-
+export function getDefaultWidthByType(type: TComponentTypes): string {
   switch (type) {
     case "twoColumn":
       return "960px";
@@ -55,6 +37,36 @@ export function getDefaultWidthByType(
 }
 
 /**
+ * 估算组件在初次插入时的默认高度。
+ */
+export function getDefaultHeightByType(type: TComponentTypes): number {
+  switch (type) {
+    case "twoColumn":
+      return 420;
+    case "container":
+      return 240;
+    case "table":
+    case "dataTable":
+    case "list":
+    case "cardGrid":
+      return 320;
+    case "image":
+    case "video":
+    case "swiper":
+      return 240;
+    case "button":
+      return 48;
+    case "input":
+    case "textArea":
+    case "radio":
+    case "checkbox":
+      return 56;
+    default:
+      return 160;
+  }
+}
+
+/**
  * 计算组件在画布中的默认位置。
  */
 export function getDefaultPosition(index: number) {
@@ -63,4 +75,3 @@ export function getDefaultPosition(index: number) {
     top: `${layoutStartY + Math.floor(index / 3) * layoutGapY}px`,
   };
 }
-

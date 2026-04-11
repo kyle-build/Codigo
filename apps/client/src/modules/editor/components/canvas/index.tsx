@@ -141,6 +141,7 @@ const EditorCanvas: FC<{
 
   const { handleResizeComponentStart, resizingComponentId } = useCanvasResize({
     canEditStructure,
+    canvasRef,
     setCurrentComponent,
     updateComponentSize,
     onResizeFinished: handleCanvasInteractionFinished,
@@ -219,15 +220,10 @@ const EditorCanvas: FC<{
         const renderedChildren =
           node.children?.map((child: ComponentNode) => renderTreeNode(child)) ??
           [];
-        const nodePosition = node.styles?.position;
-        const isFlowLayout =
-          nodePosition !== undefined
-            ? nodePosition !== "absolute"
-            : storePage.layoutMode === "flow";
         return (
           <ComponentWrapper
             key={node.id}
-            isFlowLayout={isFlowLayout}
+            isFlowLayout={false}
             isDragable={isDragging}
             isMoving={movingComponentId === node.id}
             canDrag={canEditStructure}
@@ -250,13 +246,9 @@ const EditorCanvas: FC<{
                 ?.slot ?? null
             }
             style={{
-              left: isFlowLayout
-                ? undefined
-                : (node.styles?.left as string | number | undefined),
-              top: isFlowLayout
-                ? undefined
-                : (node.styles?.top as string | number | undefined),
-              position: isFlowLayout ? "relative" : "absolute",
+              left: node.styles?.left as string | number | undefined,
+              top: node.styles?.top as string | number | undefined,
+              position: "absolute",
               width: node.styles?.width as string | number | undefined,
             }}
           >

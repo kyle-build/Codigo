@@ -1,4 +1,9 @@
 import type { ComponentNodeRecord } from "@codigo/schema";
+import {
+  collectSiblingRects,
+  parseCanvasSize,
+  resolveCollisionFreeRect,
+} from "./collision";
 
 export interface MovingComponentState {
   id: string;
@@ -25,6 +30,30 @@ interface ResolveMoveTargetOptions {
   canvasElement: HTMLDivElement | null;
   movingComponent: MovingComponentState | null;
   getComponentById: (id: string) => ComponentNodeRecord | undefined | null;
+}
+
+/**
+ * 获取移动中组件当前渲染出来的尺寸。
+ */
+function getMovingElementSize(current: ComponentNodeRecord, movingId: string) {
+  const movingElement = document.querySelector<HTMLElement>(
+    `.component-warpper[data-id="${movingId}"]`,
+  );
+  const movingRect = movingElement?.getBoundingClientRect();
+  return {
+    width: movingRect?.width ?? parseCanvasSize(current.styles?.width, 320),
+    height: movingRect?.height ?? parseCanvasSize(current.styles?.height, 160),
+  };
+}
+
+/**
+ * 获取用于当前容器碰撞计算的边界尺寸。
+ */
+function getCollisionBounds(targetRect: DOMRect, nextHeight: number) {
+  return {
+    width: targetRect.width,
+    height: Math.max(targetRect.height, nextHeight + 24),
+  };
 }
 
 /**
@@ -119,34 +148,64 @@ export function resolveMoveTarget({
       clientY,
     );
     const slotRect = slotZone.getBoundingClientRect();
+    const size = getMovingElementSize(current, movingId);
+    const safeRect = resolveCollisionFreeRect(
+      {
+        left: movingComponent
+          ? clientX - slotRect.left - movingComponent.pointerOffsetX
+          : clientX - slotRect.left,
+        top: movingComponent
+          ? clientY - slotRect.top - movingComponent.pointerOffsetY
+          : clientY - slotRect.top,
+        width: size.width,
+        height: size.height,
+      },
+      collectSiblingRects(targetParentId, targetSlot, slotRect, [movingId]),
+      getCollisionBounds(
+        slotRect,
+        (movingComponent
+          ? clientY - slotRect.top - movingComponent.pointerOffsetY
+          : clientY - slotRect.top) + size.height,
+      ),
+    );
     return {
       parentId: targetParentId,
       slot: targetSlot,
       index: targetIndex,
-      left: movingComponent
-        ? clientX - slotRect.left - movingComponent.pointerOffsetX
-        : clientX - slotRect.left,
-      top: movingComponent
-        ? clientY - slotRect.top - movingComponent.pointerOffsetY
-        : clientY - slotRect.top,
+      left: safeRect.left,
+      top: safeRect.top,
     };
   }
 
   const canvasRect = canvasElement?.getBoundingClientRect();
   const targetIndex = resolveInsertIndex(null, null, movingId, clientX, clientY);
+  const size = getMovingElementSize(current, movingId);
+  const safeRect =
+    canvasRect &&
+    resolveCollisionFreeRect(
+      {
+        left: movingComponent
+          ? clientX - canvasRect.left - movingComponent.pointerOffsetX
+          : clientX - canvasRect.left,
+        top: movingComponent
+          ? clientY - canvasRect.top - movingComponent.pointerOffsetY
+          : clientY - canvasRect.top,
+        width: size.width,
+        height: size.height,
+      },
+      collectSiblingRects(null, null, canvasRect, [movingId]),
+      getCollisionBounds(
+        canvasRect,
+        (movingComponent
+          ? clientY - canvasRect.top - movingComponent.pointerOffsetY
+          : clientY - canvasRect.top) + size.height,
+      ),
+    );
   return {
     parentId: null,
     slot: null,
     index: targetIndex,
-    left: canvasRect && movingComponent
-      ? clientX - canvasRect.left - movingComponent.pointerOffsetX
-      : canvasRect
-        ? clientX - canvasRect.left
-        : 0,
-    top: canvasRect && movingComponent
-      ? clientY - canvasRect.top - movingComponent.pointerOffsetY
-      : canvasRect
-        ? clientY - canvasRect.top
-        : 0,
+    left: safeRect?.left ?? 0,
+    top: safeRect?.top ?? 0,
   };
 }

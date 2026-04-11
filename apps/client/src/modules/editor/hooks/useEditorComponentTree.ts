@@ -8,7 +8,7 @@ import { createRecordFromNode } from "@/modules/editor/utils/pageSchema";
 interface EditorComponentTreeContext {
   storeComponents: TEditorComponentsStore;
   pageStore: {
-    layoutMode: "absolute" | "flow";
+    layoutMode: "absolute";
   };
 }
 
@@ -105,7 +105,6 @@ export function createEditorComponentTree(
     normalizeLayout(
       storeComponents.compConfigs,
       storeComponents.sortableCompConfig,
-      pageStore.layoutMode,
     );
     if (
       keepCurrentId &&
@@ -120,11 +119,10 @@ export function createEditorComponentTree(
   /**
    * 在布局模式切换时同步现有节点布局。
    */
-  const syncLayoutMode = action((layoutMode: "absolute" | "flow") => {
+  const syncLayoutMode = action((_layoutMode: "absolute") => {
     normalizeLayout(
       storeComponents.compConfigs,
       storeComponents.sortableCompConfig,
-      layoutMode,
     );
   });
 

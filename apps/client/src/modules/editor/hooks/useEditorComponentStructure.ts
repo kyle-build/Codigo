@@ -6,7 +6,7 @@ import { createEditorComponentTree } from "./useEditorComponentTree";
 interface EditorComponentStructureContext {
   storeComponents: TEditorComponentsStore;
   pageStore: {
-    layoutMode: "absolute" | "flow";
+    layoutMode: "absolute";
   };
   ensurePermission: (permission: any, deniedMessage?: string) => boolean;
   addOperationLog: (action: any, detail: string) => void;

@@ -47,6 +47,13 @@ interface EditorComponentPersistenceContext {
 const schemaStorageKey = "pageSchema";
 
 /**
+ * 兼容旧页面数据中的流式布局值，并统一恢复为自由布局。
+ */
+function normalizePageLayoutMode() {
+  return "absolute" as const;
+}
+
+/**
  * 把草稿中的页面设置恢复回页面 store。
  */
 function hydratePageSettings(
@@ -65,7 +72,7 @@ function hydratePageSettings(
       settings.tdk ??
       "lowcode platform, lowcode development, lowcode page details",
     pageCategory: settings.pageCategory ?? "marketing",
-    layoutMode: settings.layoutMode ?? "absolute",
+    layoutMode: normalizePageLayoutMode(),
     deviceType: settings.deviceType ?? "mobile",
     canvasWidth: settings.canvasWidth ?? 380,
     canvasHeight: settings.canvasHeight ?? 700,
@@ -130,7 +137,7 @@ export function createEditorComponentPersistence(
   const hydrateStoreFromSchema = action(
     (
       schema: IPageSchema,
-      layoutMode: "absolute" | "flow",
+      layoutMode: "absolute",
       preferredCurrentCompId?: string | null,
     ) => {
       const { pages, activePageId } = normalizeEditorPages(schema);
@@ -204,13 +211,13 @@ export function createEditorComponentPersistence(
           ),
         } satisfies IPageSchema);
 
-    hydrateStoreFromSchema(schema, data?.layoutMode ?? "absolute");
+    hydrateStoreFromSchema(schema, normalizePageLayoutMode());
     updatePage({
       tdk: data?.tdk || "",
       title: data?.page_name,
       description: data?.desc,
       pageCategory: data?.pageCategory ?? "marketing",
-      layoutMode: data?.layoutMode ?? "absolute",
+      layoutMode: normalizePageLayoutMode(),
       deviceType: data?.deviceType ?? "mobile",
       canvasWidth: data?.canvasWidth ?? 380,
       canvasHeight: data?.canvasHeight ?? 700,
@@ -236,7 +243,7 @@ export function createEditorComponentPersistence(
         const settings = pageSettings ? JSON.parse(pageSettings) : null;
         hydrateStoreFromSchema(
           JSON.parse(pageSchema),
-          settings?.layoutMode ?? "absolute",
+          normalizePageLayoutMode(),
           currentCompConfig ? JSON.parse(currentCompConfig) : null,
         );
         hydratePageSettings(settings, updatePage, setCodeFramework);
@@ -267,7 +274,7 @@ export function createEditorComponentPersistence(
         } satisfies IPageSchema;
         hydrateStoreFromSchema(
           legacySchema,
-          settings?.layoutMode ?? "absolute",
+          normalizePageLayoutMode(),
           currentCompConfig ? JSON.parse(currentCompConfig) : null,
         );
         hydratePageSettings(settings, updatePage, setCodeFramework);

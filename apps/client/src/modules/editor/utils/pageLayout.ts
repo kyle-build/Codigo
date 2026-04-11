@@ -1,5 +1,9 @@
 export type { LayoutPresetNode } from "./layout/types";
-export { getDefaultPosition, getDefaultWidthByType } from "./layout/defaults";
+export {
+  getDefaultHeightByType,
+  getDefaultPosition,
+  getDefaultWidthByType,
+} from "./layout/defaults";
 export {
   createContainerNode,
   createSidebarPanelNode,

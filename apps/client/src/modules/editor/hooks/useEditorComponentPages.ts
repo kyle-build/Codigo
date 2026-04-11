@@ -22,13 +22,13 @@ type InsertNodeArgs = {
 interface EditorComponentPageActionsContext {
   storeComponents: TEditorComponentsStore;
   pageStore: {
-    layoutMode: "absolute" | "flow";
+    layoutMode: "absolute";
     pageCategory: PageCategory;
+    canvasWidth: number;
   };
   ensurePermission: (permission: any, deniedMessage?: string) => boolean;
   addOperationLog: (action: any, detail: string) => void;
   broadcastReplaceAll: () => void;
-  setLayoutMode: (mode: "absolute" | "flow") => void;
   setCurrentComponent: (id: string) => void;
   insertNodeTree: (node: ComponentNode, args?: InsertNodeArgs) => void;
 }
@@ -46,7 +46,6 @@ export function createEditorComponentPageActions(
     insertNodeTree,
     pageStore,
     setCurrentComponent,
-    setLayoutMode,
     storeComponents,
   } = context;
 
@@ -211,12 +210,12 @@ export function createEditorComponentPageActions(
     }
 
     const wasEmpty = storeComponents.sortableCompConfig.length === 0;
-    const presetTree = createPageLayoutPreset(preset, pageStore.pageCategory);
+    const presetTree = createPageLayoutPreset(
+      preset,
+      pageStore.pageCategory,
+      pageStore.canvasWidth,
+    );
     const insertStartIndex = storeComponents.sortableCompConfig.length;
-
-    if (pageStore.layoutMode !== "flow") {
-      setLayoutMode("flow");
-    }
 
     presetTree.nodes.forEach((node, index) => {
       insertNodeTree(node, {
