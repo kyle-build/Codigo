@@ -8,6 +8,7 @@ interface ContainerRuntimeProps extends IContainerComponentProps {
   children?: ReactNode;
   slots?: Record<string, ReactNode[]>;
   editorNodeId?: string;
+  runtimeHeight?: string | number;
 }
 
 /**
@@ -22,12 +23,14 @@ export default function ContainerComponent(_props: ContainerRuntimeProps) {
   }, [_props]);
 
   const defaultChildren = props.slots?.default ?? [];
+  const hasRuntimeHeight = props.runtimeHeight !== undefined;
 
   return (
     <div
-      className="relative w-full overflow-hidden"
+      className={`relative w-full overflow-hidden ${hasRuntimeHeight ? "flex h-full min-h-0 flex-col" : ""}`}
       style={{
-        minHeight: props.minHeight,
+        height: hasRuntimeHeight ? "100%" : undefined,
+        minHeight: hasRuntimeHeight ? undefined : props.minHeight,
         padding: props.padding,
         borderRadius: props.borderRadius,
         border: `1px solid ${props.borderColor}`,
@@ -39,14 +42,20 @@ export default function ContainerComponent(_props: ContainerRuntimeProps) {
         <Typography.Text type="secondary">default</Typography.Text>
       </div>
       <div
-        className="relative min-h-[160px] rounded-xl border border-dashed border-slate-200 bg-slate-50/70"
+        className={`relative rounded-xl border border-dashed border-slate-200 bg-slate-50/70 ${
+          hasRuntimeHeight ? "min-h-0 flex-1" : "min-h-[160px]"
+        }`}
         data-slot-name="default"
         data-container-id={props.editorNodeId}
       >
         {defaultChildren.length ? (
           defaultChildren
         ) : (
-          <div className="flex h-full min-h-[160px] items-center justify-center text-sm text-slate-400">
+          <div
+            className={`flex items-center justify-center text-sm text-slate-400 ${
+              hasRuntimeHeight ? "h-full min-h-0" : "h-full min-h-[160px]"
+            }`}
+          >
             拖入组件到默认插槽
           </div>
         )}

@@ -5,6 +5,10 @@ import { chartComponentDefaultConfig, type IChartComponentProps } from "./type";
 import { getDefaultEChartsTheme } from "../../utils/echartsTheme";
 import { deepMerge } from "../../utils/deepMerge";
 
+interface ChartRuntimeProps extends IChartComponentProps {
+  runtimeHeight?: string | number;
+}
+
 /**
  * 安全解析图表配置中的 JSON 文本，避免异常导致渲染中断。
  */
@@ -19,7 +23,7 @@ function parseJsonText<T>(text: string, fallback: T): T {
 /**
  * 渲染环形饼图物料，并将数据字段映射为 ECharts 所需的 name/value 结构。
  */
-export default function PieChartComponent(_props: IChartComponentProps) {
+export default function PieChartComponent(_props: ChartRuntimeProps) {
   const echartsTheme = _props.echartsTheme ?? getDefaultEChartsTheme();
   const props = useMemo(() => {
     return {
@@ -27,6 +31,7 @@ export default function PieChartComponent(_props: IChartComponentProps) {
       ..._props,
     };
   }, [_props]);
+  const hasRuntimeHeight = props.runtimeHeight !== undefined;
 
   const defaultDs = useMemo(() => {
     return parseJsonText<Record<string, unknown>[]>(
@@ -88,7 +93,7 @@ export default function PieChartComponent(_props: IChartComponentProps) {
       style={{
         width: "100%",
         height: "100%",
-        minHeight: "300px",
+        minHeight: hasRuntimeHeight ? undefined : "300px",
         backgroundColor: "#fff",
       }}
     >

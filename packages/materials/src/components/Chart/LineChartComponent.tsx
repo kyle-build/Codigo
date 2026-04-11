@@ -5,6 +5,10 @@ import { chartComponentDefaultConfig, type IChartComponentProps } from "./type";
 import { getDefaultEChartsTheme } from "../../utils/echartsTheme";
 import { deepMerge } from "../../utils/deepMerge";
 
+interface ChartRuntimeProps extends IChartComponentProps {
+  runtimeHeight?: string | number;
+}
+
 /**
  * 安全解析图表配置中的 JSON 文本，避免异常导致渲染中断。
  */
@@ -19,7 +23,7 @@ function parseJsonText<T>(text: string, fallback: T): T {
 /**
  * 渲染折线图物料，并将内置图表配置与自定义 option 合并后输出。
  */
-export default function LineChartComponent(_props: IChartComponentProps) {
+export default function LineChartComponent(_props: ChartRuntimeProps) {
   const echartsTheme = _props.echartsTheme ?? getDefaultEChartsTheme();
   const props = useMemo(() => {
     return {
@@ -27,6 +31,7 @@ export default function LineChartComponent(_props: IChartComponentProps) {
       ..._props,
     };
   }, [_props]);
+  const hasRuntimeHeight = props.runtimeHeight !== undefined;
 
   const defaultDs = useMemo(() => {
     return parseJsonText<Record<string, unknown>[]>(
@@ -92,7 +97,7 @@ export default function LineChartComponent(_props: IChartComponentProps) {
       style={{
         width: "100%",
         height: "100%",
-        minHeight: "300px",
+        minHeight: hasRuntimeHeight ? undefined : "300px",
         backgroundColor: "#fff",
       }}
     >

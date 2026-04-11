@@ -165,8 +165,27 @@ export function createEditorComponentMutations(
         currentComponent.styles = {};
       }
 
-      currentComponent.styles.width = `${Math.max(80, Math.round(width))}px`;
-      currentComponent.styles.height = `${Math.max(40, Math.round(height))}px`;
+      const nextWidth = Math.max(80, Math.round(width));
+      const nextHeight = Math.max(40, Math.round(height));
+
+      currentComponent.styles.width = `${nextWidth}px`;
+      currentComponent.styles.height = `${nextHeight}px`;
+
+      if (
+        currentComponent.props &&
+        typeof currentComponent.props === "object" &&
+        !Array.isArray(currentComponent.props)
+      ) {
+        const nextProps = currentComponent.props as Record<string, unknown>;
+
+        if ("height" in nextProps) {
+          nextProps.height = nextHeight;
+        }
+
+        if ("minHeight" in nextProps) {
+          nextProps.minHeight = nextHeight;
+        }
+      }
 
       if (!silent) {
         broadcastNodeChange("update", currentComponent);

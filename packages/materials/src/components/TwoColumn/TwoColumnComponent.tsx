@@ -7,6 +7,7 @@ import { twoColumnComponentDefaultConfig } from ".";
 interface TwoColumnRuntimeProps extends ITwoColumnComponentProps {
   slots?: Record<string, ReactNode[]>;
   editorNodeId?: string;
+  runtimeHeight?: string | number;
 }
 
 /**
@@ -18,24 +19,31 @@ function SlotBox(props: {
   nodeId?: string;
   children?: ReactNode[];
   minHeight: number;
+  fillHeight: boolean;
 }) {
   const children = props.children ?? [];
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3">
+    <div className="flex min-h-0 h-full flex-1 flex-col gap-3">
       <div className="flex items-center justify-between">
         <Typography.Text>{props.title}</Typography.Text>
         <Typography.Text type="secondary">{props.slotName}</Typography.Text>
       </div>
       <div
-        className="relative min-h-[200px] flex-1 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70"
-        style={{ minHeight: props.minHeight }}
+        className={`relative flex-1 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 ${
+          props.fillHeight ? "min-h-0" : "min-h-[200px]"
+        }`}
+        style={{ minHeight: props.fillHeight ? undefined : props.minHeight }}
         data-slot-name={props.slotName}
         data-container-id={props.nodeId}
       >
         {children.length ? (
           children
         ) : (
-          <div className="flex h-full min-h-[200px] items-center justify-center text-sm text-slate-400">
+          <div
+            className={`flex items-center justify-center text-sm text-slate-400 ${
+              props.fillHeight ? "h-full min-h-0" : "h-full min-h-[200px]"
+            }`}
+          >
             拖入组件到 {props.title}
           </div>
         )}
@@ -54,33 +62,47 @@ export default function TwoColumnComponent(_props: TwoColumnRuntimeProps) {
       ..._props,
     };
   }, [_props]);
+  const hasRuntimeHeight = props.runtimeHeight !== undefined;
 
   return (
     <div
-      className="relative w-full rounded-3xl border border-slate-200 p-5"
-      style={{ backgroundColor: props.backgroundColor }}
+      className={`relative w-full rounded-3xl border border-slate-200 p-5 ${
+        hasRuntimeHeight ? "flex h-full min-h-0 flex-col" : ""
+      }`}
+      style={{
+        height: hasRuntimeHeight ? "100%" : undefined,
+        backgroundColor: props.backgroundColor,
+      }}
     >
       <div className="mb-4 flex items-center justify-between">
         <Typography.Text strong>{props.title}</Typography.Text>
         <Typography.Text type="secondary">left / right</Typography.Text>
       </div>
-      <div className="flex w-full items-stretch" style={{ gap: props.gap }}>
-        <div style={{ width: props.leftWidth, minWidth: props.leftWidth }}>
+      <div
+        className={`flex w-full items-stretch ${hasRuntimeHeight ? "min-h-0 flex-1" : ""}`}
+        style={{ gap: props.gap }}
+      >
+        <div
+          className={hasRuntimeHeight ? "flex min-h-0" : ""}
+          style={{ width: props.leftWidth, minWidth: props.leftWidth }}
+        >
           <SlotBox
             title="左侧区域"
             slotName="left"
             nodeId={props.editorNodeId}
             children={props.slots?.left}
             minHeight={props.minHeight}
+            fillHeight={hasRuntimeHeight}
           />
         </div>
-        <div className="flex-1">
+        <div className={hasRuntimeHeight ? "flex min-h-0 flex-1" : "flex-1"}>
           <SlotBox
             title="右侧区域"
             slotName="right"
             nodeId={props.editorNodeId}
             children={props.slots?.right}
             minHeight={props.minHeight}
+            fillHeight={hasRuntimeHeight}
           />
         </div>
       </div>

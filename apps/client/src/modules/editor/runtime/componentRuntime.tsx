@@ -189,6 +189,8 @@ export function generateComponent(
         key={conf.id}
         onAction={runtime?.onAction}
         runtimePageState={runtime?.pageState}
+        runtimeWidth={conf.styles?.width}
+        runtimeHeight={conf.styles?.height}
         slots={slots}
         editorNodeId={conf.id}
       />
