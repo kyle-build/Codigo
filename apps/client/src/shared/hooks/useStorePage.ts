@@ -40,13 +40,8 @@ export function useStorePage() {
       storePage.deviceType = "pc";
       storePage.canvasWidth = 1280;
       storePage.canvasHeight = 900;
-      storePage.layoutMode = normalizePageLayoutMode();
-      return;
     }
 
-    storePage.deviceType = "mobile";
-    storePage.canvasWidth = 380;
-    storePage.canvasHeight = 700;
     storePage.layoutMode = normalizePageLayoutMode();
   });
 
@@ -64,8 +59,8 @@ export function useStorePage() {
       storePage.canvasWidth = 380;
       storePage.canvasHeight = 700;
     } else {
-      storePage.canvasWidth = storePage.pageCategory === "admin" ? 1280 : 1024;
-      storePage.canvasHeight = storePage.pageCategory === "admin" ? 900 : 768;
+      storePage.canvasWidth = 1280;
+      storePage.canvasHeight = 900;
     }
   });
 
@@ -211,9 +206,6 @@ export function useStorePage() {
         storePage.deviceType = page.deviceType ?? "pc";
         storePage.canvasWidth = page.canvasWidth ?? 1280;
         storePage.canvasHeight = page.canvasHeight ?? 900;
-        storePage.layoutMode = normalizePageLayoutMode();
-      } else {
-        storePage.deviceType = page.deviceType ?? storePage.deviceType;
         storePage.layoutMode = normalizePageLayoutMode();
       }
     } else if (Object.prototype.hasOwnProperty.call(page, "layoutMode")) {

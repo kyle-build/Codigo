@@ -28,15 +28,11 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
       icon: <FileTextOutlined />,
       fields: [
         {
-          label: "页面类型",
-          name: "pageCategory",
+          label: "搭建场景",
           node: (
-            <Select
-              options={[
-                { label: "营销页", value: "marketing" },
-                { label: "后台页", value: "admin" },
-              ]}
-            />
+            <div className="rounded-2xl border border-sky-100 bg-sky-50/70 px-3.5 py-3 text-[12px] leading-5 text-slate-600">
+              当前编辑器已收口为管理系统搭建场景，默认按后台页面的布局与画布尺寸组织内容。
+            </div>
           ),
         },
         {
@@ -44,11 +40,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
           name: "title",
           node: (
             <Input
-              placeholder={
-                store.pageCategory === "admin"
-                  ? "例如：搜索列表（应用）"
-                  : "例如：春季营销活动页"
-              }
+              placeholder="例如：客户列表页、工单工作台、订单审核页"
             />
           ),
         },
@@ -57,11 +49,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
           name: "description",
           node: (
             <Input.TextArea
-              placeholder={
-                store.pageCategory === "admin"
-                  ? "输入后台页面用途、模块职责或业务说明"
-                  : "输入页面用途、内容摘要或业务说明"
-              }
+              placeholder="输入页面用途、模块职责、操作流程或字段说明"
               autoSize={{ minRows: 3, maxRows: 5 }}
             />
           ),
@@ -70,24 +58,15 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
     },
     {
       key: "seo",
-      title: "SEO 设置",
+      title: "页面检索",
       icon: <GlobalOutlined />,
-      description:
-        store.pageCategory === "admin"
-          ? "补充后台页面的关键字，方便页面归档与检索。"
-          : "补充关键字，方便页面发布后的搜索识别与归档。",
+      description: "补充业务关键字，方便后台页面归档、检索与协作识别。",
       fields: [
         {
           label: "页面关键字",
           name: "tdk",
           node: (
-            <Input
-              placeholder={
-                store.pageCategory === "admin"
-                  ? "admin, list, search"
-                  : "lowcode, editor, marketing"
-              }
-            />
+            <Input placeholder="admin, list, approval, dashboard" />
           ),
         },
       ],
@@ -117,11 +96,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
             Global
           </span>
           <span className="rounded-full bg-slate-900/5 px-2.5 py-1 text-[11px] text-slate-500">
-            {store.pageCategory === "admin"
-              ? "后台页"
-              : store.deviceType === "mobile"
-                ? "移动端页面"
-                : "桌面端页面"}
+            {store.deviceType === "mobile" ? "移动端后台页" : "管理系统页"}
           </span>
         </div>
         <div className="text-sm font-semibold text-slate-900">

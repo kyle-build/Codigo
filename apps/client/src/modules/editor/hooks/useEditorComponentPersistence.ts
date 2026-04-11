@@ -66,16 +66,14 @@ function hydratePageSettings(
   }
 
   updatePage({
-    title: settings.title ?? "Codigo低代码平台",
-    description: settings.description ?? "Codigo低代码开发页面详情",
-    tdk:
-      settings.tdk ??
-      "lowcode platform, lowcode development, lowcode page details",
-    pageCategory: settings.pageCategory ?? "marketing",
+    title: settings.title ?? "管理系统页面",
+    description: settings.description ?? "用于配置管理后台页面的结构与业务说明",
+    tdk: settings.tdk ?? "admin dashboard, management system, business console",
+    pageCategory: settings.pageCategory ?? "admin",
     layoutMode: normalizePageLayoutMode(),
-    deviceType: settings.deviceType ?? "mobile",
-    canvasWidth: settings.canvasWidth ?? 380,
-    canvasHeight: settings.canvasHeight ?? 700,
+    deviceType: settings.deviceType ?? "pc",
+    canvasWidth: settings.canvasWidth ?? 1280,
+    canvasHeight: settings.canvasHeight ?? 900,
   });
 
   if (settings.codeFramework) {
@@ -216,11 +214,11 @@ export function createEditorComponentPersistence(
       tdk: data?.tdk || "",
       title: data?.page_name,
       description: data?.desc,
-      pageCategory: data?.pageCategory ?? "marketing",
+      pageCategory: "admin",
       layoutMode: normalizePageLayoutMode(),
-      deviceType: data?.deviceType ?? "mobile",
-      canvasWidth: data?.canvasWidth ?? 380,
-      canvasHeight: data?.canvasHeight ?? 700,
+      deviceType: data?.deviceType ?? "pc",
+      canvasWidth: data?.canvasWidth ?? 1280,
+      canvasHeight: data?.canvasHeight ?? 900,
     });
     message.success("已自动从服务器读取数据");
   });
