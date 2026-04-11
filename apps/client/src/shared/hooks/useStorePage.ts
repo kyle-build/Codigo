@@ -34,18 +34,9 @@ function normalizePageLayoutMode() {
   return "absolute" as const;
 }
 
-/**
- * 兼容历史营销页分类，统一收口到管理系统页面。
- */
-function normalizePageCategory(category: PageCategory) {
-  return category === "marketing" ? "admin" : category;
-}
-
 export function useStorePage() {
   const syncPageCategoryDefaults = action((category: PageCategory) => {
-    const normalizedCategory = normalizePageCategory(category);
-
-    if (normalizedCategory === "admin") {
+    if (category === "admin") {
       storePage.deviceType = "pc";
       storePage.canvasWidth = 1280;
       storePage.canvasHeight = 900;
@@ -83,9 +74,8 @@ export function useStorePage() {
   });
 
   const setPageCategory = action((category: PageCategory) => {
-    const normalizedCategory = normalizePageCategory(category);
-    storePage.pageCategory = normalizedCategory;
-    syncPageCategoryDefaults(normalizedCategory);
+    storePage.pageCategory = category;
+    syncPageCategoryDefaults(category);
   });
 
   const setLayoutMode = action((mode: PageLayoutMode) => {
@@ -207,27 +197,22 @@ export function useStorePage() {
    */
   const updatePage = action((page: Partial<TStorePage>) => {
     if (!page) return;
-    const nextPage = { ...page };
-    if (nextPage.pageCategory) {
-      nextPage.pageCategory = normalizePageCategory(nextPage.pageCategory);
-    }
-
-    for (const [key, value] of Object.entries(nextPage))
+    for (const [key, value] of Object.entries(page))
       // @ts-ignore
       storePage[key as keyof TStorePage] = value;
 
-    if (nextPage.pageCategory) {
-      if (nextPage.pageCategory === "admin") {
-        storePage.deviceType = nextPage.deviceType ?? "pc";
-        storePage.canvasWidth = nextPage.canvasWidth ?? 1280;
-        storePage.canvasHeight = nextPage.canvasHeight ?? 900;
+    if (page.pageCategory) {
+      if (page.pageCategory === "admin") {
+        storePage.deviceType = page.deviceType ?? "pc";
+        storePage.canvasWidth = page.canvasWidth ?? 1280;
+        storePage.canvasHeight = page.canvasHeight ?? 900;
         storePage.layoutMode = normalizePageLayoutMode();
       }
-    } else if (Object.prototype.hasOwnProperty.call(nextPage, "layoutMode")) {
+    } else if (Object.prototype.hasOwnProperty.call(page, "layoutMode")) {
       storePage.layoutMode = normalizePageLayoutMode();
     }
 
-    if (Object.prototype.hasOwnProperty.call(nextPage, "chartTheme")) {
+    if (Object.prototype.hasOwnProperty.call(page, "chartTheme")) {
       setDefaultEChartsTheme(storePage.chartTheme || undefined);
     }
   });

@@ -54,13 +54,6 @@ function normalizePageLayoutMode() {
 }
 
 /**
- * 兼容历史营销页分类，并统一恢复为管理系统页面。
- */
-function normalizePageCategory(category?: TStorePage["pageCategory"]) {
-  return category === "marketing" ? "admin" : (category ?? "admin");
-}
-
-/**
  * 把草稿中的页面设置恢复回页面 store。
  */
 function hydratePageSettings(
@@ -76,7 +69,7 @@ function hydratePageSettings(
     title: settings.title ?? "管理系统页面",
     description: settings.description ?? "用于配置管理后台页面的结构与业务说明",
     tdk: settings.tdk ?? "admin dashboard, management system, business console",
-    pageCategory: normalizePageCategory(settings.pageCategory),
+    pageCategory: settings.pageCategory ?? "admin",
     layoutMode: normalizePageLayoutMode(),
     deviceType: settings.deviceType ?? "pc",
     canvasWidth: settings.canvasWidth ?? 1280,
@@ -221,7 +214,7 @@ export function createEditorComponentPersistence(
       tdk: data?.tdk || "",
       title: data?.page_name,
       description: data?.desc,
-      pageCategory: normalizePageCategory(data?.pageCategory),
+      pageCategory: "admin",
       layoutMode: normalizePageLayoutMode(),
       deviceType: data?.deviceType ?? "pc",
       canvasWidth: data?.canvasWidth ?? 1280,

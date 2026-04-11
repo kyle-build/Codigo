@@ -8,7 +8,7 @@ import type {
 /**
  * 描述页面所属的业务分类。
  */
-export type PageCategory = "marketing" | "admin";
+export type PageCategory = "admin";
 
 /**
  * 描述页面在画布中的布局模式。

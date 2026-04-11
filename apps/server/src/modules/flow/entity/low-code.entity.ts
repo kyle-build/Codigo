@@ -26,20 +26,20 @@ export class Page implements ILowCode {
   @Column()
   desc: string = '';
 
-  @Column({ type: 'varchar', length: 20, default: 'marketing' })
-  pageCategory: 'marketing' | 'admin' = 'marketing';
+  @Column({ type: 'varchar', length: 20, default: 'admin' })
+  pageCategory: 'admin' = 'admin';
 
   @Column({ type: 'varchar', length: 20, default: 'absolute' })
   layoutMode: 'absolute' | 'flow' = 'absolute';
 
-  @Column({ type: 'varchar', length: 20, default: 'mobile' })
-  deviceType: 'mobile' | 'pc' = 'mobile';
+  @Column({ type: 'varchar', length: 20, default: 'pc' })
+  deviceType: 'mobile' | 'pc' = 'pc';
 
-  @Column({ default: 380 })
-  canvasWidth: number = 380;
+  @Column({ default: 1280 })
+  canvasWidth: number = 1280;
 
-  @Column({ default: 700 })
-  canvasHeight: number = 700;
+  @Column({ default: 900 })
+  canvasHeight: number = 900;
 
   @Column({ default: false })
   lockEditing: boolean = false;
