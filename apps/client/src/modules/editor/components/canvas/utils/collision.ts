@@ -169,3 +169,22 @@ export function resolveCollisionFreeResize(
     height: Math.max(minSize.height, nextHeight),
   };
 }
+
+/**
+ * 将固定左上角的 resize 尺寸限制在容器边界内（不改变 left/top）。
+ */
+export function clampResizeSizeToBounds(
+  rect: CanvasCollisionRect,
+  bounds: { width: number; height: number },
+  minSize = { width: 80, height: 40 },
+) {
+  const availableWidth = Math.max(0, bounds.width - rect.left);
+  const availableHeight = Math.max(0, bounds.height - rect.top);
+  const maxWidth = Math.max(minSize.width, availableWidth);
+  const maxHeight = Math.max(minSize.height, availableHeight);
+
+  return {
+    width: Math.min(Math.max(minSize.width, rect.width), maxWidth),
+    height: Math.min(Math.max(minSize.height, rect.height), maxHeight),
+  };
+}

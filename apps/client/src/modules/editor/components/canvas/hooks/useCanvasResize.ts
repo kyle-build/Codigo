@@ -2,6 +2,7 @@ import type { MouseEvent as ReactMouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import {
+  clampResizeSizeToBounds,
   collectSiblingRects,
   resolveCollisionFreeResize,
 } from "../utils/collision";
@@ -128,7 +129,18 @@ export function useCanvasResize({
         },
         siblingRects,
       );
-      pendingResizeSizeRef.current = safeSize;
+      const boundedSize = positioningRect
+        ? clampResizeSizeToBounds(
+            {
+              left: resizingComponent.origLeft,
+              top: resizingComponent.origTop,
+              width: safeSize.width,
+              height: safeSize.height,
+            },
+            { width: positioningRect.width, height: positioningRect.height },
+          )
+        : safeSize;
+      pendingResizeSizeRef.current = boundedSize;
       if (resizeFrameRef.current !== null) {
         return;
       }
@@ -186,10 +198,21 @@ export function useCanvasResize({
         },
         siblingRects,
       );
+      const boundedSize = positioningRect
+        ? clampResizeSizeToBounds(
+            {
+              left: resizingComponent.origLeft,
+              top: resizingComponent.origTop,
+              width: safeSize.width,
+              height: safeSize.height,
+            },
+            { width: positioningRect.width, height: positioningRect.height },
+          )
+        : safeSize;
       updateComponentSize(
         resizingComponent.id,
-        safeSize.width,
-        safeSize.height,
+        boundedSize.width,
+        boundedSize.height,
         false,
       );
 
