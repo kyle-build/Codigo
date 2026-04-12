@@ -76,7 +76,7 @@ export default function ChartCanvas({
       ref={containerRef}
       style={{
         width: "100%",
-        height: "100%",
+        height: hasRuntimeHeight ? "100%" : "300px",
         minHeight: hasRuntimeHeight ? undefined : "300px",
         backgroundColor: "#fff",
       }}

@@ -5,6 +5,7 @@ import type { ComponentNode, TComponentTypes } from "@codigo/schema";
 import type { TEditorComponentsStore } from "@/modules/editor/stores";
 import {
   getDefaultPosition,
+  getDefaultHeightByType,
   getDefaultWidthByType,
 } from "@/modules/editor/utils/pageLayout";
 
@@ -38,6 +39,20 @@ export function createEditorComponentCreation(
     setCurrentComponent,
     storeComponents,
   } = context;
+
+  /**
+   * 判断组件首次插入时是否需要显式写入默认高度，避免依赖父容器自适应导致首帧异常。
+   */
+  function resolveInitialHeight(type: TComponentTypes) {
+    switch (type) {
+      case "barChart":
+      case "lineChart":
+      case "pieChart":
+        return `${getDefaultHeightByType(type)}px`;
+      default:
+        return undefined;
+    }
+  }
 
   /**
    * 获取组件可插入的 slot 列表。
@@ -88,6 +103,7 @@ export function createEditorComponentCreation(
               ? `${Math.max(0, Math.round(args.position.top))}px`
               : defaultPosition.top,
           width: getDefaultWidthByType(type),
+          height: resolveInitialHeight(type),
         },
         slot: args.slot ?? "default",
         children: [],
@@ -147,6 +163,7 @@ export function createEditorComponentCreation(
               ? `${Math.max(0, Math.round(position.top))}px`
               : defaultPosition.top,
           width: getDefaultWidthByType(type),
+          height: resolveInitialHeight(type),
         },
         children: [],
       };

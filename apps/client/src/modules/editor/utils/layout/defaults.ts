@@ -45,6 +45,10 @@ export function getDefaultHeightByType(type: TComponentTypes): number {
       return 420;
     case "container":
       return 240;
+    case "barChart":
+    case "lineChart":
+    case "pieChart":
+      return 300;
     case "table":
     case "dataTable":
     case "list":
