@@ -44,6 +44,10 @@ interface EditorComponentPersistenceContext {
   setCodeFramework: (codeFramework: CodeFramework) => void;
 }
 
+interface LoadPageDataOptions {
+  silent?: boolean;
+}
+
 const schemaStorageKey = "pageSchema";
 
 /**
@@ -112,6 +116,17 @@ async function fetchServerPageData(
     console.error("获取服务端数据失败", error);
     return null;
   }
+}
+
+/**
+ * 根据场景决定是否显示数据恢复提示。
+ */
+function notifyHydrationResult(content: string, options?: LoadPageDataOptions) {
+  if (options?.silent) {
+    return;
+  }
+
+  message.success(content);
 }
 
 /**
@@ -193,7 +208,7 @@ export function createEditorComponentPersistence(
   /**
    * 用服务端返回的页面数据初始化编辑器状态。
    */
-  const initFromServerData = action((data: any) => {
+  const initFromServerData = action((data: any, options?: LoadPageDataOptions) => {
     const schema = data?.schema
       ? (data.schema as IPageSchema)
       : ({
@@ -220,14 +235,17 @@ export function createEditorComponentPersistence(
       canvasWidth: data?.canvasWidth ?? 1280,
       canvasHeight: data?.canvasHeight ?? 900,
     });
-    message.success("已自动从服务器读取数据");
+    notifyHydrationResult("已自动从服务器读取数据", options);
   });
 
   /**
    * 按草稿优先策略加载本地或服务端页面数据。
    */
   const loadPageData = action(
-    async (fetchServerData?: () => Promise<{ data: any }>) => {
+    async (
+      fetchServerData?: () => Promise<{ data: any }>,
+      options?: LoadPageDataOptions,
+    ) => {
       const pageSchema = localStorage.getItem(schemaStorageKey);
       const compConfig = localStorage.getItem("compConfig");
       const sortableCompConfig = localStorage.getItem("sortableCompConfig");
@@ -245,12 +263,12 @@ export function createEditorComponentPersistence(
           currentCompConfig ? JSON.parse(currentCompConfig) : null,
         );
         hydratePageSettings(settings, updatePage, setCodeFramework);
-        message.success("已自动从草稿中读取数据");
+        notifyHydrationResult("已自动从草稿中读取数据", options);
         return serverData;
       }
 
       if (pageSchema && serverData) {
-        initFromServerData(serverData);
+        initFromServerData(serverData, options);
         return serverData;
       }
 
@@ -276,12 +294,12 @@ export function createEditorComponentPersistence(
           currentCompConfig ? JSON.parse(currentCompConfig) : null,
         );
         hydratePageSettings(settings, updatePage, setCodeFramework);
-        message.success("已自动从草稿中读取数据");
+        notifyHydrationResult("已自动从草稿中读取数据", options);
         return serverData;
       }
 
       if (serverData) {
-        initFromServerData(serverData);
+        initFromServerData(serverData, options);
       }
 
       return serverData;

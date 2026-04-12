@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FloatButton } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { CaretLeftOutlined } from "@ant-design/icons";
@@ -30,6 +30,7 @@ function resolvePreviewPage(
 const PreviewCanvas = observer(() => {
   const { getPages, loadPageData } = useEditorComponents();
   const [searchParams, setSearchParams] = useSearchParams();
+  const hasInitializedRef = useRef(false);
   const pages = getPages.get();
   const activePage = useMemo(
     () => resolvePreviewPage(pages, searchParams.get("page")),
@@ -43,7 +44,12 @@ const PreviewCanvas = observer(() => {
   const [pageState, setPageState] = useState(initialPageState);
 
   useEffect(() => {
-    loadPageData();
+    if (hasInitializedRef.current) {
+      return;
+    }
+
+    hasInitializedRef.current = true;
+    void loadPageData(undefined, { silent: true });
   }, [loadPageData]);
 
   useEffect(() => {
