@@ -1,9 +1,9 @@
 import type { AppManagementTab, LocalDraftMeta, MyPagePayload, PageVersionItem, PublicPageItem } from "../../types/appManagement";
-import type { TemplatePreset } from "../../types/templates";
+import { TemplateGallery } from "@/modules/templateCenter/components/TemplateGallery";
+import type { TemplatePreset } from "@/modules/templateCenter/types/templates";
 import DevelopingSection from "./DevelopingSection";
 import HistorySection from "./HistorySection";
 import PublishedSection from "./PublishedSection";
-import TemplateSection from "./TemplateSection";
 
 interface AppManagementSectionContentProps {
   currentTab: AppManagementTab;
@@ -63,8 +63,8 @@ function AppManagementSectionContent({
 
   if (currentTab === "templates") {
     return (
-      <TemplateSection
-        isLoggedIn={isLoggedIn}
+      <TemplateGallery
+        canUseTemplate={isLoggedIn}
         templates={templates}
         onPreview={onPreviewTemplate}
         onUse={onUseTemplate}

@@ -2,11 +2,20 @@ import { action, computed, toJS } from "mobx";
 import { trackUndo } from "mobx-shallow-undo";
 import { message } from "antd";
 import type { IEditorPageSchema } from "@codigo/schema";
+import type { TemplatePreset } from "@/modules/templateCenter/types/templates";
+import {
+  buildTemplateSchema,
+  createTemplatePageSettings,
+} from "@/modules/templateCenter/utils/templateDraft";
 import {
   createEditorComponentsStore,
   type TEditorComponentsStore,
 } from "@/modules/editor/stores";
-import { serializeComponentTree, serializeStore } from "@/modules/editor/utils/pageSchema";
+import {
+  normalizeFromSchema,
+  serializeComponentTree,
+  serializeStore,
+} from "@/modules/editor/utils/pageSchema";
 import { createEditorComponentCanvasActions } from "./useEditorComponentCanvasActions";
 import { createEditorComponentMutations } from "./useEditorComponentMutations";
 import { createEditorComponentPageActions } from "./useEditorComponentPages";
@@ -289,9 +298,48 @@ export function useEditorComponents() {
     syncSchema,
   });
 
+  /**
+   * 将模板覆盖应用到当前激活页面。
+   */
+  const applyTemplateToCurrentPage = action((template: TemplatePreset) => {
+    if (!ensurePermission("edit_structure", "当前角色不能应用模板")) {
+      return false;
+    }
+
+    ensureEditorPages();
+    const activePage = getActivePage.get();
+    if (!activePage) {
+      message.warning("当前页面不可用，暂时无法应用模板");
+      return false;
+    }
+
+    const schema = buildTemplateSchema(template);
+    const normalized = normalizeFromSchema(schema, pageStore.layoutMode);
+    const nextPageSettings = createTemplatePageSettings(template);
+
+    storeComponents.compConfigs = normalized.compConfigs;
+    storeComponents.sortableCompConfig = normalized.sortableCompConfig;
+    storeComponents.currentCompConfig = normalized.sortableCompConfig[0] ?? null;
+    storeComponents.pages = getPages.get().map((page) =>
+      page.id === activePage.id
+        ? {
+            ...page,
+            components: schema.components,
+          }
+        : page,
+    );
+
+    updatePage(nextPageSettings);
+    broadcastReplaceAll();
+    addOperationLog("update_page", `应用模板:${template.name}`);
+    message.success(`已将“${template.name}”应用到当前页面`);
+    return true;
+  });
+
   ensureEditorPages();
 
   return {
+    applyTemplateToCurrentPage,
     _replace,
     replaceByCode,
     push,

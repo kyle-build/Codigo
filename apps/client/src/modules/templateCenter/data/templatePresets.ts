@@ -1,4 +1,3 @@
-import type { ComponentNode } from "@codigo/schema";
 import type { TemplatePreset } from "../types/templates";
 
 export const templates: TemplatePreset[] = [
@@ -279,54 +278,3 @@ export const templates: TemplatePreset[] = [
     ],
   },
 ];
-
-function createId(index: number): string {
-  return `tpl_${Date.now()}_${index}_${Math.random().toString(36).slice(2, 7)}`;
-}
-
-export function buildTemplateSchema(template: TemplatePreset) {
-  const components: ComponentNode[] = template.components.map(
-    (component, index) => ({
-      id: createId(index),
-      type: component.type,
-      props: component.props ?? {},
-      styles: component.styles,
-      children: [],
-    }),
-  );
-
-  return {
-    version: 2,
-    components,
-  };
-}
-
-export function writeTemplateToDraft(template: TemplatePreset) {
-  const schema = buildTemplateSchema(template);
-
-  localStorage.setItem(
-    "pageSchema",
-    JSON.stringify({
-      version: schema.version,
-      components: schema.components,
-    }),
-  );
-  localStorage.setItem(
-    "currentCompConfig",
-    JSON.stringify((schema.components[0]?.id as string | null) ?? null),
-  );
-  localStorage.setItem(
-    "pageSettings",
-    JSON.stringify({
-      title: template.pageTitle,
-      description: template.desc,
-      tdk: `${template.tags.join(",")},${template.key}`,
-      pageCategory: template.pageCategory,
-      layoutMode: template.layoutMode,
-      deviceType: template.deviceType,
-      canvasWidth: template.canvasWidth,
-      canvasHeight: template.canvasHeight,
-    }),
-  );
-  localStorage.setItem("store_time", String(Date.now()));
-}

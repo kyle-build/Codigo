@@ -5,6 +5,7 @@ import { DeviceModeSwitch } from "./center/DeviceModeSwitch";
 import { EditorModeButton } from "./center/EditorModeButton";
 import { PreviewDraftActions } from "./center/PreviewDraftActions";
 import { PublishButton } from "./center/PublishButton";
+import { TemplateLibraryAction } from "./center/TemplateLibraryAction";
 import { VersionHistoryAction } from "./center/VersionHistoryAction";
 
 const Center = observer(() => {
@@ -15,6 +16,7 @@ const Center = observer(() => {
       <CanvasSettings />
       <div className="hidden h-5 w-px bg-slate-200 lg:block" />
       <div className="flex items-center gap-1">
+        <TemplateLibraryAction />
         <VersionHistoryAction />
         <PreviewDraftActions />
         <CanvasEditActions />

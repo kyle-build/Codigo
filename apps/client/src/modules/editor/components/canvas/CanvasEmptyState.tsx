@@ -5,6 +5,7 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { Button } from "antd";
+import { EditorTemplateLibraryTrigger } from "@/modules/editor/components/template/EditorTemplateLibraryTrigger";
 import { quickInsertComponents } from "@/modules/editor/registry/components";
 import type { TComponentTypes } from "@codigo/schema";
 
@@ -22,7 +23,7 @@ const emptyStateSteps = [
   {
     key: "preview",
     icon: <PlusOutlined />,
-    title: "快速起稿",
+    title: "套用模板",
   },
 ];
 
@@ -46,7 +47,7 @@ export function CanvasEmptyState({
           先添加容器组件，再开始搭建
         </div>
         <div className="mt-2 text-sm text-slate-500">
-          从左侧资源库拖入容器或双栏布局，再把业务组件放进对应区域。
+          可以直接套用后台模板起稿，或者从左侧资源库拖入容器后继续自由搭建。
         </div>
         <div className="mt-6 grid grid-cols-3 gap-3 text-left">
           {emptyStateSteps.map((item) => (
@@ -65,6 +66,7 @@ export function CanvasEmptyState({
         </div>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <EditorTemplateLibraryTrigger variant="empty" />
           {quickInsertComponents.map((item) => (
             <Button
               key={item.type}
@@ -81,7 +83,7 @@ export function CanvasEmptyState({
 
         <div className="mt-5 text-xs text-slate-400">
           {canEditStructure
-            ? "优先从左侧资源库添加容器组件，再继续拖拽业务组件"
+            ? "支持直接应用模板，也支持从左侧资源库添加容器后继续拖拽业务组件"
             : "当前角色没有新增组件权限"}
         </div>
       </div>

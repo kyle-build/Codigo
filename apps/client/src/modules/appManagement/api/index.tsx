@@ -13,7 +13,7 @@ import type {
   PreviewState,
   PublicPageItem,
 } from "../types/appManagement";
-import { resolveSchemaFromReleasePayload } from "../utils/preview";
+import { resolveSchemaFromReleasePayload } from "@/modules/templateCenter/utils/preview";
 
 export async function fetchPublicPages() {
   const res = await getPublicPages();

@@ -1,14 +1,14 @@
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
+import { templates } from "@/modules/templateCenter/data/templatePresets";
+import { TemplatePreviewModal } from "@/modules/templateCenter/components/TemplatePreviewModal";
 import { useAppManagementController } from "./hooks/useAppManagementController";
 import { useAppManagementViewModel } from "./hooks/useAppManagementViewModel";
 import AppManagementFootnote from "./components/layout/AppManagementFootnote";
 import AppManagementHero from "./components/layout/AppManagementHero";
 import AppManagementPage from "./components/layout/AppManagementPage";
 import AppManagementWorkspace from "./components/layout/AppManagementWorkspace";
-import AppManagementPreviewModal from "./components/preview/AppManagementPreviewModal";
 import AppManagementSectionContent from "./components/sections/AppManagementSectionContent";
-import { templates } from "./utils/templatePresets";
 
 const AppManagement = observer(() => {
   const navigate = useNavigate();
@@ -70,10 +70,13 @@ const AppManagement = observer(() => {
           />
         </AppManagementWorkspace>
       </AppManagementPage>
-      <AppManagementPreviewModal
+      <TemplatePreviewModal
         loading={previewLoading}
-        previewState={previewState}
-        setPreviewState={setPreviewState}
+        open={Boolean(previewState)}
+        title={previewState?.title}
+        subtitle={previewState?.subtitle}
+        schema={previewState?.schema ?? null}
+        onClose={() => setPreviewState(null)}
       />
     </>
   );

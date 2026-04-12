@@ -15,11 +15,11 @@ import type {
   PageVersionItem,
   PreviewState,
 } from "../types/appManagement";
-import type { TemplatePreset } from "../types/templates";
+import type { TemplatePreset } from "@/modules/templateCenter/types/templates";
 import {
   buildTemplateSchema,
   writeTemplateToDraft,
-} from "../utils/templatePresets";
+} from "@/modules/templateCenter/utils/templateDraft";
 
 export function useAppManagementController() {
   const navigate = useNavigate();

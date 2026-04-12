@@ -1,5 +1,5 @@
-import type { ComponentNode } from "@codigo/schema";
 import type { ReactNode } from "react";
+import type { TemplatePreviewSchema } from "@/modules/templateCenter/utils/preview";
 
 export interface AppManagementPageRecord {
   id: number;
@@ -28,15 +28,10 @@ export interface MyPagePayload {
   versions: PageVersionItem[];
 }
 
-export interface PreviewSchema {
-  version: number;
-  components: ComponentNode[];
-}
-
 export interface PreviewState {
   title: string;
   subtitle: string;
-  schema: PreviewSchema;
+  schema: TemplatePreviewSchema;
 }
 
 export interface LocalDraftMeta {

@@ -1,20 +1,20 @@
 import { EyeOutlined, RocketOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import type { TemplatePreset } from "../../types/templates";
+import type { TemplatePreset } from "../types/templates";
 
-interface TemplateSectionProps {
-  isLoggedIn: boolean;
+interface TemplateGalleryProps {
+  canUseTemplate: boolean;
   onPreview: (template: TemplatePreset) => void;
   onUse: (template: TemplatePreset) => void;
   templates: TemplatePreset[];
 }
 
-function TemplateSection({
-  isLoggedIn,
+export function TemplateGallery({
+  canUseTemplate,
   onPreview,
   onUse,
   templates,
-}: TemplateSectionProps) {
+}: TemplateGalleryProps) {
   return (
     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
       {templates.map((template) => (
@@ -32,9 +32,7 @@ function TemplateSection({
               </span>
             ))}
           </div>
-          <h3 className="text-lg font-semibold text-slate-900">
-            {template.name}
-          </h3>
+          <h3 className="text-lg font-semibold text-slate-900">{template.name}</h3>
           <p className="mt-3 min-h-[72px] text-sm leading-6 text-slate-500">
             {template.desc}
           </p>
@@ -47,13 +45,10 @@ function TemplateSection({
             </span>
           </div>
           <div className="mt-6 flex gap-3">
-            <Button
-              icon={<EyeOutlined />}
-              onClick={() => onPreview(template)}
-            >
+            <Button icon={<EyeOutlined />} onClick={() => onPreview(template)}>
               查看模板
             </Button>
-            {isLoggedIn && (
+            {canUseTemplate && (
               <Button
                 icon={<RocketOutlined />}
                 type="primary"
@@ -68,5 +63,3 @@ function TemplateSection({
     </div>
   );
 }
-
-export default TemplateSection;

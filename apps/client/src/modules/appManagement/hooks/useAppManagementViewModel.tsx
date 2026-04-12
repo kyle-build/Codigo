@@ -9,7 +9,7 @@ import type {
   AppManagementMetric,
   AppManagementNavItem,
 } from "../types/appManagement";
-import { templates } from "../utils/templatePresets";
+import { templates } from "@/modules/templateCenter/data/templatePresets";
 
 interface UseAppManagementViewModelArgs {
   isLoggedIn: boolean;

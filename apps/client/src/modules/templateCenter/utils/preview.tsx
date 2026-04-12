@@ -1,9 +1,13 @@
 import { Empty, Tag } from "antd";
 import type { CSSProperties, ReactNode } from "react";
 import type { ComponentNode, TComponentTypes } from "@codigo/schema";
-import type { PreviewSchema } from "../types/appManagement";
 
-const componentLabelMap: Record<string, string> = {
+export interface TemplatePreviewSchema {
+  version: number;
+  components: ComponentNode[];
+}
+
+const componentLabelMap: Record<TComponentTypes | string, string> = {
   titleText: "文本组件",
   richText: "富文本组件",
   split: "分割组件",
@@ -32,6 +36,9 @@ const componentLabelMap: Record<string, string> = {
   twoColumn: "双栏组件",
 };
 
+/**
+ * 去除富文本中的 HTML 标记，便于预览摘要。
+ */
 function stripHtml(value: string) {
   return value
     .replace(/<[^>]+>/g, " ")
@@ -39,6 +46,9 @@ function stripHtml(value: string) {
     .trim();
 }
 
+/**
+ * 汇总组件属性中的主要展示信息。
+ */
 function summarizeProps(props?: Record<string, unknown>) {
   if (!props) {
     return "未配置内容";
@@ -84,9 +94,12 @@ function summarizeProps(props?: Record<string, unknown>) {
   return pieces.join(" · ").slice(0, 120);
 }
 
+/**
+ * 兼容发布数据与模板 schema 的预览结构。
+ */
 export function resolveSchemaFromReleasePayload(
   payload: Record<string, unknown> | null | undefined,
-): PreviewSchema {
+): TemplatePreviewSchema {
   if (!payload) {
     return {
       version: 2,
@@ -145,6 +158,9 @@ interface SchemaOutlineProps {
   depth?: number;
 }
 
+/**
+ * 渲染模板或发布页 schema 的结构化预览。
+ */
 export function renderSchemaOutline({
   nodes,
   depth = 0,
