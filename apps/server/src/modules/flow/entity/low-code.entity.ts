@@ -27,10 +27,10 @@ export class Page implements ILowCode {
   desc: string = '';
 
   @Column({ type: 'varchar', length: 20, default: 'admin' })
-  pageCategory: 'admin' = 'admin';
+  pageCategory = 'admin' as const;
 
   @Column({ type: 'varchar', length: 20, default: 'absolute' })
-  layoutMode: 'absolute' | 'flow' = 'absolute';
+  layoutMode = 'absolute' as const;
 
   @Column({ type: 'varchar', length: 20, default: 'pc' })
   deviceType: 'mobile' | 'pc' = 'pc';

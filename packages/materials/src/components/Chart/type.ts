@@ -34,20 +34,20 @@ export type TChartComponentConfigResult =
   TransformedComponentConfig<IChartComponentProps>;
 
 const defaultData = [
-  { name: "华东", value: 32840, orders: 1240, yoy: 0.18 },
-  { name: "华南", value: 24120, orders: 980, yoy: 0.12 },
-  { name: "华北", value: 19560, orders: 760, yoy: 0.09 },
-  { name: "西南", value: 16280, orders: 640, yoy: 0.15 },
-  { name: "东北", value: 11450, orders: 430, yoy: 0.06 },
-  { name: "西北", value: 8920, orders: 310, yoy: 0.08 },
+  { name: "客服中心", value: 1280, pending: 36, completionRate: 0.96 },
+  { name: "订单履约", value: 1040, pending: 42, completionRate: 0.93 },
+  { name: "采购审批", value: 860, pending: 18, completionRate: 0.98 },
+  { name: "仓储调度", value: 790, pending: 27, completionRate: 0.91 },
+  { name: "财务结算", value: 640, pending: 11, completionRate: 0.99 },
+  { name: "人事服务", value: 420, pending: 9, completionRate: 0.97 },
 ];
 
 const defaultDataText = JSON.stringify(defaultData, null, 2);
 
 export const chartComponentDefaultConfig: TChartComponentConfigResult = {
   title: {
-    value: "图表标题",
-    defaultValue: "图表标题",
+    value: "部门业务处理概览",
+    defaultValue: "部门业务处理概览",
     isHidden: false,
   },
   dataText: {

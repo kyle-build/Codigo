@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
-import ReactECharts from "echarts-for-react";
 import { getDefaultValueByConfig } from "..";
 import { chartComponentDefaultConfig, type IChartComponentProps } from "./type";
 import { getDefaultEChartsTheme } from "../../utils/echartsTheme";
 import { deepMerge } from "../../utils/deepMerge";
+import ChartCanvas from "./ChartCanvas";
 
 interface ChartRuntimeProps extends IChartComponentProps {
   runtimeHeight?: string | number;
@@ -90,19 +90,10 @@ export default function BarChartComponent(_props: ChartRuntimeProps) {
   }, [baseOption, userOption]);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        minHeight: hasRuntimeHeight ? undefined : "300px",
-        backgroundColor: "#fff",
-      }}
-    >
-      <ReactECharts
-        option={option}
-        theme={echartsTheme}
-        style={{ height: "100%", width: "100%" }}
-      />
-    </div>
+    <ChartCanvas
+      option={option}
+      theme={echartsTheme}
+      hasRuntimeHeight={hasRuntimeHeight}
+    />
   );
 }
