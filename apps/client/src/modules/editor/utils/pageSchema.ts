@@ -8,7 +8,6 @@ import type {
   TBasicComponentConfig,
   TComponentTypes,
 } from "@codigo/schema";
-import { flattenComponentTree } from "@codigo/materials";
 import {
   codeSyncComponentTypes,
 } from "@/modules/editor/registry/components";
@@ -204,13 +203,24 @@ export function normalizeFromSchema(
     };
   }
 
-  const flatNodes = flattenComponentTree(schema.components);
-  for (const flatNode of flatNodes) {
-    const { parentId = null, ...node } = flatNode;
-    nextCompConfigs[node.id] = createRecordFromNode(
-      node as ComponentNode,
-      parentId,
-    );
+  const stack: Array<{ node: ComponentNode; parentId: string | null }> = [];
+  for (let i = schema.components.length - 1; i >= 0; i -= 1) {
+    stack.push({ node: schema.components[i] as ComponentNode, parentId: null });
+  }
+
+  while (stack.length) {
+    const current = stack.pop();
+    if (!current) {
+      continue;
+    }
+
+    const { node, parentId } = current;
+    nextCompConfigs[node.id] = createRecordFromNode(node, parentId);
+
+    const children = node.children ?? [];
+    for (let i = children.length - 1; i >= 0; i -= 1) {
+      stack.push({ node: children[i], parentId: node.id });
+    }
   }
 
   for (const node of schema.components) {

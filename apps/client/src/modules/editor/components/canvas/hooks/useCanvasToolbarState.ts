@@ -11,6 +11,7 @@ export function useCanvasToolbarState({
 }: UseCanvasToolbarStateOptions) {
   const [currentComponentRect, setCurrentComponentRect] =
     useState<ClientRect>();
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [isFirstRender, setIsFirstRender] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [localHidden, setLocalHidden] = useState(false);
@@ -26,6 +27,14 @@ export function useCanvasToolbarState({
     const currentComponent = getCurrentWrapperElement();
     if (!currentComponent) {
       return;
+    }
+
+    const offsetParent = currentComponent.offsetParent as HTMLElement | null;
+    if (offsetParent) {
+      setCanvasSize({
+        width: offsetParent.clientWidth,
+        height: offsetParent.clientHeight,
+      });
     }
 
     setCurrentComponentRect({
@@ -90,6 +99,7 @@ export function useCanvasToolbarState({
 
   return {
     currentComponentRect,
+    canvasSize,
     localHidden,
     setRefresh,
   };

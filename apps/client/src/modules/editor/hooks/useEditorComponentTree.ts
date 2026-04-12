@@ -1,5 +1,4 @@
 import { action } from "mobx";
-import { flattenComponentTree } from "@codigo/materials";
 import type { ComponentNode } from "@codigo/schema";
 import type { TEditorComponentsStore } from "@/modules/editor/stores";
 import { normalizeLayout } from "@/modules/editor/utils/pageLayout";
@@ -140,32 +139,48 @@ export function createEditorComponentTree(
     ) => {
       const parentId = args?.parentId ?? null;
       const targetIndex = args?.index;
-      const flatNodes = flattenComponentTree([node], parentId);
+      const rootNode =
+        args?.slot && args.slot !== "default"
+          ? ({ ...node, slot: args.slot } as ComponentNode)
+          : node;
+      const stack: Array<{ node: ComponentNode; parentId: string | null }> = [
+        { node: rootNode, parentId },
+      ];
 
-      for (const flatNode of flatNodes) {
-        const { parentId: nextParentId = null, ...recordNode } = flatNode;
-        storeComponents.compConfigs[recordNode.id] = createRecordFromNode(
-          recordNode as ComponentNode,
+      while (stack.length) {
+        const current = stack.pop();
+        if (!current) {
+          continue;
+        }
+
+        const { node: currentNode, parentId: nextParentId } = current;
+        storeComponents.compConfigs[currentNode.id] = createRecordFromNode(
+          currentNode,
           nextParentId,
         );
+
+        const children = currentNode.children ?? [];
+        for (let i = children.length - 1; i >= 0; i -= 1) {
+          stack.push({ node: children[i], parentId: currentNode.id });
+        }
       }
 
       if (parentId) {
         insertChildIdBySlot(
           parentId,
-          node.id,
+          rootNode.id,
           args?.slot ?? "default",
           targetIndex,
         );
       } else {
         storeComponents.sortableCompConfig = insertIntoOrderedIds(
           storeComponents.sortableCompConfig,
-          node.id,
+          rootNode.id,
           targetIndex,
         );
       }
 
-      const current = storeComponents.compConfigs[node.id];
+      const current = storeComponents.compConfigs[rootNode.id];
       if (current) {
         current.parentId = parentId;
         current.slot = args?.slot ?? current.slot ?? undefined;

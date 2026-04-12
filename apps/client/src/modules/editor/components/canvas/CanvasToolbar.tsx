@@ -43,7 +43,7 @@ export const CanvasToolbar = observer(function CanvasToolbar({
   const { can } = useEditorPermission();
   const canEditStructure = can("edit_structure");
   const currentComponent = getCurrentComponentConfig.get();
-  const { currentComponentRect, localHidden, setRefresh } =
+  const { currentComponentRect, canvasSize, localHidden, setRefresh } =
     useCanvasToolbarState({
       hidden,
       selectedComponentId: store.currentCompConfig,
@@ -72,12 +72,19 @@ export const CanvasToolbar = observer(function CanvasToolbar({
     return null;
   }
 
+  const gapPx = 8;
+  const shouldFlipX =
+    (currentComponentRect?.right ?? 0) + gapPx > canvasSize.width;
+
   return (
     <div
       className={classNames}
       style={{
         left: `${currentComponentRect?.right}px`,
         top: `${currentComponentRect?.top}px`,
+        transform: shouldFlipX
+          ? `translateX(calc(-100% - ${gapPx}px))`
+          : `translateX(${gapPx}px)`,
       }}
     >
       <span className="mr-1">{componentName ?? "组件名称"}</span>

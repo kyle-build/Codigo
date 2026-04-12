@@ -9,6 +9,38 @@ const CANVAS_HEIGHT = 900;
 const SIDEBAR_WIDTH = 272;
 
 /**
+ * 将数字值转换为 px 字符串，字符串值原样返回。
+ */
+function toCssSize(value?: number | string) {
+  if (value === undefined) return undefined;
+  return typeof value === "number" ? `${value}px` : value;
+}
+
+/**
+ * 为模板节点追加绝对定位样式，便于生成后台仪表盘的网格布局。
+ */
+function place(
+  component: TemplateComponent,
+  options: {
+    left: number | string;
+    top: number | string;
+    width?: number | string;
+    height?: number | string;
+  },
+): TemplateComponent {
+  return {
+    ...component,
+    styles: {
+      ...(component.styles ?? {}),
+      left: toCssSize(options.left),
+      top: toCssSize(options.top),
+      ...(options.width !== undefined ? { width: toCssSize(options.width) } : null),
+      ...(options.height !== undefined ? { height: toCssSize(options.height) } : null),
+    },
+  };
+}
+
+/**
  * 创建文本物料节点，统一后台模板中的文案样式。
  */
 function createText(
@@ -121,48 +153,89 @@ function createPlainTwoColumn(
 function createTopBar(sectionTitle: string, sectionHint: string): TemplateComponent {
   return createPlainContainer(
     [
-      createPlainTwoColumn(
-        [
-          createText("Nimbus Console", "lg"),
-          createText(sectionHint, "sm"),
-        ],
-        [
-          createPlainTwoColumn(
-            [
-              {
-                type: "avatar",
-                props: {
-                  name: "MH",
-                  size: 48,
-                  shape: "circle",
-                },
-              },
-            ],
-            [
-              createText("Mike He", "base"),
-              createText("Super Admin", "sm"),
-            ],
-            {
-              leftWidth: 64,
-              gap: 12,
-              minHeight: 64,
-            },
-          ),
-        ],
+      place(createText(sectionTitle, "sm"), {
+        left: 20,
+        top: 14,
+        width: "520px",
+        height: 24,
+      }),
+      place(createText(sectionHint, "xs"), {
+        left: 20,
+        top: 40,
+        width: "560px",
+        height: 20,
+      }),
+      place(
         {
-          leftWidth: 820,
-          gap: 16,
-          minHeight: 72,
+          type: "button",
+          props: {
+            text: "Support & Consulting",
+            type: "text",
+            size: "small",
+            danger: false,
+            active: false,
+            block: false,
+            actionType: "none",
+            link: "",
+            targetId: "",
+            stateKey: "",
+            stateValue: "",
+          },
+        },
+        {
+          left: 560,
+          top: 18,
+          width: 160,
+          height: 32,
         },
       ),
-      createText(sectionTitle, "xs"),
+      place(
+        {
+          type: "button",
+          props: {
+            text: "About",
+            type: "text",
+            size: "small",
+            danger: false,
+            active: false,
+            block: false,
+            actionType: "none",
+            link: "",
+            targetId: "",
+            stateKey: "",
+            stateValue: "",
+          },
+        },
+        {
+          left: 736,
+          top: 18,
+          width: 72,
+          height: 32,
+        },
+      ),
+      place(
+        {
+          type: "avatar",
+          props: {
+            name: "MH",
+            size: 36,
+            shape: "circle",
+          },
+        },
+        {
+          left: 892,
+          top: 16,
+          width: 40,
+          height: 40,
+        },
+      ),
     ],
     {
       backgroundColor: "#ffffff",
       borderColor: "#e2e8f0",
-      borderRadius: 28,
-      padding: 20,
-      minHeight: 120,
+      borderRadius: 0,
+      padding: 0,
+      minHeight: 64,
     },
   );
 }
@@ -173,41 +246,61 @@ function createTopBar(sectionTitle: string, sectionHint: string): TemplateCompon
 function createSidebar(activePagePath: string): TemplateComponent {
   return createPlainContainer(
     [
-      createText("Codigo Admin", "lg"),
-      createText("Workspace Console", "sm"),
-      createPlainTwoColumn(
-        [
-          {
-            type: "avatar",
-            props: {
-              name: "MH",
-              size: 56,
-              shape: "circle",
-            },
-          },
-        ],
-        [
-          createText("Mike He", "base"),
-          createText("Platform Owner", "sm"),
-        ],
-        {
-          leftWidth: 72,
-          gap: 12,
-          minHeight: 72,
-        },
-      ),
-      createText("Workspace", "xs"),
-      createNavButton("Overview", "home", activePagePath === "home"),
-      createNavButton("Project", "project", activePagePath === "project"),
-      createNavButton("Auth", "auth", activePagePath === "auth"),
-      createNavButton("Setting", "setting", activePagePath === "setting"),
+      place(createText("VUESTIC ADMIN", "lg"), {
+        left: 18,
+        top: 18,
+        width: 220,
+        height: 28,
+      }),
+      place(createNavButton("Dashboard", "home", activePagePath === "home"), {
+        left: 12,
+        top: 76,
+        width: 248,
+        height: 44,
+      }),
+      place(createNavButton("Users", "auth", false), {
+        left: 12,
+        top: 128,
+        width: 248,
+        height: 44,
+      }),
+      place(createNavButton("Projects", "project", activePagePath === "project"), {
+        left: 12,
+        top: 180,
+        width: 248,
+        height: 44,
+      }),
+      place(createNavButton("Payments", "project", false), {
+        left: 12,
+        top: 232,
+        width: 248,
+        height: 44,
+      }),
+      place(createNavButton("Auth", "auth", activePagePath === "auth"), {
+        left: 12,
+        top: 284,
+        width: 248,
+        height: 44,
+      }),
+      place(createNavButton("Account preferences", "setting", false), {
+        left: 12,
+        top: 336,
+        width: 248,
+        height: 44,
+      }),
+      place(createNavButton("Application settings", "setting", activePagePath === "setting"), {
+        left: 12,
+        top: 388,
+        width: 248,
+        height: 44,
+      }),
     ],
     {
-      backgroundColor: "#0f172a",
-      borderColor: "#0f172a",
-      borderRadius: 28,
-      padding: 20,
-      minHeight: 836,
+      backgroundColor: "#ffffff",
+      borderColor: "#e2e8f0",
+      borderRadius: 0,
+      padding: 0,
+      minHeight: CANVAS_HEIGHT,
     },
   );
 }
@@ -216,166 +309,324 @@ function createSidebar(activePagePath: string): TemplateComponent {
  * 创建总览页的内容区组件。
  */
 function createOverviewContent(): TemplateComponent[] {
+  const revenueData = [
+    { month: "Jan", value: 3.2 },
+    { month: "Feb", value: 4.1 },
+    { month: "Mar", value: 3.6 },
+    { month: "Apr", value: 4.8 },
+    { month: "May", value: 4.0 },
+    { month: "Jun", value: 5.4 },
+    { month: "Jul", value: 4.9 },
+    { month: "Aug", value: 5.8 },
+    { month: "Sep", value: 5.2 },
+    { month: "Oct", value: 6.4 },
+    { month: "Nov", value: 5.9 },
+    { month: "Dec", value: 6.8 },
+  ];
+  const earningsData = [
+    { month: "Jan", value: 4.1 },
+    { month: "Feb", value: 4.3 },
+    { month: "Mar", value: 4.8 },
+    { month: "Apr", value: 4.7 },
+    { month: "May", value: 5.2 },
+    { month: "Jun", value: 5.0 },
+    { month: "Jul", value: 5.6 },
+    { month: "Aug", value: 5.9 },
+    { month: "Sep", value: 6.2 },
+    { month: "Oct", value: 6.0 },
+    { month: "Nov", value: 6.4 },
+    { month: "Dec", value: 6.8 },
+  ];
+  const breakupData = [
+    { name: "Earnings", value: 36358 },
+    { name: "Profit", value: 6820 },
+  ];
+
   return [
-    {
-      type: "breadcrumbBar",
-      props: {
-        items: [
-          { id: "overview-breadcrumb-1", label: "后台系统" },
-          { id: "overview-breadcrumb-2", label: "工作台" },
-          { id: "overview-breadcrumb-3", label: "总览" },
-        ],
-        separator: "/",
-      },
-    },
-    {
-      type: "pageHeader",
-      props: {
-        title: "业务总览",
-        subtitle: "用于快速查看项目、权限、服务状态和关键指标。",
-        tagsText: "后台,总览,工作台",
-        extraText: "最近更新时间: 今天 18:00",
-      },
-    },
-    createPlainTwoColumn(
-      [
-        {
-          type: "statCard",
-          props: {
-            title: "活跃项目",
-            value: "128",
-            trendText: "较昨日 +9",
-            trendDirection: "up",
-            description: "本周新增 14 个项目进入开发态",
-          },
-        },
-      ],
-      [
-        {
-          type: "statCard",
-          props: {
-            title: "在线用户",
-            value: "2,184",
-            trendText: "较昨日 +12.5%",
-            trendDirection: "up",
-            description: "活跃时段集中在 09:00 - 17:00",
-          },
-        },
-      ],
+    place(
       {
-        leftWidth: 420,
-        gap: 16,
-        minHeight: 160,
-      },
-    ),
-    createPlainTwoColumn(
-      [
-        {
-          type: "statCard",
-          props: {
-            title: "待审批工单",
-            value: "23",
-            trendText: "较昨日 -4",
-            trendDirection: "down",
-            description: "建议优先处理高风险权限申请",
-          },
+        type: "breadcrumbBar",
+        props: {
+          items: [
+            { id: "overview-breadcrumb-1", label: "Home" },
+            { id: "overview-breadcrumb-2", label: "Dashboard" },
+          ],
+          separator: "/",
         },
-      ],
-      [
-        {
-          type: "statCard",
-          props: {
-            title: "发布成功率",
-            value: "99.2",
-            suffix: "%",
-            trendText: "保持稳定",
-            trendDirection: "flat",
-            description: "近 30 天发布任务整体表现稳定",
-          },
-        },
-      ],
-      {
-        leftWidth: 420,
-        gap: 16,
-        minHeight: 160,
       },
+      { left: 0, top: 0, width: "100%", height: 48 },
     ),
+    place(createText("Dashboard", "xl"), {
+      left: 0,
+      top: 58,
+      width: 320,
+      height: 40,
+    }),
     {
-      type: "cardGrid",
-      props: {
-        columns: 3,
-        items: [
-          {
-            id: "overview-grid-1",
-            title: "项目健康度",
-            subtitle: "稳定运行中的项目",
-            value: "96%",
-            extra: "核心项目本周无阻塞问题",
-          },
-          {
-            id: "overview-grid-2",
-            title: "权限审计",
-            subtitle: "本周审计完成率",
-            value: "82%",
-            extra: "剩余 6 项待复核",
-          },
-          {
-            id: "overview-grid-3",
-            title: "系统告警",
-            subtitle: "未恢复告警数",
-            value: "4",
-            extra: "均为低优先级告警",
-          },
+      ...createPlainTwoColumn(
+        [
+          place(
+            createPlainContainer(
+              [
+                place(
+                  {
+                    type: "barChart",
+                    props: {
+                      title: "Revenue report",
+                      dataText: JSON.stringify(revenueData, null, 2),
+                      optionText: JSON.stringify(
+                        {
+                          grid: {
+                            left: 44,
+                            right: 18,
+                            top: 56,
+                            bottom: 30,
+                            containLabel: true,
+                          },
+                          yAxis: { splitLine: { lineStyle: { color: "#eef2f7" } } },
+                        },
+                        null,
+                        2,
+                      ),
+                      xAxisKey: "month",
+                      yAxisKey: "value",
+                      nameKey: "month",
+                      valueKey: "value",
+                      color: "#2563eb",
+                    },
+                  },
+                  { left: 0, top: 0, width: "100%", height: "100%" },
+                ),
+              ],
+              {
+                backgroundColor: "#ffffff",
+                borderColor: "#e2e8f0",
+                borderRadius: 18,
+                padding: 8,
+                minHeight: 320,
+              },
+            ),
+            { left: 0, top: 0, width: "100%", height: "100%" },
+          ),
         ],
-      },
+        [
+          place(
+            createPlainContainer(
+              [
+                place(
+                  {
+                    type: "pieChart",
+                    props: {
+                      title: "Yearly breakup",
+                      dataText: JSON.stringify(breakupData, null, 2),
+                      optionText: JSON.stringify(
+                        {
+                          legend: { bottom: 8 },
+                          series: [
+                            {
+                              radius: ["54%", "78%"],
+                              label: { show: false },
+                            },
+                          ],
+                        },
+                        null,
+                        2,
+                      ),
+                      xAxisKey: "name",
+                      yAxisKey: "value",
+                      nameKey: "name",
+                      valueKey: "value",
+                      color: "#2563eb",
+                    },
+                  },
+                  { left: 0, top: 0, width: "100%", height: 160 },
+                ),
+                place(
+                  {
+                    type: "lineChart",
+                    props: {
+                      title: "Monthly earnings",
+                      dataText: JSON.stringify(earningsData, null, 2),
+                      optionText: JSON.stringify(
+                        {
+                          grid: {
+                            left: 44,
+                            right: 18,
+                            top: 50,
+                            bottom: 26,
+                            containLabel: true,
+                          },
+                          yAxis: { splitLine: { lineStyle: { color: "#eef2f7" } } },
+                        },
+                        null,
+                        2,
+                      ),
+                      xAxisKey: "month",
+                      yAxisKey: "value",
+                      nameKey: "month",
+                      valueKey: "value",
+                      color: "#3b82f6",
+                    },
+                  },
+                  { left: 0, top: 176, width: "100%", height: 150 },
+                ),
+              ],
+              {
+                backgroundColor: "#ffffff",
+                borderColor: "#e2e8f0",
+                borderRadius: 18,
+                padding: 8,
+                minHeight: 320,
+              },
+            ),
+            { left: 0, top: 0, width: "100%", height: "100%" },
+          ),
+        ],
+        {
+          leftWidth: 680,
+          gap: 16,
+          minHeight: 320,
+          styles: {
+            left: "0px",
+            top: "104px",
+            width: "100%",
+            height: "340px",
+          },
+        },
+      ),
     },
-    {
-      type: "dataTable",
-      props: {
-        title: "近期项目动态",
-        size: "middle",
-        bordered: true,
-        pagination: true,
-        pageSize: 5,
-        emptyText: "暂无动态",
-        columnsText: JSON.stringify(
-          [
-            { title: "项目名称", dataIndex: "name" },
-            { title: "负责人", dataIndex: "owner" },
-            { title: "状态", dataIndex: "status" },
-            { title: "更新时间", dataIndex: "updatedAt" },
-          ],
-          null,
-          2,
-        ),
-        dataText: JSON.stringify(
-          [
+    place(
+      {
+        type: "cardGrid",
+        props: {
+          columns: 4,
+          items: [
             {
-              key: "overview-row-1",
-              name: "Workspace Console",
-              owner: "Mike He",
-              status: "运行中",
-              updatedAt: "2026-04-12 18:00",
+              id: "overview-stat-1",
+              title: "Open invoices",
+              subtitle: "Total",
+              value: "$35,548",
+              extra: "+1.4% since last month",
             },
             {
-              key: "overview-row-2",
-              name: "Permission Center",
-              owner: "Anna",
-              status: "待审核",
-              updatedAt: "2026-04-12 16:20",
+              id: "overview-stat-2",
+              title: "Ongoing project",
+              subtitle: "Active",
+              value: "15",
+              extra: "+2.5% since last month",
             },
             {
-              key: "overview-row-3",
-              name: "Release Pipeline",
-              owner: "Chris",
-              status: "已发布",
-              updatedAt: "2026-04-12 15:42",
+              id: "overview-stat-3",
+              title: "Employees",
+              subtitle: "Current",
+              value: "25",
+              extra: "+2.3% since last month",
+            },
+            {
+              id: "overview-stat-4",
+              title: "New profit",
+              subtitle: "Monthly",
+              value: "27%",
+              extra: "+4.5% since last month",
             },
           ],
-          null,
-          2,
-        ),
+        },
       },
+      { left: 0, top: 462, width: "100%", height: 140 },
+    ),
+    {
+      ...createPlainTwoColumn(
+        [
+          place(
+            createPlainContainer(
+              [
+                place(
+                  {
+                    type: "image",
+                    props: {
+                      id: "world-map",
+                      name: "Revenue by location",
+                      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1280px-World_map_-_low_resolution.svg.png",
+                      height: 240,
+                      fit: "contain",
+                      handleClicked: "none",
+                      link: "",
+                    },
+                  },
+                  { left: 0, top: 0, width: "100%", height: "100%" },
+                ),
+              ],
+              {
+                backgroundColor: "#ffffff",
+                borderColor: "#e2e8f0",
+                borderRadius: 18,
+                padding: 12,
+                minHeight: 240,
+              },
+            ),
+            { left: 0, top: 0, width: "100%", height: "100%" },
+          ),
+        ],
+        [
+          place(
+            createPlainContainer(
+              [
+                place(
+                  {
+                    type: "dataTable",
+                    props: {
+                      title: "Revenue by top regions",
+                      size: "small",
+                      bordered: true,
+                      pagination: false,
+                      pageSize: 8,
+                      emptyText: "暂无数据",
+                      columnsText: JSON.stringify(
+                        [
+                          { title: "Top region", dataIndex: "region" },
+                          { title: "Revenue", dataIndex: "revenue" },
+                        ],
+                        null,
+                        2,
+                      ),
+                      dataText: JSON.stringify(
+                        [
+                          { key: "region-1", region: "Japan", revenue: "$4,748,454" },
+                          { key: "region-2", region: "United Kingdom", revenue: "$405,748" },
+                          { key: "region-3", region: "United States", revenue: "$1,280,240" },
+                          { key: "region-4", region: "France", revenue: "$338,550" },
+                        ],
+                        null,
+                        2,
+                      ),
+                    },
+                  },
+                  { left: 0, top: 0, width: "100%", height: "100%" },
+                ),
+              ],
+              {
+                backgroundColor: "#ffffff",
+                borderColor: "#e2e8f0",
+                borderRadius: 18,
+                padding: 0,
+                minHeight: 240,
+              },
+            ),
+            { left: 0, top: 0, width: "100%", height: "100%" },
+          ),
+        ],
+        {
+          leftWidth: 640,
+          gap: 16,
+          minHeight: 240,
+          styles: {
+            left: "0px",
+            top: "624px",
+            width: "100%",
+            height: "252px",
+          },
+        },
+      ),
     },
   ];
 }
@@ -718,30 +969,60 @@ function createShellPage(
   sectionHint: string,
   content: TemplateComponent[],
 ): TemplatePagePreset {
+  const topBarHeight = 64;
+
   return {
     name,
     path,
     components: [
       createPlainTwoColumn(
-        [createSidebar(path)],
         [
-          createPlainContainer(
-            [
-              createTopBar(name, sectionHint),
-              createPlainContainer(content, {
+          place(createSidebar(path), {
+            left: 0,
+            top: 0,
+            width: "100%",
+            height: "100%",
+          }),
+        ],
+        [
+          place(
+            createPlainContainer(
+              [
+                place(createTopBar(name, sectionHint), {
+                  left: 0,
+                  top: 0,
+                  width: "100%",
+                  height: topBarHeight,
+                }),
+                place(
+                  createPlainContainer(content, {
+                    backgroundColor: "#f1f5f9",
+                    borderColor: "transparent",
+                    borderRadius: 0,
+                    padding: 24,
+                    minHeight: CANVAS_HEIGHT - topBarHeight,
+                  }),
+                  {
+                    left: 0,
+                    top: topBarHeight,
+                    width: "100%",
+                    height: CANVAS_HEIGHT - topBarHeight,
+                  },
+                ),
+              ],
+              {
                 backgroundColor: "transparent",
                 borderColor: "transparent",
                 borderRadius: 0,
                 padding: 0,
-                minHeight: 680,
-              }),
-            ],
+                minHeight: CANVAS_HEIGHT,
+              },
+            ),
             {
-              backgroundColor: "transparent",
-              borderColor: "transparent",
-              borderRadius: 0,
-              padding: 0,
-              minHeight: 836,
+              left: 0,
+              top: 0,
+              width: "100%",
+              height: "100%",
             },
           ),
         ],
