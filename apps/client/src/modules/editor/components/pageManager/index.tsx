@@ -102,21 +102,35 @@ const EditorPageManager =  observer(function ({
               </div>
               <div className="space-y-2">
                 <Input
-                  value={activePage.name}
-                  onChange={(event) =>
+                  key={`${activePage.id}-${activePage.name}-embedded-name`}
+                  defaultValue={activePage.name}
+                  onBlur={(event) =>
                     updateEditorPageMeta(activePage.id, {
                       name: event.target.value,
                     })
                   }
+                  onPressEnter={(event) => {
+                    updateEditorPageMeta(activePage.id, {
+                      name: event.currentTarget.value,
+                    });
+                    event.currentTarget.blur();
+                  }}
                   placeholder="页面名称"
                 />
                 <Input
-                  value={activePage.path}
-                  onChange={(event) =>
+                  key={`${activePage.id}-${activePage.path}-embedded-path`}
+                  defaultValue={activePage.path}
+                  onBlur={(event) =>
                     updateEditorPageMeta(activePage.id, {
                       path: event.target.value,
                     })
                   }
+                  onPressEnter={(event) => {
+                    updateEditorPageMeta(activePage.id, {
+                      path: event.currentTarget.value,
+                    });
+                    event.currentTarget.blur();
+                  }}
                   placeholder="跳转路径标识"
                 />
               </div>
@@ -212,21 +226,35 @@ const EditorPageManager =  observer(function ({
           </div>
           <div className="space-y-2.5">
             <Input
-              value={activePage.name}
-              onChange={(event) =>
+              key={`${activePage.id}-${activePage.name}-name`}
+              defaultValue={activePage.name}
+              onBlur={(event) =>
                 updateEditorPageMeta(activePage.id, {
                   name: event.target.value,
                 })
               }
+              onPressEnter={(event) => {
+                updateEditorPageMeta(activePage.id, {
+                  name: event.currentTarget.value,
+                });
+                event.currentTarget.blur();
+              }}
               placeholder="页面名称"
             />
             <Input
-              value={activePage.path}
-              onChange={(event) =>
+              key={`${activePage.id}-${activePage.path}-path`}
+              defaultValue={activePage.path}
+              onBlur={(event) =>
                 updateEditorPageMeta(activePage.id, {
                   path: event.target.value,
                 })
               }
+              onPressEnter={(event) => {
+                updateEditorPageMeta(activePage.id, {
+                  path: event.currentTarget.value,
+                });
+                event.currentTarget.blur();
+              }}
               placeholder="跳转路径标识"
             />
           </div>

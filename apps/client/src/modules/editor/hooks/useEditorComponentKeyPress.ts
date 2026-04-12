@@ -32,8 +32,12 @@ export function useEditorComponentKeyPress() {
    * 校验当前是否存在选中组件。
    */
   function validateComponent() {
-    const isCompExist = getCurrentComponentConfig.get() !== null;
     const isActive = canTriggerShortcut();
+    const isCompExist = getCurrentComponentConfig.get() !== null;
+
+    if (!isActive) {
+      return false;
+    }
 
     if (!isCompExist) {
       message.warning("请先选择组件");
