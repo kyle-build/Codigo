@@ -1,9 +1,11 @@
+import { getComponentByType } from "@codigo/materials";
 import {
-  getComponentByType,
   groupChildrenBySlot,
   type ComponentNode,
+  type IEditorPageSchema,
   type IPageSchema,
-} from "@codigo/materials";
+} from "@codigo/schema";
+import type { ReactElement } from "react";
 import { useMemo } from "react";
 
 const interactiveComponentTypes = new Set([
@@ -18,8 +20,8 @@ const interactiveComponentTypes = new Set([
  */
 function resolveActiveNodes(schema: IPageSchema) {
   if (Array.isArray(schema.pages) && schema.pages.length > 0) {
-    const activePage =
-      schema.pages.find((page) => page.id === schema.activePageId) ??
+    const activePage: IEditorPageSchema | undefined =
+      schema.pages.find((page: IEditorPageSchema) => page.id === schema.activePageId) ??
       schema.pages[0];
     return activePage?.components ?? [];
   }
@@ -32,15 +34,15 @@ function resolveActiveNodes(schema: IPageSchema) {
  */
 function resolveSlots(
   node: ComponentNode,
-  renderNode: (childNode: ComponentNode) => JSX.Element | null,
+  renderNode: (childNode: ComponentNode) => ReactElement | null,
 ) {
   const groupedSlots = groupChildrenBySlot(node);
   return Object.fromEntries(
     Object.entries(groupedSlots).map(([slotName, children]) => [
       slotName,
-      children
-        .map((childNode) => renderNode(childNode))
-        .filter((childNode): childNode is JSX.Element => childNode != null),
+      (children as ComponentNode[])
+        .map((childNode: ComponentNode) => renderNode(childNode))
+        .filter((childNode): childNode is ReactElement => childNode != null),
     ]),
   );
 }
@@ -48,7 +50,7 @@ function resolveSlots(
 /**
  * 渲染单个 schema 节点，并把子节点按 slot 透传给运行时物料。
  */
-function renderSchemaNode(node: ComponentNode): JSX.Element | null {
+function renderSchemaNode(node: ComponentNode): ReactElement | null {
   const MaterialComponent = getComponentByType(node.type);
   if (!MaterialComponent) {
     return null;
@@ -85,8 +87,7 @@ export function SchemaRenderer({ schema }: { schema: IPageSchema }) {
 
   return (
     <div className="relative min-h-screen w-full bg-white">
-      {nodes.map((node) => renderSchemaNode(node))}
+      {nodes.map((node: ComponentNode) => renderSchemaNode(node))}
     </div>
   );
 }
-

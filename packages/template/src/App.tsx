@@ -1,4 +1,4 @@
-import type { IPageSchema } from "@codigo/materials";
+import type { IPageSchema } from "@codigo/schema";
 import schema from "./schema.json";
 import { SchemaRenderer } from "./runtime/SchemaRenderer";
 
