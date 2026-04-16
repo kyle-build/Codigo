@@ -1,61 +1,64 @@
-import { ArrowLeftOutlined, LoginOutlined, RocketOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import type { MenuProps } from "antd";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { HomeUserEntry } from "@/modules/home/components/layout/HomeUserEntry";
 
 interface AppManagementPageProps {
+  avatarUrl?: string;
   children: ReactNode;
-  footer: ReactNode;
-  hero: ReactNode;
   isLoggedIn: boolean;
+  openLogin: () => void;
+  userMenuItems: MenuProps["items"];
+  username?: string;
 }
 
 function AppManagementPage({
+  avatarUrl,
   children,
-  footer,
-  hero,
   isLoggedIn,
+  openLogin,
+  userMenuItems,
+  username,
 }: AppManagementPageProps) {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#F8FAFC] font-sans text-slate-900">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:32px_32px]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.12),transparent_36%)]" />
-
-      <main className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-8">
-        <section className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-[28px] border border-slate-200/80 bg-white/80 px-5 py-4 shadow-[0_24px_80px_-56px_rgba(15,23,42,0.45)] backdrop-blur-xl">
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-600">
-              Codigo Studio
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-slate-50 font-sans text-slate-900">
+      <header className="z-20 h-12 shrink-0 border-b border-slate-200 bg-white/95 backdrop-blur-md">
+        <div className="flex h-full w-full items-center justify-between px-4">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded bg-emerald-500 font-mono text-sm font-bold text-white shadow-sm shadow-emerald-500/20">
+                C
+              </div>
+              <span className="font-mono text-sm font-semibold tracking-wider text-slate-900">
+                Codigo
+              </span>
             </div>
-            <div className="mt-2 text-xl font-semibold text-slate-900">
-              应用管理
-            </div>
-            <div className="mt-1 text-sm text-slate-500">
-              独立页面入口，管理草稿、发布、模板与版本。
-            </div>
+            <span className="text-xs font-medium text-slate-400">/</span>
+            <span className="text-sm font-medium text-slate-600">应用管理</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-3">
             <Link to="/">
-              <Button icon={<ArrowLeftOutlined />}>返回首页</Button>
-            </Link>
-            <Link to={isLoggedIn ? "/editor" : "/login"}>
-              <Button
-                icon={isLoggedIn ? <RocketOutlined /> : <LoginOutlined />}
-                type="primary"
-              >
-                {isLoggedIn ? "进入编辑器" : "立即登录"}
+              <Button size="small" icon={<ArrowLeftOutlined />}>
+                返回
               </Button>
             </Link>
+            <HomeUserEntry
+              avatarUrl={avatarUrl}
+              isLoggedIn={isLoggedIn}
+              openLogin={openLogin}
+              userMenuItems={userMenuItems}
+              username={username}
+            />
           </div>
-        </section>
+        </div>
+      </header>
 
-        <section className="overflow-hidden rounded-[32px] border border-slate-200/80 bg-white/80 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)] backdrop-blur-xl">
-          {hero}
-          {children}
-          {footer}
-        </section>
-      </main>
+      <div className="flex flex-1 overflow-hidden">
+        {children}
+      </div>
     </div>
   );
 }

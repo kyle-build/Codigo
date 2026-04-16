@@ -16,24 +16,24 @@ function AppCard({
   title,
 }: AppCardProps) {
   return (
-    <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
-      <div className="flex min-h-[156px] flex-col justify-between gap-5">
+    <article className="rounded-lg border border-slate-200/80 bg-white p-4">
+      <div className="flex flex-col justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-          <p className="mt-3 text-sm leading-6 text-slate-500">{desc}</p>
+          <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+          <p className="mt-1 text-xs leading-5 text-slate-500">{desc}</p>
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap gap-2">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-1.5">
             {meta.map((item) => (
               <span
                 key={item}
-                className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500"
+                className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500"
               >
                 {item}
               </span>
             ))}
           </div>
-          <Button type="primary" onClick={onAction}>
+          <Button size="small" type="primary" onClick={onAction}>
             {actionText}
           </Button>
         </div>

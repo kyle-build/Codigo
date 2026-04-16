@@ -12,6 +12,7 @@ import AppManagementSectionContent from "./components/sections/AppManagementSect
 const AppManagement = observer(() => {
   const navigate = useNavigate();
   const {
+    avatarUrl,
     currentTab,
     handleOpenPublishedPage,
     handleOpenTemplatePreview,
@@ -22,12 +23,15 @@ const AppManagement = observer(() => {
     localDraftMeta,
     myPageData,
     myPageLoading,
+    openLogin,
     previewLoading,
     previewState,
     publicLoading,
     publicPages,
     setPreviewState,
     templates,
+    userMenuItems,
+    username,
   } = useAppManagementController();
   const { metrics, navigationItems } = useAppManagementViewModel({
     isLoggedIn,
@@ -41,12 +45,16 @@ const AppManagement = observer(() => {
   return (
     <>
       <AppManagementPage
-        footer={<AppManagementFootnote />}
-        hero={<AppManagementHero isLoggedIn={isLoggedIn} metrics={metrics} />}
+        avatarUrl={avatarUrl}
         isLoggedIn={isLoggedIn}
+        openLogin={openLogin}
+        userMenuItems={userMenuItems}
+        username={username}
       >
         <AppManagementWorkspace
           currentTab={currentTab}
+          footer={<AppManagementFootnote />}
+          hero={<AppManagementHero isLoggedIn={isLoggedIn} metrics={metrics} />}
           items={navigationItems}
           onChange={handleTabChange}
         >

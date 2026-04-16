@@ -16,20 +16,20 @@ export const HomeHeader = observer(() => {
   } = useHomeNavigation();
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md">
-      <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6">
-        <div className="flex items-center gap-12">
+    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
+      <div className="mx-auto flex h-12 w-full items-center justify-between px-4">
+        <div className="flex items-center gap-8">
           <button
-            className="group flex items-center gap-2 text-left text-xl font-bold tracking-tight text-slate-900"
+            className="group flex items-center gap-2 text-left text-base font-semibold tracking-tight text-slate-900"
             onClick={openHome}
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-emerald-500 font-mono text-lg font-bold text-white shadow-lg shadow-emerald-500/30">
+            <div className="flex h-7 w-7 items-center justify-center rounded bg-emerald-500 font-mono text-sm font-bold text-white shadow-sm shadow-emerald-500/20">
               C
             </div>
             <span className="font-mono tracking-wider">Codigo</span>
           </button>
 
-          <ul className="hidden items-center gap-8 text-sm font-medium text-slate-500 lg:flex">
+          <ul className="hidden items-center gap-6 text-sm font-medium text-slate-500 lg:flex">
             {navigationItems.map((item) => (
               <li key={item.label}>
                 <button

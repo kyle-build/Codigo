@@ -85,53 +85,52 @@ function PublishedSection({
   }
 
   return (
-    <div className="grid gap-5 md:grid-cols-2">
+    <div className="grid gap-3 md:grid-cols-2">
       {publicPages.map((page) => (
         <article
           key={page.id}
-          className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+          className="rounded-lg border border-slate-200/80 bg-white p-3"
         >
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <h3 className="truncate text-lg font-semibold text-slate-900">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <h3 className="truncate text-sm font-semibold text-slate-900">
                 {page.page_name}
               </h3>
-              <p className="mt-3 text-sm leading-6 text-slate-500">
+              <p className="mt-1 text-xs leading-4 text-slate-500">
                 {page.desc || "该页面已完成发布，可供访客查看页面内容。"}
               </p>
             </div>
             <Avatar
-              className={!page.owner_head_img ? "bg-emerald-500" : ""}
+              className="mt-0.5 flex-shrink-0"
               icon={!page.owner_head_img && <UserOutlined />}
+              size="small"
               src={page.owner_head_img || undefined}
             />
           </div>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
-              开发者 {page.owner_name}
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500">
+              {page.owner_name}
             </span>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
-              版本 {page.version_count} 个
-            </span>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
-              最新 v{page.latest_version}
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500">
+              v{page.latest_version}
             </span>
           </div>
-          <div className="mt-6 flex justify-end">
+          <div className="mt-2 flex justify-end">
             <Button
               icon={<EyeOutlined />}
+              size="small"
               type="primary"
               onClick={() =>
                 onPreview(
                   page.id,
                   page.page_name,
                   page.latest_published_at
-                    ? `最近发布 ${dayjs(page.latest_published_at).format("YYYY-MM-DD HH:mm")}`
+                    ? `发布于 ${dayjs(page.latest_published_at).format("YYYY-MM-DD")}`
                     : `开发者 ${page.owner_name}`,
                 )
               }
             >
-              查看内容
+              查看
             </Button>
           </div>
         </article>

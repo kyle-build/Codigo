@@ -37,20 +37,22 @@ function HistorySection({
       renderItem={(item) => (
         <List.Item
           actions={[
-            <Button key={item.id} type="link" onClick={() => onPreview(item)}>
-              查看版本内容
+            <Button key={item.id} size="small" type="link" onClick={() => onPreview(item)}>
+              查看
             </Button>,
           ]}
+          className="hover:bg-slate-50"
         >
           <List.Item.Meta
             avatar={
               <Avatar
                 className="bg-emerald-500/90"
                 icon={<HistoryOutlined />}
+                size="small"
               />
             }
-            description={`${item.desc || "历史发布版本"} · ${dayjs(item.created_at).format("YYYY-MM-DD HH:mm")}`}
-            title={`版本 v${item.version}`}
+            description={`${item.desc || "历史版本"} · ${dayjs(item.created_at).format("YYYY-MM-DD HH:mm")}`}
+            title={<span className="text-sm">v{item.version}</span>}
           />
         </List.Item>
       )}

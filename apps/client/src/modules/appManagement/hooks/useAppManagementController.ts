@@ -1,6 +1,9 @@
+import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { useMemo, useState } from "react";
 import { useRequest } from "ahooks";
 import { message } from "antd";
+import type { MenuProps } from "antd";
+import { createElement } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useStoreAuth } from "@/shared/hooks";
 import {
@@ -25,9 +28,32 @@ import { fetchTemplateDetail, fetchTemplateList } from "@/modules/templateCenter
 export function useAppManagementController() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { store: storeAuth } = useStoreAuth();
+  const { isLogin, logout, store: storeAuth } = useStoreAuth();
   const [previewState, setPreviewState] = useState<PreviewState | null>(null);
   const isLoggedIn = Boolean(storeAuth.token);
+
+  const userMenuItems = useMemo<MenuProps["items"]>(
+    () => [
+      {
+        key: "profile",
+        icon: createElement(UserOutlined),
+        label: "个人中心",
+        onClick: () => navigate("/profile"),
+      },
+      {
+        key: "logout",
+        icon: createElement(LogoutOutlined),
+        label: "退出登录",
+        onClick: () => {
+          logout();
+          navigate("/login");
+        },
+      },
+    ],
+    [logout, navigate],
+  );
+
+  const openLogin = () => navigate("/login");
 
   const { data: templates = [], loading: templatesLoading } = useRequest(
     fetchTemplateList,
@@ -114,16 +140,18 @@ export function useAppManagementController() {
 
   return {
     availableTabs,
+    avatarUrl: storeAuth.details?.head_img,
     currentTab,
     handleOpenPublishedPage,
     handleOpenTemplatePreview,
     handleOpenVersion,
     handleTabChange,
     handleUseTemplate,
-    isLoggedIn,
+    isLoggedIn: isLogin.get(),
     localDraftMeta,
     myPageData,
     myPageLoading,
+    openLogin,
     previewLoading,
     previewState,
     publicLoading,
@@ -131,5 +159,7 @@ export function useAppManagementController() {
     setPreviewState,
     templates,
     templatesLoading,
+    userMenuItems,
+    username: storeAuth.details?.username,
   };
 }

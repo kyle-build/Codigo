@@ -8,6 +8,8 @@ import AppManagementSidebar from "../navigation/AppManagementSidebar";
 interface AppManagementWorkspaceProps {
   children: ReactNode;
   currentTab: AppManagementTab;
+  footer: ReactNode;
+  hero: ReactNode;
   items: AppManagementNavItem[];
   onChange: (tab: AppManagementTab) => void;
 }
@@ -15,43 +17,44 @@ interface AppManagementWorkspaceProps {
 function AppManagementWorkspace({
   children,
   currentTab,
+  footer,
+  hero,
   items,
   onChange,
 }: AppManagementWorkspaceProps) {
   const currentItem = items.find((item) => item.key === currentTab) ?? items[0];
 
   return (
-    <section className="flex w-full gap-6 px-6 pb-8 pt-6">
+    <section className="flex flex-1 overflow-hidden">
       <AppManagementSidebar
         currentTab={currentTab}
         items={items}
         onChange={onChange}
       />
 
-      <section className="min-w-0 flex-1">
-        <section
-          className="overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/75 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)] backdrop-blur-xl"
-          id="app-management"
-        >
-          <div className="p-4 md:p-8">
-            <div className="mx-auto flex min-h-[520px] w-full max-w-5xl flex-col rounded-[28px] border border-slate-200/80 bg-white/92 p-5 shadow-[0_30px_80px_-52px_rgba(15,23,42,0.55)] backdrop-blur-xl md:p-6">
-              <div className="border-b border-slate-200/80 pb-4">
-                <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">
-                  {currentItem.label}
-                </span>
-                <h2 className="mt-4 text-2xl font-semibold text-slate-900">
-                  {currentItem.title}
-                </h2>
-                <p className="mt-3 text-sm leading-7 text-slate-500">
-                  {currentItem.description}
-                </p>
-              </div>
+      <main className="flex-1 overflow-y-auto bg-slate-50">
+        <div className="mx-auto flex min-h-full max-w-5xl flex-col p-6">
+          <div className="shrink-0">{hero}</div>
 
-              <div className="mt-6 flex-1">{children}</div>
+          <section className="flex-1 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="mb-6 border-b border-slate-100 pb-4">
+              <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500">
+                {currentItem.label}
+              </span>
+              <h2 className="mt-2 text-xl font-semibold text-slate-900">
+                {currentItem.title}
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                {currentItem.description}
+              </p>
             </div>
-          </div>
-        </section>
-      </section>
+
+            <div className="flex-1">{children}</div>
+          </section>
+
+          <div className="mt-auto shrink-0">{footer}</div>
+        </div>
+      </main>
     </section>
   );
 }
