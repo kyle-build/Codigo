@@ -45,6 +45,7 @@ const eventLabelMap: Record<string, string> = {
   redo: "重做操作",
   save_draft: "保存草稿",
   publish: "发布页面",
+  publish_template: "发布模板",
   ai_replace: "AI替换组件",
   sandbox_sync: "沙箱同步画布",
   sandbox_bundle: "沙箱编译更新",
