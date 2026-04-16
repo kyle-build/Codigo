@@ -2,8 +2,7 @@ import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 import { storeAuth } from "../hooks/useStoreAuth";
 import { message } from "antd";
-import.meta.env.VITE_BASE_URL;
-export const BASE_URL = import.meta.env.VITE_BASE_URL;
+export const BASE_URL = import.meta.env.VITE_BASE_URL || "";
 const request = axios.create({ baseURL: BASE_URL + "/api" });
 
 // 请求拦截器

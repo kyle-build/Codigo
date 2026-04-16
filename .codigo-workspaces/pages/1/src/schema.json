@@ -1,0 +1,229 @@
+{
+  "version": 3,
+  "components": [
+    {
+      "id": "tpl_1775378546810_0_zujow",
+      "type": "breadcrumbBar",
+      "props": {
+        "items": [
+          {
+            "id": "blank-breadcrumb-1",
+            "label": "后台"
+          },
+          {
+            "id": "blank-breadcrumb-2",
+            "label": "新建页面"
+          }
+        ],
+        "separator": "/"
+      },
+      "styles": {
+        "position": "absolute",
+        "width": "1234px",
+        "height": "40px",
+        "left": "32px",
+        "top": "24px"
+      },
+      "children": []
+    },
+    {
+      "id": "tpl_1775378546810_1_ojsd4",
+      "type": "pageHeader",
+      "props": {
+        "title": "新建后台页面",
+        "subtitle": "从后台模板开始搭建你的搜索页、总览页或数据列表页。",
+        "tagsText": "后台,空白模板",
+        "extraText": "先从左侧后台组件开始拖入画布"
+      },
+      "styles": {
+        "position": "absolute",
+        "width": "1252px",
+        "height": "123px",
+        "left": "26px",
+        "top": "74px"
+      },
+      "children": []
+    },
+    {
+      "id": "01KNF0V649Y27V2Z8AV41BNQAP",
+      "type": "queryFilter",
+      "props": {},
+      "styles": {
+        "position": "absolute",
+        "width": "694px",
+        "height": "177px",
+        "left": "13px",
+        "top": "236px"
+      },
+      "children": []
+    },
+    {
+      "id": "01KPBHGSWSEGXBBNDJBB6WBTZJ",
+      "type": "table",
+      "props": {},
+      "styles": {
+        "position": "absolute",
+        "left": "811px",
+        "top": "251px",
+        "width": "420px"
+      },
+      "children": []
+    },
+    {
+      "id": "01KPBHGWFEDNBKAXA1K5CN8E76",
+      "type": "barChart",
+      "props": {},
+      "styles": {
+        "position": "absolute",
+        "left": "23px",
+        "top": "437px",
+        "width": "320px",
+        "height": "300px"
+      },
+      "children": []
+    },
+    {
+      "id": "01KPBHGZV6XP94DHSGX1JYMN9Q",
+      "type": "pieChart",
+      "props": {},
+      "styles": {
+        "position": "absolute",
+        "left": "368px",
+        "top": "421px",
+        "width": "366px",
+        "height": "366px"
+      },
+      "children": []
+    },
+    {
+      "id": "01KPBHH48W2G4D8H11VZ3B4ETQ",
+      "type": "pieChart",
+      "props": {},
+      "styles": {
+        "position": "absolute",
+        "left": "908px",
+        "top": "574px",
+        "width": "320px",
+        "height": "300px"
+      },
+      "children": []
+    }
+  ],
+  "pages": [
+    {
+      "id": "01KNF0EC210TATR6XFYZCPKA5F",
+      "name": "页面 1",
+      "path": "home",
+      "components": [
+        {
+          "id": "tpl_1775378546810_0_zujow",
+          "type": "breadcrumbBar",
+          "props": {
+            "items": [
+              {
+                "id": "blank-breadcrumb-1",
+                "label": "后台"
+              },
+              {
+                "id": "blank-breadcrumb-2",
+                "label": "新建页面"
+              }
+            ],
+            "separator": "/"
+          },
+          "styles": {
+            "position": "absolute",
+            "width": "1234px",
+            "height": "40px",
+            "left": "32px",
+            "top": "24px"
+          },
+          "children": []
+        },
+        {
+          "id": "tpl_1775378546810_1_ojsd4",
+          "type": "pageHeader",
+          "props": {
+            "title": "新建后台页面",
+            "subtitle": "从后台模板开始搭建你的搜索页、总览页或数据列表页。",
+            "tagsText": "后台,空白模板",
+            "extraText": "先从左侧后台组件开始拖入画布"
+          },
+          "styles": {
+            "position": "absolute",
+            "width": "1252px",
+            "height": "123px",
+            "left": "26px",
+            "top": "74px"
+          },
+          "children": []
+        },
+        {
+          "id": "01KNF0V649Y27V2Z8AV41BNQAP",
+          "type": "queryFilter",
+          "props": {},
+          "styles": {
+            "position": "absolute",
+            "width": "694px",
+            "height": "177px",
+            "left": "13px",
+            "top": "236px"
+          },
+          "children": []
+        },
+        {
+          "id": "01KPBHGSWSEGXBBNDJBB6WBTZJ",
+          "type": "table",
+          "props": {},
+          "styles": {
+            "position": "absolute",
+            "left": "811px",
+            "top": "251px",
+            "width": "420px"
+          },
+          "children": []
+        },
+        {
+          "id": "01KPBHGWFEDNBKAXA1K5CN8E76",
+          "type": "barChart",
+          "props": {},
+          "styles": {
+            "position": "absolute",
+            "left": "23px",
+            "top": "437px",
+            "width": "320px",
+            "height": "300px"
+          },
+          "children": []
+        },
+        {
+          "id": "01KPBHGZV6XP94DHSGX1JYMN9Q",
+          "type": "pieChart",
+          "props": {},
+          "styles": {
+            "position": "absolute",
+            "left": "368px",
+            "top": "421px",
+            "width": "366px",
+            "height": "366px"
+          },
+          "children": []
+        },
+        {
+          "id": "01KPBHH48W2G4D8H11VZ3B4ETQ",
+          "type": "pieChart",
+          "props": {},
+          "styles": {
+            "position": "absolute",
+            "left": "908px",
+            "top": "574px",
+            "width": "320px",
+            "height": "300px"
+          },
+          "children": []
+        }
+      ]
+    }
+  ],
+  "activePageId": "01KNF0EC210TATR6XFYZCPKA5F"
+}

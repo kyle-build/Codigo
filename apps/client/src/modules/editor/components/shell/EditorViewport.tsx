@@ -14,6 +14,7 @@ import { EditorOutlineTree } from "../rightPanel/ComponentFields";
 import EditorCanvas from "../canvas";
 import { SandboxCanvas } from "../canvas/SandboxCanvas";
 import { useEditorPanelLayout } from "./useEditorPanelLayout";
+import { WebIDEFrame } from "./WebIDEFrame";
 import {
   LEFT_PANEL_CONTENT_WIDTH,
   LEFT_PANEL_RAIL_WIDTH,
@@ -327,6 +328,14 @@ export const EditorViewport = observer(function EditorViewport(
     shouldCenterWorkspaceRef.current = false;
     setIsWorkspacePanning(true);
     event.preventDefault();
+  }
+
+  if (props.storePage.editorMode === "webide") {
+    return (
+      <div className="h-full w-full overflow-hidden bg-[var(--ide-bg)]">
+        <WebIDEFrame workspaceRoot={props.storePage.workspace?.workspaceRoot} />
+      </div>
+    );
   }
 
   return (

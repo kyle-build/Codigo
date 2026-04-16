@@ -21,7 +21,7 @@
     "test": "turbo run test",
     "run:client": "pnpm --filter @codigo/client run dev",
     "run:admin": "pnpm --filter @codigo/admin run dev",
-    "run:opensumi-app": "pnpm --filter @codigo/opensumi-app run start",
+    "run:ide": "pnpm --filter @codigo/opensumi-app run start",
     "run:server": "pnpm --filter @codigo/server run start:dev",
     "run:release": "pnpm --filter @codigo/release run dev",
     "build:template": "turbo run build --filter=@codigo/template",

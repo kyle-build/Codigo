@@ -50,7 +50,10 @@ export const EditorModeButton = observer(function EditorModeButton() {
 
         if (payload.mode === "visual") {
           setEditorMode("visual");
-          message.success("已切换到画布编辑");
+          message.success("已切换到画布编辑，正在刷新数据…");
+          window.setTimeout(() => {
+            window.location.reload();
+          }, 200);
           return;
         }
 
@@ -79,12 +82,12 @@ export const EditorModeButton = observer(function EditorModeButton() {
       {store.editorMode === "webide" ? (
         <>
           <AppstoreOutlined />
-          画布编辑
+          画布
         </>
       ) : (
         <>
           <CodeOutlined />
-          IDE编辑
+          IDE
         </>
       )}
     </Button>
