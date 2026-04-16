@@ -1,10 +1,57 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
+
+:root {
+  /* VS Code / Trae Style Colors */
+  --ide-bg: #1e1e1e;
+  --ide-header-bg: #2d2d2d;
+  --ide-sidebar-bg: #252526;
+  --ide-activitybar-bg: #333333;
+  --ide-statusbar-bg: #007acc;
+  --ide-border: #3c3c3c;
+  --ide-text: #cccccc;
+  --ide-text-bright: #ffffff;
+  --ide-accent: #0e639c;
+  --ide-hover: #2a2d2e;
+  --ide-active: #37373d;
+  
+  /* Layout Variables */
+  --activity-bar-width: 48px;
+  --header-height: 35px;
+  --status-bar-height: 22px;
+}
 
 html,
 body,
 #root {
   height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
+
+/* Ant Design Override for IDE style */
+.ant-btn {
+  border-radius: 2px !important;
+}
+
+.ant-input {
+  border-radius: 2px !important;
+  background-color: #3c3c3c !important;
+  border-color: #3c3c3c !important;
+  color: #cccccc !important;
+}
+
+.ant-input:focus {
+  border-color: #0e639c !important;
+  box-shadow: none !important;
+}
+
 .ant-btn-primary {
-  background-color: #1a70f7;
+  background-color: #0e639c !important;
+  border-color: #0e639c !important;
+}
+
+.ant-tabs-nav::before {
+  border-bottom: 1px solid #3c3c3c !important;
 }

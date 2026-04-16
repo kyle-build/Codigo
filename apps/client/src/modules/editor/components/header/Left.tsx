@@ -21,7 +21,7 @@ export default function Left(props: { title: string }) {
 
   const publicProps = {
     className:
-      "cursor-pointer text-slate-400 hover:text-emerald-500 transition-colors",
+      "cursor-pointer text-[#858585] hover:text-[#cccccc] transition-colors",
     onClick: () => setIsEditState(!isEditState),
   };
 
@@ -32,10 +32,10 @@ export default function Left(props: { title: string }) {
           value={props.title}
           onChange={handleEdit}
           size="small"
-          className="w-52 !rounded-lg !border-slate-200 !bg-white !text-[13px] !text-slate-900 focus:!border-emerald-500"
+          className="w-52 !rounded-sm !border-[#3c3c3c] !bg-[#3c3c3c] !text-[13px] !text-[#cccccc] focus:!border-[#0e639c]"
         />
         <div
-          className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 transition-all hover:bg-emerald-500 hover:text-white cursor-pointer"
+          className="flex h-7 w-7 items-center justify-center rounded-sm bg-[#0e639c] text-white transition-all hover:bg-[#1177bb] cursor-pointer"
           onClick={() => setIsEditState(false)}
         >
           <CheckOutlined />
@@ -44,19 +44,19 @@ export default function Left(props: { title: string }) {
     );
   } else {
     return (
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-2">
         <button
-          className="flex h-8 w-8 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 shadow-[0_10px_24px_-18px_rgba(16,185,129,0.75)] transition-all hover:-translate-y-0.5 hover:bg-emerald-500 hover:text-white"
+          className="flex h-7 w-7 items-center justify-center rounded-sm bg-[#0e639c] text-white transition-all hover:bg-[#1177bb]"
           onClick={() => navigate("/")}
         >
-          <span className="font-mono text-sm font-bold">
+          <span className="font-mono text-xs font-bold">
             C
           </span>
         </button>
         <WorkspaceSwitcher />
-        <div className="min-w-0">
+        <div className="min-w-0 ml-1">
           <div className="flex items-center gap-2">
-            <h1 className="truncate text-sm font-semibold tracking-tight text-slate-900">
+            <h1 className="truncate text-xs font-medium tracking-tight text-[#cccccc]">
               {displayTitle}
             </h1>
             {!isFlowWorkspace && <EditOutlined {...publicProps} />}

@@ -34,29 +34,20 @@ const MOBILE_FRAME_SIZE = 24;
 
 function PanelResizeHandle({
   side,
-  lineClassName,
-  gripClassName,
   onPointerDown,
 }: {
   side: "left" | "right";
-  lineClassName: string;
-  gripClassName: string;
+  lineClassName?: string;
+  gripClassName?: string;
   onPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void;
 }) {
   return (
     <div
       role="separator"
-      aria-orientation="vertical"
-      aria-label={`调整${side === "left" ? "左侧" : "右侧"}边栏宽度`}
       onPointerDown={onPointerDown}
-      className="group relative z-30 w-2.5 shrink-0 cursor-col-resize bg-transparent touch-none"
+      className={`group relative z-30 w-1 shrink-0 cursor-col-resize bg-transparent touch-none hover:bg-[#0e639c] transition-colors`}
     >
-      <div
-        className={`absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-slate-200 transition-colors ${lineClassName}`}
-      />
-      <div
-        className={`absolute left-1/2 top-1/2 h-12 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-300/70 transition-all group-hover:h-16 ${gripClassName}`}
-      />
+      <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-[#3c3c3c]" />
     </div>
   );
 }
@@ -68,19 +59,18 @@ function EditorStage({
 }: EditorViewportProps) {
   if (storePage.editorMode === "code") {
     return (
-      <div className="relative z-0 h-full w-full overflow-hidden border border-slate-200/80 bg-white/95 shadow-[0_24px_60px_-38px_rgba(15,23,42,0.45)]">
+      <div className="relative z-0 h-full w-full overflow-hidden border border-[#3c3c3c] bg-[#1e1e1e]">
         <SandboxCanvas />
       </div>
     );
   }
 
-
   return (
     <div
-      className={`editor-canvas-container relative z-0 overflow-hidden bg-white text-left ring-1 ring-slate-900/5 transition-all duration-500 ease-out ${
+      className={`editor-canvas-container relative z-0 overflow-hidden bg-white text-left transition-all duration-300 ease-out shadow-lg ${
         storePage.deviceType === "mobile"
-          ? "border-[12px] border-slate-900 shadow-[0_30px_70px_-30px_rgba(15,23,42,0.45)]"
-          : "shadow-[0_28px_70px_-42px_rgba(15,23,42,0.45)] hover:shadow-[0_30px_80px_-42px_rgba(15,23,42,0.52)]"
+          ? "border-[12px] border-[#000000] rounded-[32px]"
+          : "border border-[#3c3c3c]"
       }`}
       style={{
         width: storePage.canvasWidth,
@@ -89,7 +79,7 @@ function EditorStage({
       }}
     >
       {storePage.deviceType === "mobile" && (
-        <div className="sticky top-0 z-50 flex h-7 items-center justify-between bg-slate-900 px-6 text-[11px] font-medium tracking-wider text-white select-none">
+        <div className="sticky top-0 z-50 flex h-7 items-center justify-between bg-black px-6 text-[11px] font-medium tracking-wider text-white select-none">
           <span>9:41</span>
           <div className="flex items-center gap-1.5">
             <div className="h-3.5 w-3.5 rounded-sm bg-white/90" />
@@ -140,15 +130,17 @@ export const EditorViewport = observer(function EditorViewport(
   }> = [
     {
       key: "pages",
-      icon: <FileTextOutlined className="text-base" />,
+      icon: <FileTextOutlined className="text-xl" />,
       label: "页面",
     },
     {
       key: "components",
-      icon: <AppstoreOutlined className="text-base" />,
+      icon: <AppstoreOutlined className="text-xl" />,
       label: "组件",
     },
   ];
+
+  // ... rest of logic (no changes to logic, just UI below)
   const stageFrameWidth =
     props.storePage.canvasWidth +
     (props.storePage.deviceType === "mobile" ? MOBILE_FRAME_SIZE : 0);
@@ -338,19 +330,14 @@ export const EditorViewport = observer(function EditorViewport(
   }
 
   return (
-    <div className="relative isolate flex h-full w-full overflow-hidden bg-[#F8FAFC]">
-      <div
-        className="relative z-20 flex shrink-0 overflow-hidden border-r border-slate-200/80 bg-white/88 text-[13px] shadow-[14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
-        style={{ width: effectiveLeftPanelWidth }}
-      >
+    <div className="relative isolate flex flex-col h-full w-full overflow-hidden bg-[#1e1e1e] text-[#cccccc]">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        {/* Activity Bar (Left Rail) */}
         <div
-          className="flex h-full shrink-0 flex-col border-r border-slate-200/80 bg-slate-50/75 px-2.5 py-3"
+          className="flex h-full shrink-0 flex-col items-center bg-[#333333] py-2 z-30"
           style={{ width: LEFT_PANEL_RAIL_WIDTH }}
         >
-          <div className="mb-3 px-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-            菜单
-          </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1 w-full">
             {leftSectionItems.map((item) => {
               const isActive = item.key === activeLeftSection;
 
@@ -359,66 +346,71 @@ export const EditorViewport = observer(function EditorViewport(
                   key={item.key}
                   type="button"
                   onClick={() => setActiveLeftSection(item.key)}
-                  className={`flex flex-col items-center gap-1.5 rounded-[18px] px-2 py-3 transition ${
+                  title={item.label}
+                  className={`relative flex h-12 w-full items-center justify-center transition-colors hover:text-white ${
                     isActive
-                      ? "bg-emerald-500 text-white shadow-[0_20px_36px_-26px_rgba(16,185,129,0.9)]"
-                      : "text-slate-500 hover:bg-white hover:text-slate-900"
+                      ? "text-white border-l-2 border-[#007acc]"
+                      : "text-[#858585]"
                   }`}
                 >
-                  <span
-                    className={`flex h-9 w-9 items-center justify-center rounded-2xl ${
-                      isActive ? "bg-white/15" : "bg-white text-emerald-600"
-                    }`}
-                  >
-                    {item.icon}
-                  </span>
-                  <span className="text-[11px] font-medium">{item.label}</span>
+                  {item.icon}
                 </button>
               );
             })}
           </div>
         </div>
 
+        {/* Side Bar (Panel) */}
         <div
-          className="min-h-0 shrink-0 px-3 py-3"
-          style={{ width: LEFT_PANEL_CONTENT_WIDTH }}
+          className="relative z-20 flex shrink-0 overflow-hidden border-r border-[#3c3c3c] bg-[#252526] transition-[width] duration-150"
+          style={{ width: effectiveLeftPanelWidth - LEFT_PANEL_RAIL_WIDTH }}
         >
-          {activeLeftSection === "pages" ? (
-            <EditorPageManager embedded />
-          ) : (
-            <EditorLeftPanel embedded />
+          <div
+            className="flex min-h-0 flex-1 flex-col"
+          >
+            <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">
+              {activeLeftSection === "pages" ? "资源管理器" : "组件库"}
+            </div>
+            <div className="flex-1 overflow-auto">
+              {activeLeftSection === "pages" ? (
+                <EditorPageManager embedded />
+              ) : (
+                <EditorLeftPanel embedded />
+              )}
+            </div>
+          </div>
+
+          {showOutlineTree && (
+            <div
+              className="min-h-0 shrink-0 border-l border-[#3c3c3c] bg-[#252526]"
+              style={{ width: outlinePanelWidth }}
+            >
+              <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">
+                大纲
+              </div>
+              <div className="flex-1 overflow-auto">
+                <EditorOutlineTree />
+              </div>
+            </div>
           )}
         </div>
 
         {showOutlineTree && (
-          <div
-            className="min-h-0 shrink-0 border-l border-slate-200/80 px-3 py-3"
-            style={{ width: outlinePanelWidth }}
-          >
-            <EditorOutlineTree />
-          </div>
+          <PanelResizeHandle
+            side="left"
+            onPointerDown={startResize("left")}
+          />
         )}
-      </div>
 
-      {showOutlineTree && (
-        <PanelResizeHandle
-          side="left"
-          lineClassName="group-hover:bg-emerald-400 group-active:bg-emerald-500"
-          gripClassName="group-hover:bg-emerald-400/80 group-active:bg-emerald-500"
-          onPointerDown={startResize("left")}
-        />
-      )}
-
-      <div className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:20px_20px] opacity-32 pointer-events-none" />
-        <div className="absolute left-8 top-12 h-36 w-36 rounded-full bg-emerald-400/10 blur-[96px] pointer-events-none" />
-        <div className="absolute bottom-8 right-12 h-44 w-44 rounded-full bg-sky-400/10 blur-[120px] pointer-events-none" />
-
-        <div className="relative z-0 flex-1 px-5 pb-5 pt-3">
-          <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-[26px] border border-white/70 bg-white/40 shadow-[0_30px_80px_-52px_rgba(15,23,42,0.65)] backdrop-blur-xl">
+        {/* Main Editor Area */}
+        <div className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden bg-[#1e1e1e]">
+          {/* Editor Grid Background */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+          
+          <div className="relative z-10 flex-1 overflow-hidden">
             <div
               ref={workspaceViewportRef}
-              className={`editor-stage-scroll relative min-h-0 flex-1 overflow-hidden p-5 touch-none ${
+              className={`editor-stage-scroll relative h-full w-full overflow-hidden touch-none ${
                 isWorkspacePanning
                   ? "cursor-grabbing select-none"
                   : props.storePage.editorMode === "visual"
@@ -427,7 +419,6 @@ export const EditorViewport = observer(function EditorViewport(
               }`}
               onMouseDown={handleWorkspaceMouseDown}
             >
-              <div className="absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/8 blur-[108px] pointer-events-none" />
               <div
                 ref={workspaceSurfaceRef}
                 className="absolute left-0 top-0 z-0 flex items-start justify-center will-change-transform"
@@ -440,26 +431,46 @@ export const EditorViewport = observer(function EditorViewport(
                 <EditorStage {...props} />
               </div>
             </div>
-            <div className="flex h-[30px] flex-shrink-0 items-center border-t border-slate-200/70 bg-white/55 px-4 text-[11px] text-slate-500 backdrop-blur-xl">
-              拖拽组件移动 · Delete 键删除选中
-            </div>
+          </div>
+        </div>
+
+        <PanelResizeHandle
+          side="right"
+          onPointerDown={startResize("right")}
+        />
+
+        {/* Right Panel */}
+        <div
+          className="relative z-20 flex shrink-0 flex-col border-l border-[#3c3c3c] bg-[#252526] transition-[width] duration-150"
+          style={{ width: rightPanelWidth }}
+        >
+          <div className="flex h-9 items-center px-4 border-b border-[#3c3c3c] text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">
+            属性设置
+          </div>
+          <div className="flex min-h-0 w-full flex-1 flex-col overflow-auto">
+            <EditorRightPanel />
           </div>
         </div>
       </div>
 
-      <PanelResizeHandle
-        side="right"
-        lineClassName="group-hover:bg-sky-400 group-active:bg-sky-500"
-        gripClassName="group-hover:bg-sky-400/80 group-active:bg-sky-500"
-        onPointerDown={startResize("right")}
-      />
-
-      <div
-        className="relative z-20 flex shrink-0 flex-col border-l border-slate-200/80 bg-white/88 text-[13px] shadow-[-14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
-        style={{ width: rightPanelWidth }}
-      >
-        <div className="flex min-h-0 w-full flex-1 flex-col">
-          <EditorRightPanel />
+      {/* Status Bar */}
+      <div className="flex h-[22px] flex-shrink-0 items-center justify-between bg-[#007acc] px-3 text-[11px] text-white z-40 select-none">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
+            <span className="opacity-80 font-mono">WORKSPACE:</span>
+            <span>{props.storePage.activePagePath}</span>
+          </div>
+          <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
+            <span>{props.storePage.deviceType === "mobile" ? "Mobile View" : "Desktop View"}</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
+            <span>UTF-8</span>
+          </div>
+          <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
+            <span>Powered by Codigo</span>
+          </div>
         </div>
       </div>
     </div>

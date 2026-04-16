@@ -30,8 +30,8 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
         {
           label: "搭建场景",
           node: (
-            <div className="rounded-2xl border border-sky-100 bg-sky-50/70 px-3.5 py-3 text-[12px] leading-5 text-slate-600">
-              当前编辑器已收口为管理系统搭建场景，默认按后台页面的布局与画布尺寸组织内容。
+            <div className="bg-[#2d2d2d] border border-[#3c3c3c] px-3 py-2 text-[11px] leading-relaxed text-[#858585] rounded-sm">
+              当前编辑器已收口为管理系统搭建场景。
             </div>
           ),
         },
@@ -40,7 +40,9 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
           name: "title",
           node: (
             <Input
-              placeholder="例如：客户列表页、工单工作台、订单审核页"
+              size="small"
+              placeholder="例如：客户列表页"
+              className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
             />
           ),
         },
@@ -49,8 +51,10 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
           name: "description",
           node: (
             <Input.TextArea
-              placeholder="输入页面用途、模块职责、操作流程或字段说明"
-              autoSize={{ minRows: 3, maxRows: 5 }}
+              size="small"
+              placeholder="输入用途说明"
+              autoSize={{ minRows: 2, maxRows: 4 }}
+              className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
             />
           ),
         },
@@ -60,13 +64,13 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
       key: "seo",
       title: "页面检索",
       icon: <GlobalOutlined />,
-      description: "补充业务关键字，方便后台页面归档、检索与协作识别。",
+      description: "业务关键字。",
       fields: [
         {
-          label: "页面关键字",
+          label: "关键字",
           name: "tdk",
           node: (
-            <Input placeholder="admin, list, approval, dashboard" />
+            <Input size="small" placeholder="admin, list" className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]" />
           ),
         },
       ],
@@ -75,13 +79,13 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
       key: "theme",
       title: "视觉主题",
       icon: <BgColorsOutlined />,
-      description: "统一图表风格，确保数据可视化与页面调性一致。",
+      description: "统一图表风格。",
       fields: [
         {
           label: "图表主题",
           name: "chartTheme",
           node: (
-            <Select options={chartThemeOptions} placeholder="选择图表主题" />
+            <Select options={chartThemeOptions} size="small" placeholder="选择主题" className="w-full" />
           ),
         },
       ],
@@ -89,17 +93,17 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
   ];
 
   return (
-    <div className="space-y-3 pb-8">
-      <div className="rounded-[22px] border border-slate-200/80 bg-[linear-gradient(135deg,rgba(56,189,248,0.12),rgba(255,255,255,0.98))] p-3.5 shadow-[0_20px_40px_-32px_rgba(56,189,248,0.7)]">
-        <div className="mb-2 flex items-center justify-between">
-          <span className="rounded-full bg-white/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-sky-700">
-            Global
+    <div className="space-y-2 px-3 pb-8">
+      <div className="border-b border-[#3c3c3c] py-2">
+        <div className="mb-1 flex items-center justify-between">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#007acc]">
+            Global Configuration
           </span>
-          <span className="rounded-full bg-slate-900/5 px-2.5 py-1 text-[11px] text-slate-500">
-            {store.deviceType === "mobile" ? "移动端后台页" : "管理系统页"}
+          <span className="text-[10px] text-[#858585]">
+            {store.deviceType === "mobile" ? "MOBILE" : "DESKTOP"}
           </span>
         </div>
-        <div className="text-sm font-semibold text-slate-900">
+        <div className="text-[12px] font-medium text-white">
           {store.title || "未命名页面"}
         </div>
       </div>
@@ -109,25 +113,27 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
         layout="vertical"
         initialValues={store}
         onValuesChange={handleValuesChange}
-        className="[&_.ant-form-item]:mb-3.5 [&_.ant-form-item-label>label]:text-[13px] [&_.ant-form-item-label>label]:text-slate-500 [&_.ant-input]:!rounded-xl [&_.ant-input]:!border-slate-200 [&_.ant-input]:!bg-slate-50/70 [&_.ant-input]:!px-3.5 [&_.ant-input]:!py-2 [&_.ant-input-affix-wrapper]:!rounded-xl [&_.ant-input-affix-wrapper]:!border-slate-200 [&_.ant-input-affix-wrapper]:!bg-slate-50/70 [&_.ant-select-selector]:!h-9 [&_.ant-select-selector]:!rounded-xl [&_.ant-select-selector]:!border-slate-200 [&_.ant-select-selector]:!bg-slate-50/70 [&_.ant-select-selection-wrap]:!items-center"
+        className="[&_.ant-form-item]:mb-3 [&_.ant-form-item-label>label]:text-[11px] [&_.ant-form-item-label>label]:text-[#858585]"
       >
-        <div className="mb-14 space-y-3">
+        <div className="space-y-2">
           {fieldGroups.map((group) => (
             <div
               key={group.key}
-              className="rounded-[22px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_36px_-32px_rgba(15,23,42,0.55)]"
+              className="bg-[#2d2d2d] p-3 border border-[#3c3c3c] rounded-sm"
             >
-              <div className="mb-3 flex items-start gap-2.5">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600">
+              <div className="mb-2 flex items-start gap-2">
+                <span className="text-[#007acc] mt-0.5">
                   {group.icon}
                 </span>
                 <div>
-                  <div className="text-[13px] font-semibold text-slate-900">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">
                     {group.title}
                   </div>
-                  <div className="mt-1 text-[11px] leading-5 text-slate-400">
-                    {group.description}
-                  </div>
+                  {group.description && (
+                    <div className="text-[10px] text-[#858585]">
+                      {group.description}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -136,6 +142,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
                   key={field.name ? String(field.name) : `${group.key}-${field.label}`}
                   label={field.label}
                   name={field.name}
+                  className="!mb-2 last:!mb-0"
                 >
                   {field.node}
                 </Form.Item>

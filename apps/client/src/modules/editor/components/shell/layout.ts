@@ -1,5 +1,5 @@
-export const LEFT_PANEL_RAIL_WIDTH = 72;
-export const LEFT_PANEL_CONTENT_WIDTH = 248;
+export const LEFT_PANEL_RAIL_WIDTH = 48;
+export const LEFT_PANEL_CONTENT_WIDTH = 260;
 export const OUTLINE_PANEL_DEFAULT_WIDTH = 192;
 export const OUTLINE_PANEL_MIN_WIDTH = 160;
 export const OUTLINE_PANEL_MAX_WIDTH = 300;

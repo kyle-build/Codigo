@@ -51,13 +51,13 @@ export const PublishButton = observer(function PublishButton() {
   return (
     <Button
       loading={loading}
-      className="!h-7 !rounded-lg !border-none !bg-emerald-500 !px-2.5 !text-[11px] !font-medium !text-white shadow-[0_14px_26px_-18px_rgba(16,185,129,0.82)] hover:!bg-emerald-400"
+      className="!h-6 !rounded-sm !border-none !bg-[#0e639c] !px-2 !text-[11px] !font-medium !text-white hover:!bg-[#1177bb]"
       type="primary"
       onClick={handlePublish}
       disabled={!can("publish")}
     >
       <CodeOutlined />
-      发布页面
+      发布
       <CheckOutlined />
     </Button>
   );
