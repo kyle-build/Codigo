@@ -48,6 +48,9 @@ if (!embedded || isContextReady(context)) {
 }
 
 export function configureFileServiceContext(nextContext: FileServiceContext) {
+  if (hasContextChanged(context, nextContext)) {
+    explorerCache = undefined;
+  }
   context = mergeContext(context, nextContext);
   if (isContextReady(context)) {
     resolveReady?.();
@@ -205,7 +208,7 @@ async function waitForRuntimeContext() {
 }
 
 function isContextReady(value: FileServiceContext) {
-  return Boolean(value.pageId);
+  return Boolean(value.pageId && (!embedded || value.token));
 }
 
 function mergeContext(
@@ -226,4 +229,18 @@ function mergeContext(
         ? nextContext.baseUrl
         : currentContext.baseUrl,
   };
+}
+
+/**
+ * 仅在运行时关键上下文变更时清空文件树缓存，避免 iframe 首次无 token 请求失败后长期复用旧 Promise。
+ */
+function hasContextChanged(
+  currentContext: FileServiceContext,
+  nextContext: FileServiceContext,
+) {
+  return (
+    (nextContext.pageId !== undefined && nextContext.pageId !== currentContext.pageId) ||
+    (nextContext.token !== undefined && nextContext.token !== currentContext.token) ||
+    (nextContext.baseUrl !== undefined && nextContext.baseUrl !== currentContext.baseUrl)
+  );
 }
