@@ -1,0 +1,117 @@
+{
+  "taskId": "TASK20260418012050",
+  "slug": "task",
+  "title": "发布：私密页可选登录访问",
+  "goal": "让发布页接口支持可选登录态，使发布者登录后可访问自己的私密发布页",
+  "summary": "1) 新增 OptionalJwtAuthGuard；2) GET /pages/:id 改为可选登录；3) 保持公开页匿名访问，同时允许服务端读取当前登录用户并参与私密页鉴权",
+  "scope": "apps/server",
+  "author": "Trae Agent",
+  "timestamp": "2026-04-17T17:20:50.138Z",
+  "tags": [
+    "release"
+  ],
+  "commands": [
+    "pnpm --filter @codigo/server run build"
+  ],
+  "verification": [
+    "服务端构建成功",
+    "GET /pages/:id 已挂载可选登录 guard"
+  ],
+  "reproduction": [
+    "pnpm install",
+    "pnpm --filter @codigo/server run build",
+    "登录客户端后访问私密发布链接，确认服务端可识别当前用户"
+  ],
+  "notes": [],
+  "artifacts": [
+    "apps/server/src/core/guard/optional-jwt.guard.ts",
+    "apps/server/src/modules/flow/controller/pages.controller.ts",
+    "apps/server/src/modules/flow/flow.module.ts"
+  ],
+  "gitInfo": {
+    "branch": "main",
+    "commit": "5c0f229a7f0fdf1eba3dafcdffffc457480208d7",
+    "shortCommit": "5c0f229",
+    "status": "M apps/server/src/modules/flow/controller/pages.controller.ts\n M apps/server/src/modules/flow/flow.module.ts\n?? apps/server/src/core/guard/optional-jwt.guard.ts"
+  },
+  "changedFiles": [
+    "M apps/server/src/modules/flow/controller/pages.controller.ts",
+    "M apps/server/src/modules/flow/flow.module.ts",
+    "?? apps/server/src/core/guard/optional-jwt.guard.ts"
+  ],
+  "environment": {
+    "os": "win32 10.0.26200 x64",
+    "cwd": "D:\\workspace\\graduate-design\\code\\codigo-system\\codigo",
+    "nodeVersion": "v20.20.1",
+    "pnpmVersion": "10.28.2",
+    "packageManager": "pnpm@10.28.2",
+    "pnpmLockSha256": "df80bb04c416be575a2dcf1dd1214fb537bfe1702f535dc02f51bea5b13c4ef2"
+  },
+  "workspacePackages": [
+    {
+      "name": "@codigo/admin",
+      "version": "0.0.0",
+      "relativePath": "apps/admin"
+    },
+    {
+      "name": "@codigo/client",
+      "version": "0.0.0",
+      "relativePath": "apps/client"
+    },
+    {
+      "name": "@codigo/editor-sandbox",
+      "version": "0.0.1",
+      "relativePath": "packages/editor-sandbox"
+    },
+    {
+      "name": "@codigo/file-service",
+      "version": "0.0.1",
+      "relativePath": "packages/file-service"
+    },
+    {
+      "name": "@codigo/materials",
+      "version": "0.0.1",
+      "relativePath": "packages/materials"
+    },
+    {
+      "name": "@codigo/opensumi-app",
+      "version": "0.0.1",
+      "relativePath": "apps/ide"
+    },
+    {
+      "name": "@codigo/plugin-system",
+      "version": "1.1.0",
+      "relativePath": "packages/plugin-system"
+    },
+    {
+      "name": "@codigo/release",
+      "version": "0.1.0",
+      "relativePath": "packages/release"
+    },
+    {
+      "name": "@codigo/render",
+      "version": "0.0.1",
+      "relativePath": "packages/render"
+    },
+    {
+      "name": "@codigo/runtime-core",
+      "version": "1.1.0",
+      "relativePath": "packages/runtime-core"
+    },
+    {
+      "name": "@codigo/schema",
+      "version": "1.1.0",
+      "relativePath": "packages/schema"
+    },
+    {
+      "name": "@codigo/server",
+      "version": "0.0.1",
+      "relativePath": "apps/server"
+    },
+    {
+      "name": "@codigo/template",
+      "version": "0.0.1",
+      "relativePath": "packages/template"
+    }
+  ]
+}

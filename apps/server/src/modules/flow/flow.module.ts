@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { OptionalJwtAuthGuard } from 'src/core/guard/optional-jwt.guard';
 import { CollaborationController } from 'src/modules/flow/controller/collaboration.controller';
 import { LegacyLowCodeController } from 'src/modules/flow/controller/low-code.controller';
 import { PagesController } from 'src/modules/flow/controller/pages.controller';
@@ -39,6 +40,7 @@ import { SecretTool } from 'src/shared/utils/secret.tool';
     CollaborationController,
   ],
   providers: [
+    OptionalJwtAuthGuard,
     SecretTool,
     PageReleaseService,
     PageAnalyticsService,

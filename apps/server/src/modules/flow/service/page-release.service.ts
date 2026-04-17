@@ -316,6 +316,8 @@ export class PageReleaseService {
     const rows = await this.pageRepository
       .createQueryBuilder('page')
       .leftJoin(User, 'owner', 'owner.id = page.account_id')
+      .where('page.visibility = :visibility', { visibility: 'public' })
+      .andWhere('(page.expire_at IS NULL OR page.expire_at > NOW())')
       .select([
         'page.id AS id',
         'page.page_name AS page_name',

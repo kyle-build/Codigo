@@ -1,5 +1,38 @@
 [
   {
+    "taskId": "TASK20260418013449",
+    "title": "发布：私密页去登录回跳",
+    "scope": "apps/client",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-17T17:34:49.960Z",
+    "gitBranch": "main",
+    "gitCommit": "5c0f229",
+    "markdownPath": ".trae/task-logs/2026-04-17/TASK20260418013449-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-17/TASK20260418013449-task.json"
+  },
+  {
+    "taskId": "TASK20260418012712",
+    "title": "发布：私密访问可选登录态",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-17T17:27:12.511Z",
+    "gitBranch": "main",
+    "gitCommit": "5c0f229",
+    "markdownPath": ".trae/task-logs/2026-04-17/TASK20260418012712-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-17/TASK20260418012712-task.json"
+  },
+  {
+    "taskId": "TASK20260418012050",
+    "title": "发布：私密页可选登录访问",
+    "scope": "apps/server",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-17T17:20:50.138Z",
+    "gitBranch": "main",
+    "gitCommit": "5c0f229",
+    "markdownPath": ".trae/task-logs/2026-04-17/TASK20260418012050-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-17/TASK20260418012050-task.json"
+  },
+  {
     "taskId": "TASK20260418011408",
     "title": "发布：配置落库与访问校验",
     "scope": "repository",

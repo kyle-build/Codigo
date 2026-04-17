@@ -1,10 +1,10 @@
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Empty, FloatButton, QRCode, Result, Spin } from "antd";
+import { Button, Empty, FloatButton, QRCode, Result, Spin } from "antd";
 import type { ComponentNode, IPageSchema } from "@codigo/schema";
 import { useEffect, useMemo, useState } from "react";
 import type { AxiosError } from "axios";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getPublishedPage } from "@/modules/editor/api/low-code";
 import {
   generateComponent,
@@ -180,6 +180,12 @@ export default function Release() {
   const errorMessage =
     ((error as AxiosError<{ msg?: string }>)?.response?.data?.msg as string | undefined) ??
     "";
+  const errorStatus = (error as AxiosError)?.response?.status ?? 0;
+  const location = useLocation();
+  const redirectTo = useMemo(
+    () => `${location.pathname}${location.search}`,
+    [location.pathname, location.search],
+  );
 
   const schema = useMemo(() => resolveSchemaFromReleasePayload(data), [data]);
   const activePage = useMemo(
@@ -234,7 +240,23 @@ export default function Release() {
                   ? "当前内容无权访问"
                   : "发布页加载失败"
           }
-          subTitle={errorMessage || "未能读取已发布内容，请确认页面已成功发布后重试"}
+          subTitle={
+            <div className="space-y-3">
+              <div>{errorMessage || "未能读取已发布内容，请确认页面已成功发布后重试"}</div>
+              {errorStatus === 401 ? (
+                <div>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      nav(`/login?redirect=${encodeURIComponent(redirectTo)}`);
+                    }}
+                  >
+                    去登录
+                  </Button>
+                </div>
+              ) : null}
+            </div>
+          }
         />
       );
     }

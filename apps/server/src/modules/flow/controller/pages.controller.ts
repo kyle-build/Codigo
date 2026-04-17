@@ -24,6 +24,7 @@ import type {
   PutPageWorkspaceFileResponse,
   UpdateReleaseConfigRequest,
 } from '@codigo/schema';
+import { OptionalJwtAuthGuard } from 'src/core/guard/optional-jwt.guard';
 import {
   GetUserAgent,
   GetUserIP,
@@ -73,8 +74,12 @@ export class PagesController {
   }
 
   @Get(':id')
-  getPage(@Param('id', ParseIntPipe) id: number) {
-    return this.pageReleaseService.getReleaseData(id);
+  @UseGuards(OptionalJwtAuthGuard)
+  getPage(
+    @Param('id', ParseIntPipe) id: number,
+    @getUserMess() user?: TCurrentUser,
+  ) {
+    return this.pageReleaseService.getReleaseData(id, user);
   }
 
   @Get(':id/versions')

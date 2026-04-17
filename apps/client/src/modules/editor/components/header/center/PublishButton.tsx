@@ -160,6 +160,7 @@ export const PublishButton = observer(function PublishButton() {
    */
   async function handleSubmitPublishResult(values: PublishReleaseModalValues) {
     await runUpdateReleaseConfig(values);
+    message.success("发布配置已保存");
     setPublishResult((prev) => ({
       ...prev,
       open: false,

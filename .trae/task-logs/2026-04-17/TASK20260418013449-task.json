@@ -1,0 +1,131 @@
+{
+  "taskId": "TASK20260418013449",
+  "slug": "task",
+  "title": "发布：私密页去登录回跳",
+  "goal": "私密发布页被拦截时提供去登录按钮，登录成功后回到原发布链接",
+  "summary": "1) Release 页 401 错误展示去登录按钮并携带 redirect 参数；2) 登录/验证码登录/注册成功后支持读取 redirect 并安全回跳，避免开放重定向",
+  "scope": "apps/client",
+  "author": "Trae Agent",
+  "timestamp": "2026-04-17T17:34:49.960Z",
+  "tags": [
+    "release"
+  ],
+  "commands": [
+    "pnpm --filter @codigo/client run typecheck"
+  ],
+  "verification": [
+    "未登录打开私密发布链接会看到去登录按钮",
+    "登录成功后自动回到原发布链接"
+  ],
+  "reproduction": [
+    "pnpm install",
+    "pnpm --filter @codigo/client run dev",
+    "将某发布页设置为私密，在无痕窗口打开链接，点击去登录并完成登录，确认回到该链接"
+  ],
+  "notes": [],
+  "artifacts": [
+    "apps/client/src/modules/release/index.tsx",
+    "apps/client/src/modules/auth/hooks/useLogin.ts",
+    "apps/client/src/modules/auth/hooks/usePhoneLogin.ts",
+    "apps/client/src/modules/auth/hooks/useRegister.ts",
+    "apps/client/src/modules/auth/utils/redirect.ts"
+  ],
+  "gitInfo": {
+    "branch": "main",
+    "commit": "5c0f229a7f0fdf1eba3dafcdffffc457480208d7",
+    "shortCommit": "5c0f229",
+    "status": "A  .trae/task-logs/2026-04-17/TASK20260418012050-task.json\nA  .trae/task-logs/2026-04-17/TASK20260418012050-task.md\nA  .trae/task-logs/2026-04-17/TASK20260418012712-task.json\nA  .trae/task-logs/2026-04-17/TASK20260418012712-task.md\nM  .trae/task-logs/index.json\nM  apps/client/src/modules/auth/hooks/useLogin.ts\nM  apps/client/src/modules/auth/hooks/usePhoneLogin.ts\nM  apps/client/src/modules/auth/hooks/useRegister.ts\nA  apps/client/src/modules/auth/utils/redirect.ts\nM  apps/client/src/modules/editor/components/header/center/PublishButton.tsx\nM  apps/client/src/modules/release/index.tsx\nA  apps/server/src/core/guard/optional-jwt.guard.ts\nM  apps/server/src/modules/flow/controller/pages.controller.ts\nM  apps/server/src/modules/flow/flow.module.ts\nM  apps/server/src/modules/flow/service/page-release.service.ts"
+  },
+  "changedFiles": [
+    "A  .trae/task-logs/2026-04-17/TASK20260418012050-task.json",
+    "A  .trae/task-logs/2026-04-17/TASK20260418012050-task.md",
+    "A  .trae/task-logs/2026-04-17/TASK20260418012712-task.json",
+    "A  .trae/task-logs/2026-04-17/TASK20260418012712-task.md",
+    "M  .trae/task-logs/index.json",
+    "M  apps/client/src/modules/auth/hooks/useLogin.ts",
+    "M  apps/client/src/modules/auth/hooks/usePhoneLogin.ts",
+    "M  apps/client/src/modules/auth/hooks/useRegister.ts",
+    "A  apps/client/src/modules/auth/utils/redirect.ts",
+    "M  apps/client/src/modules/editor/components/header/center/PublishButton.tsx",
+    "M  apps/client/src/modules/release/index.tsx",
+    "A  apps/server/src/core/guard/optional-jwt.guard.ts",
+    "M  apps/server/src/modules/flow/controller/pages.controller.ts",
+    "M  apps/server/src/modules/flow/flow.module.ts",
+    "M  apps/server/src/modules/flow/service/page-release.service.ts"
+  ],
+  "environment": {
+    "os": "win32 10.0.26200 x64",
+    "cwd": "D:\\workspace\\graduate-design\\code\\codigo-system\\codigo",
+    "nodeVersion": "v20.20.1",
+    "pnpmVersion": "10.28.2",
+    "packageManager": "pnpm@10.28.2",
+    "pnpmLockSha256": "df80bb04c416be575a2dcf1dd1214fb537bfe1702f535dc02f51bea5b13c4ef2"
+  },
+  "workspacePackages": [
+    {
+      "name": "@codigo/admin",
+      "version": "0.0.0",
+      "relativePath": "apps/admin"
+    },
+    {
+      "name": "@codigo/client",
+      "version": "0.0.0",
+      "relativePath": "apps/client"
+    },
+    {
+      "name": "@codigo/editor-sandbox",
+      "version": "0.0.1",
+      "relativePath": "packages/editor-sandbox"
+    },
+    {
+      "name": "@codigo/file-service",
+      "version": "0.0.1",
+      "relativePath": "packages/file-service"
+    },
+    {
+      "name": "@codigo/materials",
+      "version": "0.0.1",
+      "relativePath": "packages/materials"
+    },
+    {
+      "name": "@codigo/opensumi-app",
+      "version": "0.0.1",
+      "relativePath": "apps/ide"
+    },
+    {
+      "name": "@codigo/plugin-system",
+      "version": "1.1.0",
+      "relativePath": "packages/plugin-system"
+    },
+    {
+      "name": "@codigo/release",
+      "version": "0.1.0",
+      "relativePath": "packages/release"
+    },
+    {
+      "name": "@codigo/render",
+      "version": "0.0.1",
+      "relativePath": "packages/render"
+    },
+    {
+      "name": "@codigo/runtime-core",
+      "version": "1.1.0",
+      "relativePath": "packages/runtime-core"
+    },
+    {
+      "name": "@codigo/schema",
+      "version": "1.1.0",
+      "relativePath": "packages/schema"
+    },
+    {
+      "name": "@codigo/server",
+      "version": "0.0.1",
+      "relativePath": "apps/server"
+    },
+    {
+      "name": "@codigo/template",
+      "version": "0.0.1",
+      "relativePath": "packages/template"
+    }
+  ]
+}
