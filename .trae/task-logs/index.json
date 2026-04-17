@@ -1,5 +1,27 @@
 [
   {
+    "taskId": "TASK20260418003100",
+    "title": "全仓中文乱码检测与修复",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-17T16:31:00.188Z",
+    "gitBranch": "main",
+    "gitCommit": "ebd1b35",
+    "markdownPath": ".trae/task-logs/2026-04-17/TASK20260418003100-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-17/TASK20260418003100-task.json"
+  },
+  {
+    "taskId": "TASK20260418001208",
+    "title": "精简协作规则文档",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-17T16:12:08.391Z",
+    "gitBranch": "main",
+    "gitCommit": "ebd1b35",
+    "markdownPath": ".trae/task-logs/2026-04-17/TASK20260418001208-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-17/TASK20260418001208-task.json"
+  },
+  {
     "taskId": "TASK20260417200425",
     "title": "配置任务结束后自动写工作日志规则",
     "scope": "repository",

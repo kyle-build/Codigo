@@ -1,0 +1,143 @@
+{
+  "taskId": "TASK20260418003100",
+  "slug": "task",
+  "title": "全仓中文乱码检测与修复",
+  "goal": "扫描仓库内中文乱码与非 UTF-8 文件并修复，避免出现替换字符等异常",
+  "summary": "修复 server/release 源码注释与按钮文案乱码；修复 README 与历史 task-log 文件编码问题；移除误提交的 apps/client/tempdist 构建产物并调整 gitignore；通过 typecheck 验证。",
+  "scope": "repository",
+  "author": "Trae Agent",
+  "timestamp": "2026-04-17T16:31:00.188Z",
+  "tags": [],
+  "commands": [
+    "rg 扫描乱码字符（�/锟斤拷/Ã）",
+    "node -e TextDecoder 扫描 git ls-files",
+    "pnpm run typecheck:apps"
+  ],
+  "verification": [
+    "rg 搜索未发现 �/锟斤拷/Ã",
+    "TextDecoder 扫描 BAD_COUNT=0",
+    "pnpm run typecheck:apps 通过"
+  ],
+  "reproduction": [
+    "在仓库根目录执行 rg 搜索替换字符：�",
+    "运行 Node TextDecoder(utf-8,fatal) 扫描 git ls-files，定位非 UTF-8 文件"
+  ],
+  "notes": [],
+  "artifacts": [
+    "apps/server/src/main.ts",
+    "apps/server/src/core/interceptor/response.interceptor.ts",
+    "packages/release/src/components/ComponentRender.tsx",
+    "README.md",
+    ".gitignore",
+    ".trae/task-logs/2026-04-17/TASK20260417200425-task.md",
+    ".trae/task-logs/2026-04-17/TASK20260417200425-task.json"
+  ],
+  "gitInfo": {
+    "branch": "main",
+    "commit": "ebd1b355aa02e09d9fbd2ee729ca1d1d0d970935",
+    "shortCommit": "ebd1b35",
+    "status": "M .gitignore\n D .trae/rules/project-rules.md\n D .trae/rules/project-structure.md\n D .trae/rules/user-guidelines.md\n M .trae/task-logs/2026-04-17/TASK20260417200425-task.json\n M .trae/task-logs/2026-04-17/TASK20260417200425-task.md\n M .trae/task-logs/index.json\n M README.md\n D apps/client/tempdist/assets/esbuild-BHljloGq.wasm\n D apps/client/tempdist/assets/index-CGil9Anz.js\n D apps/client/tempdist/assets/index-LyKHq8tH.css\n D apps/client/tempdist/index.html\n M apps/server/src/core/interceptor/response.interceptor.ts\n M apps/server/src/main.ts\n M packages/release/src/components/ComponentRender.tsx\n?? .trae/.ignore\n?? .trae/README.md\n?? .trae/context/\n?? .trae/docs/\n?? .trae/retros/\n?? .trae/rules/ARTCH.md\n?? .trae/rules/BASIC_RULES.md\n?? .trae/rules/USER_GUIDE.md\n?? .trae/task-logs/2026-04-17/TASK20260418001208-task.json\n?? .trae/task-logs/2026-04-17/TASK20260418001208-task.md"
+  },
+  "changedFiles": [
+    "M .gitignore",
+    "D .trae/rules/project-rules.md",
+    "D .trae/rules/project-structure.md",
+    "D .trae/rules/user-guidelines.md",
+    "M .trae/task-logs/2026-04-17/TASK20260417200425-task.json",
+    "M .trae/task-logs/2026-04-17/TASK20260417200425-task.md",
+    "M .trae/task-logs/index.json",
+    "M README.md",
+    "D apps/client/tempdist/assets/esbuild-BHljloGq.wasm",
+    "D apps/client/tempdist/assets/index-CGil9Anz.js",
+    "D apps/client/tempdist/assets/index-LyKHq8tH.css",
+    "D apps/client/tempdist/index.html",
+    "M apps/server/src/core/interceptor/response.interceptor.ts",
+    "M apps/server/src/main.ts",
+    "M packages/release/src/components/ComponentRender.tsx",
+    "?? .trae/.ignore",
+    "?? .trae/README.md",
+    "?? .trae/context/",
+    "?? .trae/docs/",
+    "?? .trae/retros/",
+    "?? .trae/rules/ARTCH.md",
+    "?? .trae/rules/BASIC_RULES.md",
+    "?? .trae/rules/USER_GUIDE.md",
+    "?? .trae/task-logs/2026-04-17/TASK20260418001208-task.json",
+    "?? .trae/task-logs/2026-04-17/TASK20260418001208-task.md"
+  ],
+  "environment": {
+    "os": "win32 10.0.26200 x64",
+    "cwd": "D:\\workspace\\graduate-design\\code\\codigo-system\\codigo",
+    "nodeVersion": "v20.20.1",
+    "pnpmVersion": "10.28.2",
+    "packageManager": "pnpm@10.28.2",
+    "pnpmLockSha256": "df80bb04c416be575a2dcf1dd1214fb537bfe1702f535dc02f51bea5b13c4ef2"
+  },
+  "workspacePackages": [
+    {
+      "name": "@codigo/admin",
+      "version": "0.0.0",
+      "relativePath": "apps/admin"
+    },
+    {
+      "name": "@codigo/client",
+      "version": "0.0.0",
+      "relativePath": "apps/client"
+    },
+    {
+      "name": "@codigo/editor-sandbox",
+      "version": "0.0.1",
+      "relativePath": "packages/editor-sandbox"
+    },
+    {
+      "name": "@codigo/file-service",
+      "version": "0.0.1",
+      "relativePath": "packages/file-service"
+    },
+    {
+      "name": "@codigo/materials",
+      "version": "0.0.1",
+      "relativePath": "packages/materials"
+    },
+    {
+      "name": "@codigo/opensumi-app",
+      "version": "0.0.1",
+      "relativePath": "apps/ide"
+    },
+    {
+      "name": "@codigo/plugin-system",
+      "version": "1.1.0",
+      "relativePath": "packages/plugin-system"
+    },
+    {
+      "name": "@codigo/release",
+      "version": "0.1.0",
+      "relativePath": "packages/release"
+    },
+    {
+      "name": "@codigo/render",
+      "version": "0.0.1",
+      "relativePath": "packages/render"
+    },
+    {
+      "name": "@codigo/runtime-core",
+      "version": "1.1.0",
+      "relativePath": "packages/runtime-core"
+    },
+    {
+      "name": "@codigo/schema",
+      "version": "1.1.0",
+      "relativePath": "packages/schema"
+    },
+    {
+      "name": "@codigo/server",
+      "version": "0.0.1",
+      "relativePath": "apps/server"
+    },
+    {
+      "name": "@codigo/template",
+      "version": "0.0.1",
+      "relativePath": "packages/template"
+    }
+  ]
+}

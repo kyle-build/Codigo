@@ -7,6 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependences
 node_modules
 .pnpm-store
 ~/*
@@ -16,16 +17,7 @@ dist-ssr
 
 # Editor directories and files
 .vscode/*
-.trae/*
 .node_modules/*
-!.trae/
-!.trae/rules/
-!.trae/rules/**
-!.trae/bad-cases.md
-!.trae/task-logging.md
-!.trae/task-logs/
-!.trae/task-logs/**
-!.vscode/extensions.json
 .idea
 .DS_Store
 *.suo
@@ -33,10 +25,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
+.cache/*
 # build output
-tempdist/*
-
+tempdist/
 
 # environment variables
 .env

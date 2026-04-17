@@ -445,7 +445,7 @@ export default function ComponentRender({
       {data.components.some((comp) => usingInputType.includes(comp.type)) && (
         <div className="flex items-center justify-center">
           <Button type="primary" onClick={run} loading={loading}>
-            �ύ�ʾ�
+            提交
           </Button>
         </div>
       )}

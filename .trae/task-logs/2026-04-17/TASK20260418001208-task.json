@@ -1,0 +1,121 @@
+{
+  "taskId": "TASK20260418001208",
+  "slug": "task",
+  "title": "精简协作规则文档",
+  "goal": "将 BASIC_RULES.md 与 USER_GUIDE.md 精简到更易读且去除乱码",
+  "summary": "重写两份规则文档为精简版，去除乱码并保留关键边界与协作约束。",
+  "scope": "repository",
+  "author": "Trae Agent",
+  "timestamp": "2026-04-17T16:12:08.391Z",
+  "tags": [],
+  "commands": [
+    "修改 .trae/rules/BASIC_RULES.md 与 USER_GUIDE.md"
+  ],
+  "verification": [
+    "检查无乱码字符（�）且内容约<1000字"
+  ],
+  "reproduction": [
+    "打开 .trae/rules/BASIC_RULES.md",
+    "打开 .trae/rules/USER_GUIDE.md"
+  ],
+  "notes": [],
+  "artifacts": [
+    ".trae/rules/BASIC_RULES.md",
+    ".trae/rules/USER_GUIDE.md"
+  ],
+  "gitInfo": {
+    "branch": "main",
+    "commit": "ebd1b355aa02e09d9fbd2ee729ca1d1d0d970935",
+    "shortCommit": "ebd1b35",
+    "status": "M .gitignore\n D .trae/rules/project-rules.md\n D .trae/rules/project-structure.md\n D .trae/rules/user-guidelines.md\n?? .trae/.ignore\n?? .trae/README.md\n?? .trae/context/\n?? .trae/docs/\n?? .trae/retros/\n?? .trae/rules/ARTCH.md\n?? .trae/rules/BASIC_RULES.md\n?? .trae/rules/USER_GUIDE.md"
+  },
+  "changedFiles": [
+    "M .gitignore",
+    "D .trae/rules/project-rules.md",
+    "D .trae/rules/project-structure.md",
+    "D .trae/rules/user-guidelines.md",
+    "?? .trae/.ignore",
+    "?? .trae/README.md",
+    "?? .trae/context/",
+    "?? .trae/docs/",
+    "?? .trae/retros/",
+    "?? .trae/rules/ARTCH.md",
+    "?? .trae/rules/BASIC_RULES.md",
+    "?? .trae/rules/USER_GUIDE.md"
+  ],
+  "environment": {
+    "os": "win32 10.0.26200 x64",
+    "cwd": "D:\\workspace\\graduate-design\\code\\codigo-system\\codigo",
+    "nodeVersion": "v20.20.1",
+    "pnpmVersion": "10.28.2",
+    "packageManager": "pnpm@10.28.2",
+    "pnpmLockSha256": "df80bb04c416be575a2dcf1dd1214fb537bfe1702f535dc02f51bea5b13c4ef2"
+  },
+  "workspacePackages": [
+    {
+      "name": "@codigo/admin",
+      "version": "0.0.0",
+      "relativePath": "apps/admin"
+    },
+    {
+      "name": "@codigo/client",
+      "version": "0.0.0",
+      "relativePath": "apps/client"
+    },
+    {
+      "name": "@codigo/editor-sandbox",
+      "version": "0.0.1",
+      "relativePath": "packages/editor-sandbox"
+    },
+    {
+      "name": "@codigo/file-service",
+      "version": "0.0.1",
+      "relativePath": "packages/file-service"
+    },
+    {
+      "name": "@codigo/materials",
+      "version": "0.0.1",
+      "relativePath": "packages/materials"
+    },
+    {
+      "name": "@codigo/opensumi-app",
+      "version": "0.0.1",
+      "relativePath": "apps/ide"
+    },
+    {
+      "name": "@codigo/plugin-system",
+      "version": "1.1.0",
+      "relativePath": "packages/plugin-system"
+    },
+    {
+      "name": "@codigo/release",
+      "version": "0.1.0",
+      "relativePath": "packages/release"
+    },
+    {
+      "name": "@codigo/render",
+      "version": "0.0.1",
+      "relativePath": "packages/render"
+    },
+    {
+      "name": "@codigo/runtime-core",
+      "version": "1.1.0",
+      "relativePath": "packages/runtime-core"
+    },
+    {
+      "name": "@codigo/schema",
+      "version": "1.1.0",
+      "relativePath": "packages/schema"
+    },
+    {
+      "name": "@codigo/server",
+      "version": "0.0.1",
+      "relativePath": "apps/server"
+    },
+    {
+      "name": "@codigo/template",
+      "version": "0.0.1",
+      "relativePath": "packages/template"
+    }
+  ]
+}
