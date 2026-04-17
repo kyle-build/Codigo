@@ -57,7 +57,7 @@ export interface IComponentPropWarpper<T> {
  * @param target - 打开 URL 目标窗口。
  * @param targetId - 滚动到目标元素。
  */
-export type RuntimeStateValue = string | number | boolean;
+export type RuntimeStateValue = unknown;
 
 /**
  * 描述组件事件配置结构。
@@ -66,7 +66,36 @@ export type ActionConfig =
   | { type: "navigate"; path: string }
   | { type: "setState"; key: string; value: RuntimeStateValue }
   | { type: "openUrl"; url: string; target?: "_self" | "_blank" }
-  | { type: "scrollTo"; targetId: string };
+  | { type: "scrollTo"; targetId: string }
+  | {
+      type: "toast";
+      message: string;
+      variant?: "success" | "error" | "info" | "warning";
+    }
+  | {
+      type: "confirm";
+      message: string;
+      onOk?: ActionConfig[];
+      onCancel?: ActionConfig[];
+    }
+  | {
+      type: "when";
+      key: string;
+      op?: "eq" | "ne" | "truthy" | "falsy";
+      value?: RuntimeStateValue;
+      onTrue?: ActionConfig[];
+      onFalse?: ActionConfig[];
+    }
+  | {
+      type: "request";
+      method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+      url: string;
+      headers?: Record<string, string>;
+      body?: unknown;
+      saveToStateKey?: string;
+      onSuccess?: ActionConfig[];
+      onError?: ActionConfig[];
+    };
 
 
 /**

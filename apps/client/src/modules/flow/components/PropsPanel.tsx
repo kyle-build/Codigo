@@ -40,59 +40,20 @@ export const PropsPanel = observer(() => {
                 }}
               />
             </div>
-            {flowStore.selectedNode.type === "approval" && (
-              <>
-                <div className="mb-2 flex items-center gap-2">
-                  <label className="min-w-12 flex-shrink-0 whitespace-nowrap text-[11px] text-zinc-600">
-                    审批人
-                  </label>
-                  <input
-                    className="h-8 flex-1 rounded-md border border-zinc-200 px-2 text-xs outline-none focus:border-zinc-400"
-                    value={
-                      (flowStore.selectedNode.props.assignee ?? "") as string
-                    }
-                    placeholder="角色/人员"
-                    onChange={(e) => {
-                      if (flowStore.selectedNode) {
-                        flowStore.selectedNode.props.assignee = e.target.value;
-                      }
-                    }}
-                  />
-                </div>
-                <div className="mb-2 flex items-center gap-2">
-                  <label className="min-w-12 flex-shrink-0 whitespace-nowrap text-[11px] text-zinc-600">
-                    超时(天)
-                  </label>
-                  <input
-                    type="number"
-                    min={0}
-                    className="h-8 flex-1 rounded-md border border-zinc-200 px-2 text-xs outline-none focus:border-zinc-400"
-                    value={Number(flowStore.selectedNode.props.timeout ?? 0)}
-                    onChange={(e) => {
-                      if (flowStore.selectedNode) {
-                        flowStore.selectedNode.props.timeout = Number(
-                          e.target.value,
-                        );
-                      }
-                    }}
-                  />
-                </div>
-              </>
-            )}
             {flowStore.selectedNode.type === "process" && (
               <div className="mb-2 flex items-center gap-2">
                 <label className="min-w-12 flex-shrink-0 whitespace-nowrap text-[11px] text-zinc-600">
-                  处理人
+                  描述
                 </label>
                 <input
                   className="h-8 flex-1 rounded-md border border-zinc-200 px-2 text-xs outline-none focus:border-zinc-400"
                   value={
-                    (flowStore.selectedNode.props.assignee ?? "") as string
+                    (flowStore.selectedNode.props.desc ?? "") as string
                   }
-                  placeholder="角色/人员"
+                  placeholder="例如：setState / navigate / openUrl"
                   onChange={(e) => {
                     if (flowStore.selectedNode) {
-                      flowStore.selectedNode.props.assignee = e.target.value;
+                      flowStore.selectedNode.props.desc = e.target.value;
                     }
                   }}
                 />

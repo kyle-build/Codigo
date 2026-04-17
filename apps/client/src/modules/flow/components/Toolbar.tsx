@@ -7,7 +7,7 @@ export const Toolbar = observer(() => {
   return (
     <div className="flex min-h-12 items-center justify-between gap-3 border-b border-slate-200 bg-white/60 backdrop-blur-md px-4 py-2 relative z-10">
       <div className="flex items-center gap-2">
-        <span className="text-sm font-semibold">Flow</span>
+        <span className="text-sm font-semibold">事件编排</span>
         <span className="h-4 w-px bg-zinc-200" />
         <span className="text-[11px] text-zinc-500">
           {flowStore.nodes.length} 节点 · {flowStore.edges.length} 连线

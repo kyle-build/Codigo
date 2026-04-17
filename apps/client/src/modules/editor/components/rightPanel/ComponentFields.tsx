@@ -27,6 +27,10 @@ const actionTypeOptions = [
   { label: "页面跳转", value: "navigate" },
   { label: "打开链接", value: "openUrl" },
   { label: "滚动定位", value: "scrollTo" },
+  { label: "提示消息", value: "toast" },
+  { label: "确认弹窗", value: "confirm" },
+  { label: "条件判断", value: "when" },
+  { label: "请求接口", value: "request" },
 ] as const;
 
 function createDefaultAction(type: ActionConfig["type"]): ActionConfig {
@@ -37,6 +41,19 @@ function createDefaultAction(type: ActionConfig["type"]): ActionConfig {
       return { type, url: "https://example.com", target: "_blank" };
     case "scrollTo":
       return { type, targetId: "section-overview" };
+    case "toast":
+      return { type, message: "操作成功", variant: "success" };
+    case "confirm":
+      return { type, message: "确认执行该操作？" };
+    case "when":
+      return { type, key: "activePanel", op: "eq", value: "overview" };
+    case "request":
+      return {
+        type,
+        method: "GET",
+        url: "/api/health",
+        saveToStateKey: "lastResponse",
+      };
     default:
       return { type: "setState", key: "activePanel", value: "overview" };
   }
@@ -347,7 +364,7 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
           <Panel
             header={
               <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
-                交互事件
+                事件链路（Flow）
               </div>
             }
             key="events"
@@ -500,11 +517,152 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
                         className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
                       />
                     ) : null}
+
+                    {action.type === "toast" ? (
+                      <div className="space-y-1.5">
+                        <Input
+                          value={action.message}
+                          size="small"
+                          onChange={(event) =>
+                            updateEventAction(index, {
+                              message: event.target.value,
+                            })
+                          }
+                          placeholder="提示内容"
+                          className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
+                        />
+                        <Select
+                          value={action.variant ?? "info"}
+                          size="small"
+                          options={[
+                            { label: "成功", value: "success" },
+                            { label: "错误", value: "error" },
+                            { label: "信息", value: "info" },
+                            { label: "警告", value: "warning" },
+                          ]}
+                          onChange={(value) =>
+                            updateEventAction(index, { variant: value })
+                          }
+                          className="w-full"
+                        />
+                      </div>
+                    ) : null}
+
+                    {action.type === "confirm" ? (
+                      <Input
+                        value={action.message}
+                        size="small"
+                        onChange={(event) =>
+                          updateEventAction(index, {
+                            message: event.target.value,
+                          })
+                        }
+                        placeholder="确认文案"
+                        className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
+                      />
+                    ) : null}
+
+                    {action.type === "when" ? (
+                      <div className="space-y-1.5">
+                        <div className="grid grid-cols-2 gap-1.5">
+                          <Input
+                            value={action.key}
+                            size="small"
+                            onChange={(event) =>
+                              updateEventAction(index, {
+                                key: event.target.value,
+                              })
+                            }
+                            placeholder="状态键"
+                            className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
+                          />
+                          <Select
+                            value={action.op ?? "truthy"}
+                            size="small"
+                            options={[
+                              { label: "等于", value: "eq" },
+                              { label: "不等于", value: "ne" },
+                              { label: "为真", value: "truthy" },
+                              { label: "为假", value: "falsy" },
+                            ]}
+                            onChange={(value) =>
+                              updateEventAction(index, { op: value })
+                            }
+                            className="w-full"
+                          />
+                        </div>
+                        {(action.op ?? "truthy") === "eq" ||
+                        (action.op ?? "truthy") === "ne" ? (
+                          <Input
+                            value={String(action.value ?? "")}
+                            size="small"
+                            onChange={(event) =>
+                              updateEventAction(index, {
+                                value: event.target.value,
+                              })
+                            }
+                            placeholder="比较值"
+                            className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
+                          />
+                        ) : null}
+                      </div>
+                    ) : null}
+
+                    {action.type === "request" ? (
+                      <div className="space-y-1.5">
+                        <div className="grid grid-cols-2 gap-1.5">
+                          <Select
+                            value={action.method ?? "GET"}
+                            size="small"
+                            options={[
+                              { label: "GET", value: "GET" },
+                              { label: "POST", value: "POST" },
+                              { label: "PUT", value: "PUT" },
+                              { label: "PATCH", value: "PATCH" },
+                              { label: "DELETE", value: "DELETE" },
+                            ]}
+                            onChange={(value) =>
+                              updateEventAction(index, { method: value })
+                            }
+                            className="w-full"
+                          />
+                          <Input
+                            value={action.saveToStateKey ?? ""}
+                            size="small"
+                            onChange={(event) =>
+                              updateEventAction(index, {
+                                saveToStateKey: event.target.value,
+                              })
+                            }
+                            placeholder="保存到状态键(可选)"
+                            className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
+                          />
+                        </div>
+                        <Input
+                          value={action.url}
+                          size="small"
+                          onChange={(event) =>
+                            updateEventAction(index, { url: event.target.value })
+                          }
+                          placeholder="/api/..."
+                          className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
+                        />
+                        <Input.TextArea
+                          value={typeof action.body === "string" ? action.body : ""}
+                          onChange={(event) =>
+                            updateEventAction(index, { body: event.target.value })
+                          }
+                          placeholder="Body（可选，字符串或 JSON）"
+                          autoSize={{ minRows: 2, maxRows: 6 }}
+                          className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
+                        />
+                      </div>
+                    ) : null}
                   </div>
                 ))
               ) : (
                 <div className="py-4 text-center text-[11px] text-[var(--ide-text-muted)]">
-                  无交互事件
+                  无事件步骤
                 </div>
               )}
             </div>

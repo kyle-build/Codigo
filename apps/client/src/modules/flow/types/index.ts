@@ -1,8 +1,7 @@
-﻿/* 节点类型定义 */
+/* 节点类型定义 */
 export type NodeType =
   | "start"
   | "process"
-  | "approval"
   | "condition"
   | "notify"
   | "end";
@@ -29,7 +28,6 @@ export interface FlowEdge {
   target: string;
   label: string;
 }
-
 
 
 

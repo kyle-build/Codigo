@@ -18,7 +18,7 @@ export type RuntimeAction = ActionConfig | LegacyRuntimeAction;
 
 interface ComponentRuntimeState {
   pageState: Record<string, RuntimeStateValue>;
-  onAction?: (action: RuntimeAction) => void;
+  onAction?: (action: RuntimeAction) => void | Promise<void>;
 }
 
 function visitNodes(
@@ -83,9 +83,12 @@ function handleComponentClickActions(
     return;
   }
 
-  actions.forEach((action) => {
-    runtime?.onAction?.(action);
-  });
+  const run = async () => {
+    for (const action of actions) {
+      await runtime?.onAction?.(action);
+    }
+  };
+  void run().catch(() => {});
 }
 
 function shouldRenderComponent(

@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FloatButton } from "antd";
+import { FloatButton, message } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { CaretLeftOutlined } from "@ant-design/icons";
 import {
@@ -46,7 +46,12 @@ const PreviewCanvas = observer(() => {
   const [pageState, setPageState] = useState<Record<string, RuntimeStateValue>>(
     () => initialPageState,
   );
+  const pageStateRef = useRef(pageState);
   const lastPageSignatureRef = useRef<string>("");
+
+  useEffect(() => {
+    pageStateRef.current = pageState;
+  }, [pageState]);
 
   useEffect(() => {
     if (hasInitializedRef.current) {
@@ -81,23 +86,30 @@ const PreviewCanvas = observer(() => {
     setPageState(initialPageState);
   }, [activePage?.id, activePage?.path, componentTree, initialPageState]);
 
-  const runtime = useMemo(
-    () => ({
-      pageState,
-      onAction: (action: RuntimeAction) => {
+  const runtime = useMemo(() => {
+    const runActions = async (actions: RuntimeAction[] | undefined) => {
+      const list = Array.isArray(actions) ? actions : [];
+      for (const item of list) {
+        await onAction(item);
+      }
+    };
+
+    const onAction = async (action: RuntimeAction) => {
         if (action.type === "set-state") {
-          setPageState((prev) => ({
-            ...prev,
+          pageStateRef.current = {
+            ...pageStateRef.current,
             [action.key]: action.value,
-          }));
+          };
+          setPageState(pageStateRef.current);
           return;
         }
 
         if (action.type === "setState") {
-          setPageState((prev) => ({
-            ...prev,
+          pageStateRef.current = {
+            ...pageStateRef.current,
             [action.key]: action.value,
-          }));
+          };
+          setPageState(pageStateRef.current);
           return;
         }
 
@@ -124,12 +136,121 @@ const PreviewCanvas = observer(() => {
           return;
         }
 
+        if (action.type === "toast") {
+          message.open({
+            content: action.message,
+            type: action.variant ?? "info",
+          });
+          return;
+        }
+
+        if (action.type === "confirm") {
+          const ok = window.confirm(action.message);
+          if (ok) {
+            await runActions(action.onOk);
+            return;
+          }
+          await runActions(action.onCancel);
+          throw new Error("ACTION_CANCELLED");
+        }
+
+        if (action.type === "when") {
+          const stateValue = (pageStateRef.current ?? {})[action.key];
+          const op = action.op ?? "truthy";
+          const passed =
+            op === "eq"
+              ? stateValue === action.value
+              : op === "ne"
+                ? stateValue !== action.value
+                : op === "falsy"
+                  ? !stateValue
+                  : !!stateValue;
+
+          if (passed) {
+            await runActions(action.onTrue);
+          } else {
+            await runActions(action.onFalse);
+          }
+          return;
+        }
+
+        if (action.type === "request") {
+          const method = (action.method ?? "GET").toUpperCase();
+          const headers: Record<string, string> = { ...(action.headers ?? {}) };
+          const hasContentType = Object.keys(headers).some(
+            (key) => key.toLowerCase() === "content-type",
+          );
+
+          let body: BodyInit | undefined;
+          if (method !== "GET" && method !== "HEAD" && action.body !== undefined) {
+            if (typeof action.body === "string") {
+              try {
+                const parsed = JSON.parse(action.body);
+                body = JSON.stringify(parsed);
+                if (!hasContentType) {
+                  headers["Content-Type"] = "application/json";
+                }
+              } catch {
+                body = action.body;
+                if (!hasContentType) {
+                  headers["Content-Type"] = "text/plain;charset=UTF-8";
+                }
+              }
+            } else {
+              body = JSON.stringify(action.body);
+              if (!hasContentType) {
+                headers["Content-Type"] = "application/json";
+              }
+            }
+          }
+
+          try {
+            const resp = await fetch(action.url, {
+              method,
+              headers,
+              body,
+              credentials: "include",
+            });
+            const contentType = resp.headers.get("content-type") ?? "";
+            const data = contentType.includes("application/json")
+              ? await resp.json()
+              : await resp.text();
+
+            if (resp.ok) {
+              if (action.saveToStateKey) {
+                pageStateRef.current = {
+                  ...pageStateRef.current,
+                  [action.saveToStateKey]: data,
+                };
+                setPageState(pageStateRef.current);
+              }
+              await runActions(action.onSuccess);
+              return;
+            }
+
+            if (Array.isArray(action.onError) && action.onError.length) {
+              await runActions(action.onError);
+              return;
+            }
+
+            throw new Error(
+              typeof data === "string" ? data : `Request failed: ${resp.status}`,
+            );
+          } catch (err) {
+            if (Array.isArray(action.onError) && action.onError.length) {
+              await runActions(action.onError);
+              return;
+            }
+            throw err;
+          }
+        }
+
         const targetElement = document.getElementById(action.targetId);
         targetElement?.scrollIntoView({ behavior: "smooth", block: "start" });
-      },
-    }),
-    [pageState, setSearchParams],
-  );
+    };
+
+    return { pageState, onAction };
+  }, [pageState, setSearchParams]);
 
   const handleSelectPagePath = (path: string) => {
     setSearchParams((prev) => {

@@ -1,4 +1,4 @@
-﻿import { makeAutoObservable, toJS } from "mobx";
+import { makeAutoObservable, toJS } from "mobx";
 import type { FlowNode, FlowEdge, NodeType } from "../types";
 import { trackUndo } from "mobx-shallow-undo";
 
@@ -9,42 +9,24 @@ function genId(p: string = "e"): string {
 class FlowStore {
   // 节点
   nodes: FlowNode[] = [
-    { id: "start_1", type: "start", label: "开始", x: 60, y: 180, props: {} },
+    { id: "start_1", type: "start", label: "触发", x: 60, y: 180, props: {} },
 
     {
       id: "proc_1",
       type: "process",
-      label: "填写申请",
+      label: "设置状态",
       x: 220,
       y: 168,
-      props: { assignee: "申请人" },
-    },
-
-    {
-      id: "appr_1",
-      type: "approval",
-      label: "部门审批",
-      x: 420,
-      y: 168,
-      props: { assignee: "部门经理", timeout: 3 },
+      props: { desc: "setState: activeTab=overview" },
     },
 
     {
       id: "cond_1",
       type: "condition",
-      label: "金额判断",
+      label: "条件判断",
       x: 620,
       y: 164,
-      props: { expr: "amount > 10000" },
-    },
-
-    {
-      id: "appr_2",
-      type: "approval",
-      label: "总监审批",
-      x: 820,
-      y: 100,
-      props: { assignee: "总监" },
+      props: { expr: "activeTab === 'overview'" },
     },
 
     {
@@ -53,7 +35,7 @@ class FlowStore {
       label: "发送通知",
       x: 820,
       y: 250,
-      props: { message: "审批完成" },
+      props: { message: "事件执行完成" },
     },
 
     { id: "end_1", type: "end", label: "结束", x: 1020, y: 180, props: {} },
@@ -62,11 +44,8 @@ class FlowStore {
   // 边
   edges: FlowEdge[] = [
     { id: genId(), source: "start_1", target: "proc_1", label: "" },
-    { id: genId(), source: "proc_1", target: "appr_1", label: "" },
-    { id: genId(), source: "appr_1", target: "cond_1", label: "同意" },
-    { id: genId(), source: "cond_1", target: "appr_2", label: ">1万" },
-    { id: genId(), source: "cond_1", target: "notify_1", label: "≤1万" },
-    { id: genId(), source: "appr_2", target: "end_1", label: "" },
+    { id: genId(), source: "proc_1", target: "cond_1", label: "" },
+    { id: genId(), source: "cond_1", target: "notify_1", label: "是" },
     { id: genId(), source: "notify_1", target: "end_1", label: "" },
   ];
 
@@ -176,7 +155,6 @@ class FlowStore {
 }
 
 export const flowStore = new FlowStore();
-
 
 
 

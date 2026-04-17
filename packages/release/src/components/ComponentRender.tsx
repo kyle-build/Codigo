@@ -9,41 +9,23 @@ import {
   getComponentByType,
   initBuiltinComponents,
 } from "@codigo/materials";
-import type { IPageSchema } from "@codigo/schema";
+import type { ActionConfig, IPageSchema, RuntimeStateValue } from "@codigo/schema";
 import { useRequest } from "ahooks";
 import { useImmer } from "use-immer";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { message, Button } from "antd";
 import AdminShell from "./AdminShell";
 
 initBuiltinComponents();
 
 const usingInputType = ["input", "textArea", "radio", "checkbox"];
-type RuntimeStateValue = string | number | boolean;
-type RuntimeAction =
-  | {
-      type: "set-state";
-      key: string;
-      value: RuntimeStateValue;
-    }
-  | {
-      type: "setState";
-      key: string;
-      value: RuntimeStateValue;
-    }
-  | {
-      type: "navigate";
-      path: string;
-    }
-  | {
-      type: "openUrl";
-      url: string;
-      target?: "_self" | "_blank";
-    }
-  | {
-      type: "scrollTo";
-      targetId: string;
-    };
+interface LegacyRuntimeAction {
+  type: "set-state";
+  key: string;
+  value: RuntimeStateValue;
+}
+
+type RuntimeAction = ActionConfig | LegacyRuntimeAction;
 
 function getClickActions(node: ComponentNode): RuntimeAction[] {
   const configuredActions = Array.isArray(node.events?.onClick)
@@ -122,7 +104,7 @@ function resolveInitialPageState(nodes: ComponentNode[]) {
 function generateComponent(
   conf: { id: string; type: TComponentTypes; props: Record<string, any> },
   onUpdate: (value: any) => void,
-  onAction: (action: RuntimeAction) => void,
+  onAction: (action: RuntimeAction) => void | Promise<void>,
   pageState: Record<string, RuntimeStateValue>,
   slots?: Record<string, any[]>,
   editorNodeId?: string,
@@ -241,10 +223,15 @@ export default function ComponentRender({
     pageSchema,
   ]);
   const [pageState, setPageState] = useState(initialPageState);
+  const pageStateRef = useRef(pageState);
 
   useEffect(() => {
     setPageState(initialPageState);
   }, [initialPageState]);
+
+  useEffect(() => {
+    pageStateRef.current = pageState;
+  }, [pageState]);
 
   useEffect(() => {
     setCurrentPagePath(initialPagePath ?? null);
@@ -278,12 +265,20 @@ export default function ComponentRender({
     return pageState[props.visibleStateKey] === props.visibleStateValue;
   };
 
-  const handleAction = (action: RuntimeAction) => {
+  const handleAction = async (action: RuntimeAction) => {
+    const runActions = async (actions: RuntimeAction[] | undefined) => {
+      const list = Array.isArray(actions) ? actions : [];
+      for (const item of list) {
+        await handleAction(item);
+      }
+    };
+
     if (action.type === "set-state" || action.type === "setState") {
-      setPageState((prev) => ({
-        ...prev,
+      pageStateRef.current = {
+        ...pageStateRef.current,
         [action.key]: action.value,
-      }));
+      };
+      setPageState(pageStateRef.current);
       return;
     }
 
@@ -299,6 +294,115 @@ export default function ComponentRender({
     if (action.type === "openUrl") {
       window.open(action.url, action.target ?? "_blank", "noopener,noreferrer");
       return;
+    }
+
+    if (action.type === "toast") {
+      message.open({
+        content: action.message,
+        type: action.variant ?? "info",
+      });
+      return;
+    }
+
+    if (action.type === "confirm") {
+      const ok = window.confirm(action.message);
+      if (ok) {
+        await runActions(action.onOk as RuntimeAction[] | undefined);
+        return;
+      }
+      await runActions(action.onCancel as RuntimeAction[] | undefined);
+      throw new Error("ACTION_CANCELLED");
+    }
+
+    if (action.type === "when") {
+      const stateValue = (pageStateRef.current ?? {})[action.key];
+      const op = action.op ?? "truthy";
+      const passed =
+        op === "eq"
+          ? stateValue === action.value
+          : op === "ne"
+            ? stateValue !== action.value
+            : op === "falsy"
+              ? !stateValue
+              : !!stateValue;
+
+      if (passed) {
+        await runActions(action.onTrue as RuntimeAction[] | undefined);
+      } else {
+        await runActions(action.onFalse as RuntimeAction[] | undefined);
+      }
+      return;
+    }
+
+    if (action.type === "request") {
+      const method = (action.method ?? "GET").toUpperCase();
+      const headers: Record<string, string> = { ...(action.headers ?? {}) };
+      const hasContentType = Object.keys(headers).some(
+        (key) => key.toLowerCase() === "content-type",
+      );
+
+      let body: BodyInit | undefined;
+      if (method !== "GET" && method !== "HEAD" && action.body !== undefined) {
+        if (typeof action.body === "string") {
+          try {
+            const parsed = JSON.parse(action.body);
+            body = JSON.stringify(parsed);
+            if (!hasContentType) {
+              headers["Content-Type"] = "application/json";
+            }
+          } catch {
+            body = action.body;
+            if (!hasContentType) {
+              headers["Content-Type"] = "text/plain;charset=UTF-8";
+            }
+          }
+        } else {
+          body = JSON.stringify(action.body);
+          if (!hasContentType) {
+            headers["Content-Type"] = "application/json";
+          }
+        }
+      }
+
+      try {
+        const resp = await fetch(action.url, {
+          method,
+          headers,
+          body,
+          credentials: "include",
+        });
+        const contentType = resp.headers.get("content-type") ?? "";
+        const data = contentType.includes("application/json")
+          ? await resp.json()
+          : await resp.text();
+
+        if (resp.ok) {
+          if (action.saveToStateKey) {
+            pageStateRef.current = {
+              ...pageStateRef.current,
+              [action.saveToStateKey]: data,
+            };
+            setPageState(pageStateRef.current);
+          }
+          await runActions(action.onSuccess as RuntimeAction[] | undefined);
+          return;
+        }
+
+        if (Array.isArray(action.onError) && action.onError.length) {
+          await runActions(action.onError as RuntimeAction[] | undefined);
+          return;
+        }
+
+        throw new Error(
+          typeof data === "string" ? data : `Request failed: ${resp.status}`,
+        );
+      } catch (err) {
+        if (Array.isArray(action.onError) && action.onError.length) {
+          await runActions(action.onError as RuntimeAction[] | undefined);
+          return;
+        }
+        throw err;
+      }
     }
 
     const targetElement = document.getElementById(action.targetId);
@@ -354,7 +458,12 @@ export default function ComponentRender({
         key={node.id}
         className="relative"
         onClick={() => {
-          getClickActions(node).forEach((action) => handleAction(action));
+          const run = async () => {
+            for (const action of getClickActions(node)) {
+              await handleAction(action);
+            }
+          };
+          void run().catch(() => {});
         }}
         style={{
           ...resolvedStyles,
