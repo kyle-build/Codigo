@@ -47,6 +47,10 @@ export const router = createHashRouter([
     element: <Release />,
   },
   {
+    path: "/release/:id",
+    element: <Release />,
+  },
+  {
     element: <StudioLayout />,
     children: [
       {

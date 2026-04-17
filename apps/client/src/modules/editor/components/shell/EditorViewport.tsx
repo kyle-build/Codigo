@@ -475,11 +475,11 @@ export const EditorViewport = observer(function EditorViewport(
           <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
             <span>{props.storePage.deviceType === "mobile" ? "Mobile View" : "Desktop View"}</span>
           </div>
+          <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
+            <span>支持应用模板或者拖拽组件</span>
+          </div>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
-            <span>UTF-8</span>
-          </div>
           <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
             <span>Powered by Codigo</span>
           </div>

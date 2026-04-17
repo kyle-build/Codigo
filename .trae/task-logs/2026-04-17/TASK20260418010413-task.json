@@ -1,0 +1,126 @@
+{
+  "taskId": "TASK20260418010413",
+  "slug": "task",
+  "title": "发布：发布结果模态框",
+  "goal": "将发布成功反馈改为正式模态框，并展示可分享链接、过期时间与权限配置",
+  "summary": "1) 新增发布结果模态框组件；2) 发布成功后展示固定公开链接、复制/打开操作；3) 提供过期时间与权限配置 UI，并标注待服务端接入后生效",
+  "scope": "apps/client",
+  "author": "Trae Agent",
+  "timestamp": "2026-04-17T17:04:13.402Z",
+  "tags": [
+    "release"
+  ],
+  "commands": [
+    "pnpm --filter @codigo/client run typecheck"
+  ],
+  "verification": [
+    "PublishButton 发布成功后弹出模态框",
+    "模态框内可查看链接并执行复制/打开操作",
+    "模态框展示过期时间与权限配置 UI"
+  ],
+  "reproduction": [
+    "pnpm install",
+    "pnpm --filter @codigo/client run dev",
+    "进入编辑器点击发布，观察弹窗中的链接、过期时间和权限配置"
+  ],
+  "notes": [],
+  "artifacts": [
+    "apps/client/src/modules/editor/components/header/center/PublishButton.tsx",
+    "apps/client/src/modules/editor/components/header/center/PublishReleaseModal.tsx",
+    "apps/client/src/modules/editor/components/header/center/publishReleaseModal.config.ts"
+  ],
+  "gitInfo": {
+    "branch": "main",
+    "commit": "1d254082e412333c59daddd282b9457373e5ce75",
+    "shortCommit": "1d25408",
+    "status": "M .trae/task-logs/index.json\n M apps/client/src/app/router/index.tsx\n D apps/client/src/modules/editor/components/canvas/CanvasEmptyState.tsx\n M apps/client/src/modules/editor/components/canvas/index.tsx\n M apps/client/src/modules/editor/components/header/center/PublishButton.tsx\n M apps/client/src/modules/editor/components/shell/EditorViewport.tsx\n M apps/client/src/modules/release/index.tsx\n?? .trae/task-logs/2026-04-17/TASK20260418005717-task.json\n?? .trae/task-logs/2026-04-17/TASK20260418005717-task.md\n?? apps/client/src/modules/editor/components/header/center/PublishReleaseModal.tsx\n?? apps/client/src/modules/editor/components/header/center/publishReleaseModal.config.ts"
+  },
+  "changedFiles": [
+    "M .trae/task-logs/index.json",
+    "M apps/client/src/app/router/index.tsx",
+    "D apps/client/src/modules/editor/components/canvas/CanvasEmptyState.tsx",
+    "M apps/client/src/modules/editor/components/canvas/index.tsx",
+    "M apps/client/src/modules/editor/components/header/center/PublishButton.tsx",
+    "M apps/client/src/modules/editor/components/shell/EditorViewport.tsx",
+    "M apps/client/src/modules/release/index.tsx",
+    "?? .trae/task-logs/2026-04-17/TASK20260418005717-task.json",
+    "?? .trae/task-logs/2026-04-17/TASK20260418005717-task.md",
+    "?? apps/client/src/modules/editor/components/header/center/PublishReleaseModal.tsx",
+    "?? apps/client/src/modules/editor/components/header/center/publishReleaseModal.config.ts"
+  ],
+  "environment": {
+    "os": "win32 10.0.26200 x64",
+    "cwd": "D:\\workspace\\graduate-design\\code\\codigo-system\\codigo",
+    "nodeVersion": "v20.20.1",
+    "pnpmVersion": "10.28.2",
+    "packageManager": "pnpm@10.28.2",
+    "pnpmLockSha256": "df80bb04c416be575a2dcf1dd1214fb537bfe1702f535dc02f51bea5b13c4ef2"
+  },
+  "workspacePackages": [
+    {
+      "name": "@codigo/admin",
+      "version": "0.0.0",
+      "relativePath": "apps/admin"
+    },
+    {
+      "name": "@codigo/client",
+      "version": "0.0.0",
+      "relativePath": "apps/client"
+    },
+    {
+      "name": "@codigo/editor-sandbox",
+      "version": "0.0.1",
+      "relativePath": "packages/editor-sandbox"
+    },
+    {
+      "name": "@codigo/file-service",
+      "version": "0.0.1",
+      "relativePath": "packages/file-service"
+    },
+    {
+      "name": "@codigo/materials",
+      "version": "0.0.1",
+      "relativePath": "packages/materials"
+    },
+    {
+      "name": "@codigo/opensumi-app",
+      "version": "0.0.1",
+      "relativePath": "apps/ide"
+    },
+    {
+      "name": "@codigo/plugin-system",
+      "version": "1.1.0",
+      "relativePath": "packages/plugin-system"
+    },
+    {
+      "name": "@codigo/release",
+      "version": "0.1.0",
+      "relativePath": "packages/release"
+    },
+    {
+      "name": "@codigo/render",
+      "version": "0.0.1",
+      "relativePath": "packages/render"
+    },
+    {
+      "name": "@codigo/runtime-core",
+      "version": "1.1.0",
+      "relativePath": "packages/runtime-core"
+    },
+    {
+      "name": "@codigo/schema",
+      "version": "1.1.0",
+      "relativePath": "packages/schema"
+    },
+    {
+      "name": "@codigo/server",
+      "version": "0.0.1",
+      "relativePath": "apps/server"
+    },
+    {
+      "name": "@codigo/template",
+      "version": "0.0.1",
+      "relativePath": "packages/template"
+    }
+  ]
+}

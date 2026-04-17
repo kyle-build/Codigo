@@ -10,8 +10,8 @@ import type { MenuProps } from "antd";
 import { useRequest } from "ahooks";
 import { Button, Dropdown, message, Space } from "antd";
 import { observer } from "mobx-react-lite";
-import { useNavigate } from "react-router-dom";
 import { postRelease } from "@/modules/editor/api/low-code";
+import { PublishReleaseModal } from "@/modules/editor/components/header/center/PublishReleaseModal";
 import { PublishTemplateModal } from "@/modules/editor/components/header/center/PublishTemplateModal";
 import {
   useEditorComponents,
@@ -26,11 +26,15 @@ import { createTemplate } from "@/modules/templateCenter/api/templates";
 import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
 
 export const PublishButton = observer(function PublishButton() {
-  const navigate = useNavigate();
   const { serializeSchema } = useEditorComponents();
   const { store } = useEditorPage();
   const { addOperationLog, can, ensurePermission } = useEditorPermission();
   const { store: authStore } = useStoreAuth();
+  const [publishResult, setPublishResult] = useState({
+    open: false,
+    shareUrl: "",
+    pageName: "",
+  });
   const [templateModalOpen, setTemplateModalOpen] = useState(false);
   const [templateInitialValues, setTemplateInitialValues] = useState({
     name: "",
@@ -43,7 +47,12 @@ export const PublishButton = observer(function PublishButton() {
     {
       manual: true,
       onSuccess: ({ data }) => {
-        navigate(`/release?id=${data}`);
+        const shareUrl = buildReleaseShareUrl(Number(data));
+        setPublishResult({
+          open: true,
+          shareUrl,
+          pageName: store.title?.trim() || "未命名应用",
+        });
         localStorage.setItem("release_time", String(Date.now()));
       },
     },
@@ -77,6 +86,17 @@ export const PublishButton = observer(function PublishButton() {
       canvasWidth: store.canvasWidth,
       canvasHeight: store.canvasHeight,
     };
+  }
+
+  /**
+   * 生成当前环境下可分享的发布链接。
+   */
+  function buildReleaseShareUrl(pageId: number) {
+    if (typeof window === "undefined") {
+      return "";
+    }
+    const base = window.location.href.split("#")[0];
+    return `${base}#/release/${pageId}`;
   }
 
   /**
@@ -221,6 +241,17 @@ export const PublishButton = observer(function PublishButton() {
         initialValues={templateInitialValues}
         onCancel={() => setTemplateModalOpen(false)}
         onSubmit={handlePublishTemplate}
+      />
+      <PublishReleaseModal
+        open={publishResult.open}
+        shareUrl={publishResult.shareUrl}
+        pageName={publishResult.pageName}
+        onCancel={() =>
+          setPublishResult((prev) => ({
+            ...prev,
+            open: false,
+          }))
+        }
       />
     </>
   );

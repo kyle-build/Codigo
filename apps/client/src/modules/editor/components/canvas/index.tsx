@@ -16,7 +16,6 @@ import {
 } from "@/modules/editor/hooks";
 import { generateComponent } from "@/modules/editor/runtime";
 import type { TEditorComponentsStore } from "@/modules/editor/stores";
-import { CanvasEmptyState } from "./CanvasEmptyState";
 import { useCanvasDragMove } from "./hooks/useCanvasDragMove";
 import { useCanvasDrop } from "./hooks/useCanvasDrop";
 import { useCanvasResize } from "./hooks/useCanvasResize";
@@ -193,12 +192,6 @@ const EditorCanvas: FC<{
         )}px`,
       }}
     >
-      {!store.sortableCompConfig.length && (
-        <CanvasEmptyState
-          canEditStructure={canEditStructure}
-          onQuickInsert={(type) => push(type)}
-        />
-      )}
       {getComponentTree.get().map(function renderTreeNode(node: ComponentNode) {
         const renderedChildren =
           node.children?.map((child: ComponentNode) => renderTreeNode(child)) ??

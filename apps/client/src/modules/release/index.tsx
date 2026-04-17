@@ -3,7 +3,7 @@ import { useRequest } from "ahooks";
 import { Empty, FloatButton, QRCode, Result, Spin } from "antd";
 import type { ComponentNode, IPageSchema } from "@codigo/schema";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getPublishedPage } from "@/modules/editor/api/low-code";
 import {
   generateComponent,
@@ -160,8 +160,11 @@ function ReleaseCanvas({
 
 export default function Release() {
   const nav = useNavigate();
+  const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const pageId = Number(searchParams.get("id"));
+  const pageIdRaw = params.id ?? searchParams.get("id") ?? "";
+  const pageId = Number(pageIdRaw);
+  const isValidPageId = Number.isFinite(pageId) && pageId > 0;
   const requestedPagePath = searchParams.get("page");
 
   const { data, loading, error } = useRequest(
@@ -170,7 +173,7 @@ export default function Release() {
       return res.data;
     },
     {
-      ready: Number.isFinite(pageId) && pageId > 0,
+      ready: isValidPageId,
     },
   );
 
@@ -191,12 +194,12 @@ export default function Release() {
       return "";
     }
     return window.location.href;
-  }, [pageId]);
+  }, [isValidPageId]);
 
   const shouldUseAdminShell = Array.isArray(schema.pages) && schema.pages.length > 0;
 
   const content = (() => {
-    if (!pageId) {
+    if (!isValidPageId) {
       return (
         <Result
           status="warning"
