@@ -29,7 +29,6 @@ export const StudioLayout = observer(() => {
           },
           Layout: {
             bodyBg: "var(--ide-bg)",
-            headerBg: "var(--ide-header-bg)",
             siderBg: "var(--ide-sidebar-bg)",
           },
           Tabs: {
@@ -37,7 +36,6 @@ export const StudioLayout = observer(() => {
             itemSelectedColor: "var(--ide-text)",
             itemHoverColor: "var(--ide-text)",
             cardBg: "var(--ide-header-bg)",
-            headerBg: "var(--ide-sidebar-bg)",
           },
           Input: {
             activeBorderColor: "var(--ide-accent)",

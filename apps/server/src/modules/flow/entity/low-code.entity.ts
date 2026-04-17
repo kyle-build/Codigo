@@ -1,5 +1,11 @@
 // low-code.entity.ts
-import type { IComponent, IComponentData, ILowCode } from '@codigo/schema';
+import type {
+  IComponent,
+  IComponentData,
+  ILowCode,
+  PageGridConfig,
+  PageLayoutMode,
+} from '@codigo/schema';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import type { TComponentTypes } from '@codigo/schema';
 
@@ -30,7 +36,10 @@ export class Page implements ILowCode {
   pageCategory = 'admin' as const;
 
   @Column({ type: 'varchar', length: 20, default: 'absolute' })
-  layoutMode = 'absolute' as const;
+  layoutMode: PageLayoutMode = 'absolute';
+
+  @Column({ type: 'simple-json', nullable: true })
+  grid?: PageGridConfig;
 
   @Column({ type: 'varchar', length: 20, default: 'pc' })
   deviceType: 'mobile' | 'pc' = 'pc';

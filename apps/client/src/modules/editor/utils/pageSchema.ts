@@ -328,6 +328,27 @@ export function duplicateTreeNode(node: ComponentNode): ComponentNode {
  * 为复制后的节点添加位置偏移。
  */
 export function offsetNodePosition(node: ComponentNode, delta = 24) {
+  if (
+    node.styles?.gridColumnStart !== undefined ||
+    node.styles?.gridRowStart !== undefined
+  ) {
+    const columnStart = Math.max(1, Number(node.styles?.gridColumnStart ?? 1) + 1);
+    const rowStart = Math.max(1, Number(node.styles?.gridRowStart ?? 1) + 1);
+    node.styles = {
+      ...(node.styles ?? {}),
+      position: "relative",
+      gridColumnStart: columnStart,
+      gridRowStart: rowStart,
+      gridColumnSpan: Math.max(1, Number(node.styles?.gridColumnSpan ?? 1)),
+      gridRowSpan: Math.max(1, Number(node.styles?.gridRowSpan ?? 1)),
+      left: undefined,
+      top: undefined,
+      width: "100%",
+      height: "100%",
+    };
+    return;
+  }
+
   const left = Number.parseInt(String(node.styles?.left ?? "0"), 10);
   const top = Number.parseInt(String(node.styles?.top ?? "0"), 10);
   node.styles = {

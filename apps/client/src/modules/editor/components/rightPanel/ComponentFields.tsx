@@ -17,6 +17,7 @@ import {
 } from "@/modules/editor/registry/components";
 import type { TEditorComponentsStore } from "@/modules/editor/stores";
 import { useEditorComponents } from "@/modules/editor/hooks";
+import { useEditorPage } from "@/modules/editor/hooks";
 import { Button, Collapse, Empty, Form, Input, InputNumber, Select } from "antd";
 
 const { Panel } = Collapse;
@@ -43,12 +44,10 @@ function createDefaultAction(type: ActionConfig["type"]): ActionConfig {
 
 export const EditorOutlineTree = observer(function EditorOutlineTree() {
   const {
-    getActivePage,
     getComponentTree,
     getCurrentComponentConfig,
     setCurrentComponent,
   } = useEditorComponents();
-  const activePage = getActivePage.get();
   const currentConfigId = getCurrentComponentConfig.get()?.id ?? null;
   const componentTree = getComponentTree.get();
 
@@ -155,6 +154,7 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
       updateCurrentComponentEvents,
       updateCurrentComponentStyles,
     } = useEditorComponents();
+    const { store: pageStore } = useEditorPage();
     const config = getCurrentComponentConfig.get();
 
     if (!config) return null;
@@ -172,8 +172,22 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
 
     const handleStyleChange = (_changedValues: any, allValues: any) => {
       const formattedStyles = { ...allValues };
+      const pxKeys = new Set([
+        "left",
+        "top",
+        "width",
+        "height",
+        "marginTop",
+        "marginBottom",
+        "marginLeft",
+        "marginRight",
+        "paddingTop",
+        "paddingBottom",
+        "paddingLeft",
+        "paddingRight",
+      ]);
       Object.keys(formattedStyles).forEach((key) => {
-        if (typeof formattedStyles[key] === "number") {
+        if (typeof formattedStyles[key] === "number" && pxKeys.has(key)) {
           formattedStyles[key] = `${formattedStyles[key]}px`;
         }
       });
@@ -190,25 +204,43 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
       }
     });
 
+    const isGridRoot = pageStore.layoutMode === "grid" && !config.parentId;
+
     const styleSections = [
-      {
-        key: "position",
-        title: "位置",
-        icon: <DragOutlined />,
-        fields: [
-          { label: "X", name: "left", placeholder: "px" },
-          { label: "Y", name: "top", placeholder: "px" },
-        ],
-      },
-      {
-        key: "size",
-        title: "尺寸",
-        icon: <BorderOutlined />,
-        fields: [
-          { label: "W", name: "width", placeholder: "100%" },
-          { label: "H", name: "height", placeholder: "auto" },
-        ],
-      },
+      isGridRoot
+        ? {
+            key: "position",
+            title: "栅格位置",
+            icon: <DragOutlined />,
+            fields: [
+              { label: "列", name: "gridColumnStart", placeholder: "1" },
+              { label: "行", name: "gridRowStart", placeholder: "1" },
+              { label: "列跨度", name: "gridColumnSpan", placeholder: "1" },
+              { label: "行跨度", name: "gridRowSpan", placeholder: "1" },
+            ],
+          }
+        : {
+            key: "position",
+            title: "位置",
+            icon: <DragOutlined />,
+            fields: [
+              { label: "X", name: "left", placeholder: "px" },
+              { label: "Y", name: "top", placeholder: "px" },
+            ],
+          },
+      ...(isGridRoot
+        ? []
+        : [
+            {
+              key: "size",
+              title: "尺寸",
+              icon: <BorderOutlined />,
+              fields: [
+                { label: "W", name: "width", placeholder: "100%" },
+                { label: "H", name: "height", placeholder: "auto" },
+              ],
+            },
+          ]),
       {
         key: "margin",
         title: "外间距",

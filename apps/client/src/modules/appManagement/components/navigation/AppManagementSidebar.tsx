@@ -1,4 +1,3 @@
-import { RocketOutlined } from "@ant-design/icons";
 import type { AppManagementNavItem, AppManagementTab } from "../../types/appManagement";
 
 interface AppManagementSidebarProps {

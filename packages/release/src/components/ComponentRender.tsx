@@ -332,6 +332,23 @@ export default function ComponentRender({
       ]),
     );
 
+    const resolvedStyles: Record<string, any> = { ...(node.styles ?? {}) };
+    if (
+      resolvedStyles.gridColumnStart !== undefined ||
+      resolvedStyles.gridRowStart !== undefined
+    ) {
+      const colStart = Math.max(1, Number(resolvedStyles.gridColumnStart ?? 1));
+      const colSpan = Math.max(1, Number(resolvedStyles.gridColumnSpan ?? 1));
+      const rowStart = Math.max(1, Number(resolvedStyles.gridRowStart ?? 1));
+      const rowSpan = Math.max(1, Number(resolvedStyles.gridRowSpan ?? 1));
+      resolvedStyles.gridColumn = `${colStart} / span ${colSpan}`;
+      resolvedStyles.gridRow = `${rowStart} / span ${rowSpan}`;
+      delete resolvedStyles.gridColumnStart;
+      delete resolvedStyles.gridColumnSpan;
+      delete resolvedStyles.gridRowStart;
+      delete resolvedStyles.gridRowSpan;
+    }
+
     return (
       <div
         key={node.id}
@@ -340,7 +357,7 @@ export default function ComponentRender({
           getClickActions(node).forEach((action) => handleAction(action));
         }}
         style={{
-          ...(node.styles ?? {}),
+          ...resolvedStyles,
         }}
       >
         {generateComponent(
@@ -439,6 +456,24 @@ export default function ComponentRender({
   const content = (
     <div
       className={`${isPosted && "opacity-50 select-none pointer-events-none"}`}
+      style={{
+        position: "relative",
+        ...(data.layoutMode === "grid"
+          ? {
+              display: "grid",
+              gridTemplateColumns: `repeat(${Math.max(1, data.grid?.cols ?? 12)}, minmax(0, 1fr))`,
+              gridTemplateRows: `repeat(${Math.max(1, data.grid?.rows ?? 12)}, minmax(0, 1fr))`,
+              gap: Math.max(0, data.grid?.gap ?? 0),
+              width: data.canvasWidth,
+              height: data.canvasHeight,
+              maxWidth: "100%",
+            }
+          : {
+              width: data.canvasWidth,
+              minHeight: data.canvasHeight,
+              maxWidth: "100%",
+            }),
+      }}
     >
       {pageSchema.map((node) => renderNode(node))}
 

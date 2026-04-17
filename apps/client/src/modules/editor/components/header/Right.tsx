@@ -30,13 +30,6 @@ export default observer(function Right() {
     },
   ];
 
-  const roleLabel =
-    storeAuth.details?.global_role === "SUPER_ADMIN"
-      ? "超管"
-      : storeAuth.details?.global_role === "ADMIN"
-        ? "管理员"
-        : "协作者";
-
   return (
     <>
       <Dropdown

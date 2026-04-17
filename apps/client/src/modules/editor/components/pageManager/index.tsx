@@ -44,7 +44,7 @@ const EditorPageManager =  observer(function ({
 
         <div className="min-h-0 flex-1 overflow-y-auto px-2 py-2 scrollbar-thin scrollbar-thumb-[var(--ide-border)] hover:scrollbar-thumb-[var(--ide-text-muted)] scrollbar-track-transparent">
           <div className="space-y-1">
-            {pages.map((page, index) => {
+            {pages.map((page) => {
               const isActive = page.id === activePage?.id;
 
               return (

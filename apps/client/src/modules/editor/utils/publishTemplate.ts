@@ -18,7 +18,7 @@ function toTemplateComponent(node: ComponentNode): TemplateComponent {
     props: node.props ? JSON.parse(JSON.stringify(node.props)) : undefined,
     styles: node.styles ? { ...node.styles } : undefined,
     events: node.events ? JSON.parse(JSON.stringify(node.events)) : undefined,
-    slot: node.slot,
+    slot: node.slot ?? undefined,
     meta: node.meta ? { ...node.meta } : undefined,
     children: node.children?.map(toTemplateComponent),
   };

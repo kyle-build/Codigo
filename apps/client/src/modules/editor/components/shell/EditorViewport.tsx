@@ -46,6 +46,7 @@ function PanelResizeHandle({
     <div
       role="separator"
       onPointerDown={onPointerDown}
+      data-side={side}
       className="group relative z-30 w-1 shrink-0 cursor-col-resize bg-transparent touch-none transition-colors hover:bg-[var(--ide-accent)]"
     >
       <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-[var(--ide-border)]" />
@@ -121,6 +122,11 @@ export const EditorViewport = observer(function EditorViewport(
     leftPanelWidth - LEFT_PANEL_RAIL_WIDTH - LEFT_PANEL_CONTENT_WIDTH,
   );
   const showOutlineTree = props.storePage.showOutlineTree;
+  const activePagePath =
+    props.storeComps.pages.find((page) => page.id === props.storeComps.activePageId)
+      ?.path ??
+    props.storeComps.pages[0]?.path ??
+    "-";
   const effectiveLeftPanelWidth = showOutlineTree
     ? leftPanelWidth
     : LEFT_PANEL_RAIL_WIDTH + LEFT_PANEL_CONTENT_WIDTH;
@@ -470,7 +476,7 @@ export const EditorViewport = observer(function EditorViewport(
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
             <span className="opacity-80 font-mono">WORKSPACE:</span>
-            <span>{props.storePage.activePagePath}</span>
+            <span>{activePagePath}</span>
           </div>
           <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
             <span>{props.storePage.deviceType === "mobile" ? "Mobile View" : "Desktop View"}</span>

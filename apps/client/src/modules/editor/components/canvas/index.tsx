@@ -154,26 +154,38 @@ const EditorCanvas: FC<{
   useImperativeHandle(onRef, () => ({}));
 
   useEffect(() => {
-    if (storePage.layoutMode !== "absolute") {
-      return;
-    }
-
     const tree = getComponentTree.get();
     if (!tree.length) {
       return;
     }
 
-    const needsRecover = tree.every((node) => {
-      const position = node.styles?.position;
-      return (
-        position !== "absolute" &&
-        node.styles?.left === undefined &&
-        node.styles?.top === undefined
-      );
-    });
+    if (storePage.layoutMode === "absolute") {
+      const needsRecover = tree.every((node) => {
+        const position = node.styles?.position;
+        return (
+          position !== "absolute" &&
+          node.styles?.left === undefined &&
+          node.styles?.top === undefined
+        );
+      });
 
-    if (needsRecover) {
-      syncLayoutMode("absolute");
+      if (needsRecover) {
+        syncLayoutMode("absolute");
+      }
+      return;
+    }
+
+    if (storePage.layoutMode === "grid") {
+      const needsRecover = tree.every((node) => {
+        return (
+          node.styles?.gridColumnStart === undefined &&
+          node.styles?.gridRowStart === undefined
+        );
+      });
+
+      if (needsRecover) {
+        syncLayoutMode("grid");
+      }
     }
   }, [getComponentTree, storePage.layoutMode, syncLayoutMode]);
 
