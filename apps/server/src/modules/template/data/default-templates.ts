@@ -1,6 +1,8 @@
 import type { TemplatePreset } from '@codigo/schema';
+import { adminConsoleStandardTemplate } from 'src/modules/template/data/admin-console-standard';
 
 export const DEFAULT_TEMPLATE_PRESETS: TemplatePreset[] = [
+  adminConsoleStandardTemplate,
   {
     key: 'admin-console-basic',
     name: '通用后台管理模板（基础版）',
@@ -91,4 +93,3 @@ export const DEFAULT_TEMPLATE_PRESETS: TemplatePreset[] = [
     ],
   },
 ];
-
