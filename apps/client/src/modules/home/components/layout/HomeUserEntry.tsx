@@ -31,7 +31,7 @@ export function HomeUserEntry({
 
   return (
     <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" arrow>
-      <button className="flex items-center gap-2 rounded-sm border border-[var(--ide-control-border)] bg-[var(--ide-control-bg)] px-2.5 py-1 transition-colors hover:bg-[var(--ide-hover)]">
+      <button className="flex items-center gap-2 rounded-sm border border-transparent bg-transparent px-2.5 py-1 transition-colors hover:border-[var(--ide-control-border)] hover:bg-[var(--ide-hover)]">
         <Avatar
           src={avatarUrl ? <img src={avatarUrl} alt={username || "avatar"} referrerPolicy="no-referrer" /> : undefined}
           icon={!avatarUrl && <UserOutlined />}

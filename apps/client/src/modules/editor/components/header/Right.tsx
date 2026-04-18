@@ -89,7 +89,6 @@ export default observer(function Right() {
               <Avatar
                 key={item.id}
                 size={24}
-                className="border border-[var(--ide-border)]"
                 style={{
                   backgroundColor: item.color,
                   color: "white",
@@ -99,7 +98,7 @@ export default observer(function Right() {
               </Avatar>
             ))}
             {restCollaboratorCount > 0 ? (
-              <div className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--ide-border)] bg-[var(--ide-control-bg)] text-[11px] text-[var(--ide-text-muted)]">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--ide-hover)] text-[11px] text-[var(--ide-text-muted)]">
                 +{restCollaboratorCount}
               </div>
             ) : null}
@@ -141,7 +140,7 @@ export default observer(function Right() {
           }
         >
           <button
-            className="rounded-sm border border-[var(--ide-control-border)] bg-[var(--ide-control-bg)] px-2 py-0.5 text-[12px] text-[var(--ide-text)] transition-colors hover:bg-[var(--ide-hover)]"
+            className="rounded-sm border border-transparent bg-transparent px-2 py-0.5 text-[12px] text-[var(--ide-text)] transition-colors hover:border-[var(--ide-control-border)] hover:bg-[var(--ide-hover)]"
             type="button"
           >
             <Space size={6}>
@@ -156,7 +155,7 @@ export default observer(function Right() {
         placement="bottomRight"
         trigger={["click"]}
       >
-        <button className="rounded-sm border border-[var(--ide-control-border)] bg-[var(--ide-control-bg)] px-2 py-0.5 transition-colors hover:bg-[var(--ide-hover)]">
+        <button className="rounded-sm border border-transparent bg-transparent px-2 py-0.5 transition-colors hover:border-[var(--ide-control-border)] hover:bg-[var(--ide-hover)]">
           <Space size={6}>
             <Avatar
               src={
@@ -171,8 +170,13 @@ export default observer(function Right() {
               icon={!storeAuth.details?.head_img && <UserOutlined />}
               className={
                 !storeAuth.details?.head_img
-                  ? "!h-6 !w-6 bg-[var(--ide-accent)] border border-[var(--ide-border)]"
-                  : "!h-6 !w-6 border border-[var(--ide-border)]"
+                  ? "!h-6 !w-6 bg-[var(--ide-accent)]"
+                  : "!h-6 !w-6 overflow-hidden"
+              }
+              style={
+                storeAuth.details?.head_img
+                  ? { backgroundColor: "transparent" }
+                  : undefined
               }
             />
             <div className="text-left">

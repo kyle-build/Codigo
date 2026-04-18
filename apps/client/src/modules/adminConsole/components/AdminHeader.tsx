@@ -77,7 +77,7 @@ export default function AdminHeader() {
 
       <div className="flex flex-none items-center justify-end gap-2">
         <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={["click"]}>
-          <button className="rounded-sm border border-[var(--ide-control-border)] bg-[var(--ide-control-bg)] px-2 py-0.5 transition-colors hover:bg-[var(--ide-hover)]">
+          <button className="rounded-sm border border-transparent bg-transparent px-2 py-0.5 transition-colors hover:border-[var(--ide-control-border)] hover:bg-[var(--ide-hover)]">
             <Space size={6}>
               <Avatar
                 src={
@@ -92,8 +92,13 @@ export default function AdminHeader() {
                 icon={!storeAuth.details?.head_img && <UserOutlined />}
                 className={
                   !storeAuth.details?.head_img
-                    ? "!h-6 !w-6 bg-[var(--ide-accent)] border border-[var(--ide-border)]"
-                    : "!h-6 !w-6 border border-[var(--ide-border)]"
+                    ? "!h-6 !w-6 bg-[var(--ide-accent)]"
+                    : "!h-6 !w-6 overflow-hidden"
+                }
+                style={
+                  storeAuth.details?.head_img
+                    ? { backgroundColor: "transparent" }
+                    : undefined
                 }
               />
               <div className="text-left">
