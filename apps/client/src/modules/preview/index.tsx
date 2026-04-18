@@ -436,22 +436,24 @@ export default observer(function Preview() {
   const { containerRef, scale, scaledWidth, scaledHeight } = useFitScale({
     contentWidth: store.canvasWidth,
     contentHeight: store.canvasHeight,
-    padding: 24,
-    maxScale: 1.25,
+    padding: store.deviceType === "mobile" ? 12 : 0,
+    maxScale: 3,
   });
 
   return (
     <div className="w-screen h-screen overflow-hidden bg-slate-50">
       <div
         ref={containerRef}
-        className="h-full w-full flex items-center justify-center p-6"
+        className={`h-full w-full flex items-center justify-center ${
+          store.deviceType === "mobile" ? "p-3" : "p-0"
+        }`}
       >
         <div className="relative" style={{ width: scaledWidth, height: scaledHeight }}>
           <div
-            className={`bg-white text-left overflow-y-auto overflow-x-hidden scrollbar-hide shadow-2xl transition-transform duration-300 ${
+            className={`bg-white text-left overflow-y-auto overflow-x-hidden scrollbar-hide transition-transform duration-300 ${
               store.deviceType === "mobile"
-                ? "rounded-[30px] border-[8px] border-slate-800"
-                : "rounded-lg border border-slate-200"
+                ? "rounded-[30px] border-[8px] border-slate-800 shadow-2xl"
+                : "rounded-none border-0 shadow-none"
             }`}
             style={{
               width: store.canvasWidth,

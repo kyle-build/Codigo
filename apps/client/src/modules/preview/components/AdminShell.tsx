@@ -18,8 +18,8 @@ export function AdminShell({
   children,
 }: AdminShellProps) {
   return (
-    <div className="h-screen w-full flex bg-slate-50">
-      <aside className="h-screen w-56 shrink-0 border-r border-slate-200 bg-white flex flex-col">
+    <div className="h-full w-full flex bg-slate-50">
+      <aside className="h-full w-56 shrink-0 border-r border-slate-200 bg-white flex flex-col">
         <div className="h-14 px-4 flex items-center border-b border-slate-200 font-semibold text-slate-900">
           {title}
         </div>

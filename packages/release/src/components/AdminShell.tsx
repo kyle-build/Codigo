@@ -18,12 +18,12 @@ export default function AdminShell({
   children,
 }: AdminShellProps) {
   return (
-    <div className="min-h-screen w-full flex bg-slate-50">
-      <aside className="min-h-screen w-60 shrink-0 border-r border-slate-200 bg-white">
+    <div className="h-screen w-full flex bg-slate-50">
+      <aside className="h-screen w-60 shrink-0 border-r border-slate-200 bg-white flex flex-col">
         <div className="h-14 px-4 flex items-center border-b border-slate-200 font-semibold text-slate-900">
           {title}
         </div>
-        <nav className="p-2 flex flex-col gap-1 overflow-y-auto">
+        <nav className="flex-1 min-h-0 p-2 flex flex-col gap-1 overflow-y-auto">
           {pages.map((page) => {
             const isActive = page.path === activePagePath;
             return (
@@ -43,9 +43,7 @@ export default function AdminShell({
           })}
         </nav>
       </aside>
-      <main className="flex-1 min-h-screen overflow-auto">
-        {children}
-      </main>
+      <main className="flex-1 min-h-0 overflow-hidden">{children}</main>
     </div>
   );
 }

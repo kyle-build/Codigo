@@ -285,8 +285,8 @@ export default function Release() {
   const { containerRef, scale, scaledWidth, scaledHeight } = useFitScale({
     contentWidth: canvasWidth,
     contentHeight: canvasHeight,
-    padding: deviceType === "mobile" ? 16 : 24,
-    maxScale: 1.25,
+    padding: deviceType === "mobile" ? 12 : 0,
+    maxScale: 3,
   });
 
   const previewUrl = useMemo(() => {
@@ -395,14 +395,16 @@ export default function Release() {
         >
           <div
             ref={containerRef}
-            className="h-full w-full flex items-center justify-center p-4"
+            className={`h-full w-full flex items-center justify-center ${
+              deviceType === "mobile" ? "p-3" : "p-0"
+            }`}
           >
             <div className="relative" style={{ width: scaledWidth, height: scaledHeight }}>
               <div
-                className={`bg-white text-left overflow-y-auto overflow-x-hidden scrollbar-hide shadow-2xl ${
+                className={`bg-white text-left overflow-y-auto overflow-x-hidden scrollbar-hide ${
                   deviceType === "mobile"
-                    ? "rounded-[30px] border-[8px] border-slate-800"
-                    : "rounded-2xl border border-slate-200"
+                    ? "rounded-[30px] border-[8px] border-slate-800 shadow-2xl"
+                    : "rounded-none border-0 shadow-none"
                 }`}
                 style={{
                   width: canvasWidth,
@@ -435,15 +437,17 @@ export default function Release() {
     <div className="w-screen h-screen overflow-hidden bg-slate-50">
       <div
         ref={containerRef}
-        className="h-full w-full flex items-center justify-center p-6"
+        className={`h-full w-full flex items-center justify-center ${
+          deviceType === "mobile" ? "p-3" : "p-0"
+        }`}
       >
         {isValidPageId && !loading && !error && activeNodes.length > 0 ? (
           <div className="relative" style={{ width: scaledWidth, height: scaledHeight }}>
             <div
-              className={`bg-white text-left overflow-y-auto overflow-x-hidden scrollbar-hide shadow-2xl ${
+              className={`bg-white text-left overflow-y-auto overflow-x-hidden scrollbar-hide ${
                 deviceType === "mobile"
-                  ? "rounded-[30px] border-[8px] border-slate-800"
-                  : "rounded-2xl border border-slate-200"
+                  ? "rounded-[30px] border-[8px] border-slate-800 shadow-2xl"
+                  : "rounded-none border-0 shadow-none"
               }`}
               style={{
                 width: canvasWidth,

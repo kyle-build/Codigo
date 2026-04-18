@@ -27,7 +27,7 @@ export default async function Page({ params, searchParams }: PageType) {
   const data = await getData(params.id);
 
   return (
-    <div className="App">
+    <div className="h-screen w-screen overflow-hidden">
       <ComponentRender
         data={data}
         id={params.id}

@@ -15,6 +15,7 @@ import { useImmer } from "use-immer";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { message, Button } from "antd";
 import AdminShell from "./AdminShell";
+import { useFitScale } from "../hooks/useFitScale";
 
 initBuiltinComponents();
 
@@ -208,6 +209,9 @@ export default function ComponentRender({
   const [localData, setLocalData] = useImmer(
     JSON.parse(JSON.stringify(data)) as ComponentRenderType["data"],
   );
+  const canvasWidth = Number(localData.canvasWidth) || 1024;
+  const canvasHeight = Number(localData.canvasHeight) || 768;
+  const deviceType = localData.deviceType === "mobile" ? "mobile" : "pc";
   const runtimeSchema = useMemo(() => resolveRuntimeSchema(localData), [localData]);
   const [currentPagePath, setCurrentPagePath] = useState(initialPagePath ?? null);
   const activePage = useMemo(
@@ -215,6 +219,12 @@ export default function ComponentRender({
     [currentPagePath, runtimeSchema],
   );
   const pageSchema = activePage?.components ?? runtimeSchema.components;
+  const { containerRef, scale, scaledWidth, scaledHeight } = useFitScale({
+    contentWidth: canvasWidth,
+    contentHeight: canvasHeight,
+    padding: deviceType === "mobile" ? 12 : 0,
+    maxScale: 3,
+  });
 
   const componentValueMap = useMemo(() => {
     return new Map(
@@ -659,35 +669,44 @@ export default function ComponentRender({
 
   const content = (
     <div
-      className={`${isPosted && "opacity-50 select-none pointer-events-none"}`}
-      style={{
-        position: "relative",
-        ...(data.layoutMode === "grid"
-          ? {
-              display: "grid",
-              gridTemplateColumns: `repeat(${Math.max(1, data.grid?.cols ?? 12)}, minmax(0, 1fr))`,
-              gridTemplateRows: `repeat(${Math.max(1, data.grid?.rows ?? 12)}, minmax(0, 1fr))`,
-              gap: Math.max(0, data.grid?.gap ?? 0),
-              width: data.canvasWidth,
-              height: data.canvasHeight,
-              maxWidth: "100%",
-            }
-          : {
-              width: data.canvasWidth,
-              minHeight: data.canvasHeight,
-              maxWidth: "100%",
-            }),
-      }}
+      ref={containerRef}
+      className={`h-full w-full flex items-center justify-center ${
+        deviceType === "mobile" ? "p-3" : "p-0"
+      }`}
     >
-      {pageSchema.map((node) => renderNode(node))}
+      <div className="relative" style={{ width: scaledWidth, height: scaledHeight }}>
+        <div
+          className={`${isPosted && "opacity-50 select-none pointer-events-none"}`}
+          style={{
+            position: "relative",
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+            ...(localData.layoutMode === "grid"
+              ? {
+                  display: "grid",
+                  gridTemplateColumns: `repeat(${Math.max(1, localData.grid?.cols ?? 12)}, minmax(0, 1fr))`,
+                  gridTemplateRows: `repeat(${Math.max(1, localData.grid?.rows ?? 12)}, minmax(0, 1fr))`,
+                  gap: Math.max(0, localData.grid?.gap ?? 0),
+                  width: canvasWidth,
+                  height: canvasHeight,
+                }
+              : {
+                  width: canvasWidth,
+                  height: canvasHeight,
+                }),
+          }}
+        >
+          {pageSchema.map((node) => renderNode(node))}
 
-      {data.components.some((comp) => usingInputType.includes(comp.type)) && (
-        <div className="flex items-center justify-center">
-          <Button type="primary" onClick={run} loading={loading}>
-            提交
-          </Button>
+          {localData.components.some((comp) => usingInputType.includes(comp.type)) && (
+            <div className="flex items-center justify-center">
+              <Button type="primary" onClick={run} loading={loading}>
+                提交
+              </Button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 

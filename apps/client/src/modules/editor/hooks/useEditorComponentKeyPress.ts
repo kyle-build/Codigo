@@ -22,10 +22,35 @@ export function useEditorComponentKeyPress() {
    * 判断当前焦点是否允许触发画布快捷键。
    */
   function canTriggerShortcut() {
-    return (
-      document.activeElement === document.body ||
-      document.activeElement?.matches('div[role="button"]')
+    const activeElement = document.activeElement;
+    if (!activeElement || activeElement === document.body) {
+      return true;
+    }
+
+    if (!(activeElement instanceof HTMLElement)) {
+      return true;
+    }
+
+    const isEditing =
+      Boolean(
+        activeElement.closest(
+          'input, textarea, select, option, [contenteditable=""], [contenteditable="true"], [role="textbox"]',
+        ),
+      ) || activeElement.isContentEditable;
+    if (isEditing) {
+      return false;
+    }
+
+    const isInOverlay = Boolean(
+      activeElement.closest(
+        ".ant-modal, .ant-dropdown, .ant-popover, .ant-select-dropdown",
+      ),
     );
+    if (isInOverlay) {
+      return false;
+    }
+
+    return true;
   }
 
   /**
