@@ -32,6 +32,7 @@ const EditorComponent: FC<EditorComponentMeta> = ({ icon, name, type }) => {
         store.push(
           type,
           { left: 24, top: 24 },
+          undefined,
           { parentId: current.id, slot: slotName },
         );
         return;

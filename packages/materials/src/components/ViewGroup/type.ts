@@ -12,6 +12,10 @@ export interface IViewGroupComponentProps {
   containers?: ViewGroupContainerItem[];
   defaultActiveId?: string;
   activeId?: string;
+  contentUseGrid: boolean;
+  contentGridCols: number;
+  contentGridRows: number;
+  contentGridGap: number;
   backgroundColor: string;
   borderColor: string;
   borderRadius: number;
@@ -44,6 +48,26 @@ export const viewGroupComponentDefaultConfig: TViewGroupComponentConfigResult = 
     value: "",
     defaultValue: "",
     isHidden: true,
+  },
+  contentUseGrid: {
+    value: false,
+    defaultValue: false,
+    isHidden: false,
+  },
+  contentGridCols: {
+    value: 12,
+    defaultValue: 12,
+    isHidden: false,
+  },
+  contentGridRows: {
+    value: 12,
+    defaultValue: 12,
+    isHidden: false,
+  },
+  contentGridGap: {
+    value: 8,
+    defaultValue: 8,
+    isHidden: false,
   },
   backgroundColor: {
     value: "#ffffff",
@@ -81,4 +105,3 @@ export const viewGroupComponentDefaultConfig: TViewGroupComponentConfigResult = 
     isHidden: false,
   },
 };
-

@@ -179,7 +179,7 @@ const PermissionPanel = observer(function PermissionPanel() {
                     onClick={() => switchCurrentUser(item.id)}
                   >
                     <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm transition-transform hover:scale-105"
+                      className="w-8 h-8 padding-100 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm transition-transform hover:scale-105"
                       style={{ backgroundColor: item.color }}
                       title={`切换为该用户测试 (当前: ${item.name})`}
                     >
@@ -192,22 +192,9 @@ const PermissionPanel = observer(function PermissionPanel() {
                     />
                   </div>
                 }
-                title={
-                  <div className="flex items-center gap-2">
-                    <Text className="text-sm">{item.name}</Text>
-                    {item.id === store.currentUserId && (
-                      <Tag
-                        color="success"
-                        className="text-[10px] leading-[14px] px-1 m-0"
-                      >
-                        当前
-                      </Tag>
-                    )}
-                  </div>
-                }
                 description={
                   <Text className="text-xs text-slate-400">
-                    {item.isOnline ? "在线" : "离线"}
+                    {item.isOnline ? "online" : "offline"}
                   </Text>
                 }
               />

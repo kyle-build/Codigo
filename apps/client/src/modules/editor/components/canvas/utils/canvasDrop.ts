@@ -12,6 +12,10 @@ export interface CanvasDropResult {
     left: number;
     top: number;
   };
+  bounds?: {
+    width: number;
+    height: number;
+  };
   containerTarget?: {
     parentId: string;
     slot: string;
@@ -90,6 +94,7 @@ export function resolveCanvasDropResult({
       return {
         type,
         position: safePosition,
+        bounds: { width: slotRect.width, height: slotRect.height },
         containerTarget: {
           parentId,
           slot: slot ?? "default",
@@ -149,5 +154,6 @@ export function resolveCanvasDropResult({
   return {
     type,
     position: safePosition,
+    bounds: rect ? { width: rect.width, height: rect.height } : undefined,
   };
 }

@@ -24,6 +24,7 @@ interface UseCanvasDragMoveOptions {
     left: number,
     top: number,
     isPreview?: boolean,
+    bounds?: { width: number; height: number },
   ) => void;
   onDragFinished: () => void;
 }
@@ -125,6 +126,7 @@ export function useCanvasDragMove({
           pendingPosition.left,
           pendingPosition.top,
           true,
+          { width: movingComponent.boundsWidth, height: movingComponent.boundsHeight },
         );
       });
     };
@@ -177,6 +179,10 @@ export function useCanvasDragMove({
           safeRect.left,
           safeRect.top,
           false,
+          {
+            width: targetBoundsRect?.width ?? movingComponent.boundsWidth,
+            height: targetBoundsRect?.height ?? movingComponent.boundsHeight,
+          },
         );
       } else {
         const left =
@@ -187,7 +193,10 @@ export function useCanvasDragMove({
           { left, top, width: movingComponent.width, height: movingComponent.height },
           { width: movingComponent.boundsWidth, height: movingComponent.boundsHeight },
         );
-        updateComponentPosition(movingComponent.id, safeRect.left, safeRect.top, false);
+        updateComponentPosition(movingComponent.id, safeRect.left, safeRect.top, false, {
+          width: movingComponent.boundsWidth,
+          height: movingComponent.boundsHeight,
+        });
       }
 
       setMovingComponent(null);

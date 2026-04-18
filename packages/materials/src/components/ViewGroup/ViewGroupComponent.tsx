@@ -112,6 +112,10 @@ export default function ViewGroupComponent(_props: ViewGroupRuntimeProps) {
 
   const activeChildren = props.slots?.[resolvedActiveId] ?? [];
   const showEditorTabs = props.runtimeEnv === "editor";
+  const contentUseGrid = Boolean(props.contentUseGrid);
+  const gridCols = Math.max(1, Math.floor(Number(props.contentGridCols ?? 12)));
+  const gridRows = Math.max(1, Math.floor(Number(props.contentGridRows ?? 12)));
+  const gridGap = Math.max(0, Math.floor(Number(props.contentGridGap ?? 0)));
 
   return (
     <div
@@ -156,9 +160,21 @@ export default function ViewGroupComponent(_props: ViewGroupRuntimeProps) {
         </div>
       ) : null}
       <div
-        className="relative min-h-[160px]"
+        className="relative"
         data-slot-name={resolvedActiveId}
         data-container-id={props.editorNodeId}
+        style={{
+          minHeight: Math.max(160, Number(props.minHeight ?? 240)),
+          ...(contentUseGrid
+            ? {
+                display: "grid",
+                gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
+                gridTemplateRows: `repeat(${gridRows}, minmax(0, 1fr))`,
+                gap: gridGap,
+                alignContent: "start",
+              }
+            : null),
+        }}
       >
         {activeChildren.length ? (
           activeChildren
@@ -171,4 +187,3 @@ export default function ViewGroupComponent(_props: ViewGroupRuntimeProps) {
     </div>
   );
 }
-

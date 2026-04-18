@@ -29,6 +29,7 @@ interface UseCanvasResizeOptions {
     width: number,
     height: number,
     isPreview?: boolean,
+    bounds?: { width: number; height: number },
   ) => void;
   onResizeFinished: () => void;
 }
@@ -157,6 +158,7 @@ export function useCanvasResize({
           pendingSize.width,
           pendingSize.height,
           true,
+          positioningRect ? { width: positioningRect.width, height: positioningRect.height } : undefined,
         );
       });
     };
@@ -214,6 +216,7 @@ export function useCanvasResize({
         boundedSize.width,
         boundedSize.height,
         false,
+        positioningRect ? { width: positioningRect.width, height: positioningRect.height } : undefined,
       );
 
       setResizingComponent(null);

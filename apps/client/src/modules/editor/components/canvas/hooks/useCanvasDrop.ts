@@ -12,6 +12,7 @@ interface UseCanvasDropOptions {
   push: (
     type: TComponentTypes,
     position: { left: number; top: number },
+    bounds?: { width: number; height: number },
     target?: { parentId: string; slot: string },
   ) => void;
 }
@@ -103,7 +104,7 @@ export function useCanvasDrop({
         return;
       }
 
-      push(result.type, result.position, result.containerTarget);
+      push(result.type, result.position, result.bounds, result.containerTarget);
     },
     [
       canEditStructure,

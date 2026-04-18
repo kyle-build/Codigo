@@ -9,6 +9,8 @@ interface EditorComponentStructureContext {
   pageStore: {
     layoutMode: PageLayoutMode;
     grid?: PageGridConfig;
+    canvasWidth: number;
+    canvasHeight: number;
   };
   ensurePermission: (permission: any, deniedMessage?: string) => boolean;
   addOperationLog: (action: any, detail: string) => void;
@@ -51,6 +53,7 @@ export function createEditorComponentStructure(
       broadcastNodeChange,
       ensurePermission,
       insertNodeTree,
+      pageStore,
       setCurrentComponent,
       storeComponents,
     });

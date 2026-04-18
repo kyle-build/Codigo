@@ -159,7 +159,13 @@ export function createEditorComponentMutations(
    * 更新组件的绝对定位。
    */
   const updateComponentPosition = action(
-    (id: string, left: number, top: number, silent = false) => {
+    (
+      id: string,
+      left: number,
+      top: number,
+      silent = false,
+      bounds?: { width: number; height: number },
+    ) => {
       if (!ensurePermission("edit_structure", "当前角色不能拖拽组件")) {
         return;
       }
@@ -174,22 +180,41 @@ export function createEditorComponentMutations(
       }
 
       const isRootNode = !currentComponent.parentId;
+      const parent = currentComponent.parentId
+        ? storeComponents.compConfigs[currentComponent.parentId]
+        : null;
+      const isViewGroupGrid =
+        parent?.type === "viewGroup" &&
+        Boolean((parent.props as Record<string, unknown> | undefined)?.contentUseGrid);
       const isGridRoot = pageStore.layoutMode === "grid" && isRootNode;
+      const isGridNode = isGridRoot || isViewGroupGrid;
 
-      if (isGridRoot) {
-        const cols = pageStore.grid?.cols ?? 12;
-        const rows = pageStore.grid?.rows ?? 12;
-        const gap = pageStore.grid?.gap ?? 0;
+      if (isGridNode) {
+        const cols = isGridRoot
+          ? (pageStore.grid?.cols ?? 12)
+          : Number((parent?.props as any)?.contentGridCols ?? 12);
+        const rows = isGridRoot
+          ? (pageStore.grid?.rows ?? 12)
+          : Number((parent?.props as any)?.contentGridRows ?? 12);
+        const gap = isGridRoot
+          ? (pageStore.grid?.gap ?? 0)
+          : Number((parent?.props as any)?.contentGridGap ?? 0);
+        const totalWidth = isGridRoot
+          ? pageStore.canvasWidth
+          : (bounds?.width ?? pageStore.canvasWidth);
+        const totalHeight = isGridRoot
+          ? pageStore.canvasHeight
+          : (bounds?.height ?? pageStore.canvasHeight);
 
         const nextColumnStart = resolveGridStart(
           Math.max(0, left),
-          pageStore.canvasWidth,
+          totalWidth,
           cols,
           gap,
         );
         const nextRowStart = resolveGridStart(
           Math.max(0, top),
-          pageStore.canvasHeight,
+          totalHeight,
           rows,
           gap,
         );
@@ -225,7 +250,13 @@ export function createEditorComponentMutations(
    * 更新组件尺寸。
    */
   const updateComponentSize = action(
-    (id: string, width: number, height: number, silent = false) => {
+    (
+      id: string,
+      width: number,
+      height: number,
+      silent = false,
+      bounds?: { width: number; height: number },
+    ) => {
       if (!ensurePermission("edit_structure", "当前角色不能调整组件尺寸")) {
         return;
       }
@@ -243,19 +274,38 @@ export function createEditorComponentMutations(
       const nextHeight = Math.max(40, Math.round(height));
 
       const isRootNode = !currentComponent.parentId;
+      const parent = currentComponent.parentId
+        ? storeComponents.compConfigs[currentComponent.parentId]
+        : null;
+      const isViewGroupGrid =
+        parent?.type === "viewGroup" &&
+        Boolean((parent.props as Record<string, unknown> | undefined)?.contentUseGrid);
       const isGridRoot = pageStore.layoutMode === "grid" && isRootNode;
+      const isGridNode = isGridRoot || isViewGroupGrid;
 
-      if (isGridRoot) {
-        const cols = pageStore.grid?.cols ?? 12;
-        const rows = pageStore.grid?.rows ?? 12;
-        const gap = pageStore.grid?.gap ?? 0;
+      if (isGridNode) {
+        const cols = isGridRoot
+          ? (pageStore.grid?.cols ?? 12)
+          : Number((parent?.props as any)?.contentGridCols ?? 12);
+        const rows = isGridRoot
+          ? (pageStore.grid?.rows ?? 12)
+          : Number((parent?.props as any)?.contentGridRows ?? 12);
+        const gap = isGridRoot
+          ? (pageStore.grid?.gap ?? 0)
+          : Number((parent?.props as any)?.contentGridGap ?? 0);
+        const totalWidth = isGridRoot
+          ? pageStore.canvasWidth
+          : (bounds?.width ?? pageStore.canvasWidth);
+        const totalHeight = isGridRoot
+          ? pageStore.canvasHeight
+          : (bounds?.height ?? pageStore.canvasHeight);
         const { cell: cellWidth } = resolveGridCellSize(
-          pageStore.canvasWidth,
+          totalWidth,
           cols,
           gap,
         );
         const { cell: cellHeight } = resolveGridCellSize(
-          pageStore.canvasHeight,
+          totalHeight,
           rows,
           gap,
         );

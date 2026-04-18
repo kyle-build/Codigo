@@ -267,12 +267,21 @@ const EditorCanvas: FC<{
           ? (getComponentById(node.id) as ComponentNodeRecord | undefined)
           : undefined;
         const isRootNode = !record?.parentId;
+        const parentRecord = record?.parentId
+          ? (getComponentById(record.parentId) as ComponentNodeRecord | undefined)
+          : undefined;
         const isGridRoot = storePage.layoutMode === "grid" && isRootNode;
-        const layout: ComponentWrapperProps["layout"] = isGridRoot
-          ? "grid"
-          : isAbsoluteNode
-            ? "absolute"
-            : "flow";
+        const isViewGroupGridChild =
+          parentRecord?.type === "viewGroup" &&
+          Boolean(
+            (parentRecord.props as Record<string, unknown> | undefined)?.contentUseGrid,
+          );
+        const layout: ComponentWrapperProps["layout"] =
+          isGridRoot || isViewGroupGridChild
+            ? "grid"
+            : isAbsoluteNode
+              ? "absolute"
+              : "flow";
         return (
           <ComponentWrapper
             key={node.id}
