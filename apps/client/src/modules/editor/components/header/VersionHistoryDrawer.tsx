@@ -1,4 +1,4 @@
-import { Drawer, List, Tag, Button, Modal, message } from "antd";
+import { Drawer, List, Button, Modal, message } from "antd";
 import { HistoryOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
 import { observer } from "mobx-react-lite";
@@ -90,12 +90,14 @@ export const VersionHistoryDrawer = observer(({ open, onClose }: Props) => {
             <List.Item.Meta
               title={
                 <div className="flex items-center gap-2">
-                  <Tag color="green">v{item.version}</Tag>
-                  <span className="text-sm">{item.desc}</span>
+                  <span className="inline-flex items-center rounded-sm border border-[var(--ide-control-border)] bg-[var(--ide-control-bg)] px-2 py-0.5 text-[11px] font-medium text-[var(--ide-accent)]">
+                    v{item.version}
+                  </span>
+                  <span className="text-sm text-[var(--ide-text)]">{item.desc}</span>
                 </div>
               }
               description={
-                <div className="text-xs text-slate-400 mt-1">
+                <div className="mt-1 text-xs text-[var(--ide-text-muted)]">
                   {dayjs(item.created_at).format("YYYY-MM-DD HH:mm:ss")}
                 </div>
               }

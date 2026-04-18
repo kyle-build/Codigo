@@ -159,7 +159,7 @@ export const EditorViewport = observer(function EditorViewport(
     {
       key: "components",
       icon: <AppstoreOutlined className="text-xl" />,
-      label: "组件",
+      label: "物料",
     },
     {
       key: "outline",

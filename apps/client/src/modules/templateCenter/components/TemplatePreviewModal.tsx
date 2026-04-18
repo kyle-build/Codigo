@@ -35,20 +35,20 @@ export function TemplatePreviewModal({
       ) : schema ? (
         <div className="space-y-5">
           {subtitle ? (
-            <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
+            <div className="rounded-md border border-[var(--ide-border)] bg-[var(--ide-hover)] px-4 py-3 text-sm text-[var(--ide-text-muted)]">
               {subtitle}
             </div>
           ) : null}
           {getPreviewPages(schema).map((page) => (
             <section
               key={String(page.id)}
-              className="rounded-3xl border border-slate-200 bg-white p-4"
+              className="rounded-md border border-[var(--ide-border)] bg-[var(--ide-control-bg)] p-4 shadow-[var(--ide-panel-shadow)]"
             >
               <div className="mb-4 flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-sky-50 px-2.5 py-1 text-xs font-medium text-sky-700">
+                <span className="rounded-full border border-[var(--ide-control-border)] bg-[var(--ide-hover)] px-2.5 py-1 text-xs font-medium text-[var(--ide-accent)]">
                   {page.name}
                 </span>
-                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-500">
+                <span className="rounded-full border border-[var(--ide-border)] bg-[var(--ide-hover)] px-2.5 py-1 text-xs text-[var(--ide-text-muted)]">
                   page:{page.path}
                 </span>
               </div>

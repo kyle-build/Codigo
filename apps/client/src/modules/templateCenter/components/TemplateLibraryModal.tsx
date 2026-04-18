@@ -79,14 +79,14 @@ export function TemplateLibraryModal({
         open={open}
         title={
           <div className="flex items-center gap-2">
-            <AppstoreOutlined className="text-emerald-500" />
+            <AppstoreOutlined className="text-[var(--ide-accent)]" />
             <span>模板库</span>
           </div>
         }
         width={1080}
         onCancel={onClose}
       >
-        <div className="mb-5 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
+        <div className="mb-5 rounded-md border border-[var(--ide-border)] bg-[var(--ide-hover)] px-4 py-3 text-sm text-[var(--ide-text-muted)]">
           在编辑器内直接预览并应用模板，会替换当前工作区的页面集合并生成一套完整后台骨架。
         </div>
         {listLoading ? (

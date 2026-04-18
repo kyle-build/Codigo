@@ -34,58 +34,58 @@ export default function Statistics() {
   });
 
   return (
-    <div className="flex flex-col h-full bg-slate-50 font-sans">
-      <header className="flex items-center border-b border-slate-200 px-6 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-10">
-        <div
-          className="flex items-center gap-2 cursor-pointer"
-          onClick={() => nav("/")}
-        >
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-emerald-500 text-white font-mono text-lg font-bold shadow-lg shadow-emerald-500/30">
-            C
+    <div className="flex h-full flex-col p-4">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-[12px] text-[var(--ide-text-muted)]">
+            表单组件数据统计
           </div>
-          <span className="text-lg font-bold text-slate-900 tracking-tight">
-            数据统计看板
-          </span>
+          <h2 className="mt-0.5 truncate text-[14px] font-semibold text-[var(--ide-text)]">
+            指标统计
+          </h2>
         </div>
-        <div className="flex-1 flex justify-end items-center gap-4">
-          <Button
-            type="primary"
-            className="bg-emerald-500 hover:bg-emerald-600 flex items-center"
-            onClick={() => nav("/editor")}
-            icon={<FormOutlined />}
-          >
+        <div className="flex items-center gap-2">
+          <Button type="primary" onClick={() => nav("/editor")} icon={<FormOutlined />}>
             进入编辑器
           </Button>
-          <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold border border-emerald-200">
-            A
-          </div>
         </div>
-      </header>
+      </div>
 
       <div
-        className={`${
-          disable && "opacity-50 select-none pointer-events-none"
-        } flex flex-1 p-6 gap-6 overflow-hidden`}
+        className={[
+          "flex min-h-0 flex-1 gap-3 overflow-hidden",
+          disable ? "opacity-50 select-none pointer-events-none" : "",
+        ].join(" ")}
       >
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex-grow overflow-hidden flex flex-col">
-          <ComponentDatas
-            components={components}
-            handleDisable={handleDisable}
-          />
-        </div>
-        <div className="w-80 flex flex-col gap-6">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
-            <h3 className="text-sm font-bold text-slate-900 mb-4">组件列表</h3>
-            <ComponentSelect
-              components={components}
-              setCurrnetSelected={setCurrentSelected}
-              currentSelected={Number(currentSelected?.id ?? 0)}
-            />
+        <div className="min-w-0 flex-1 overflow-hidden rounded-sm border border-[var(--ide-border)] bg-[var(--ide-control-bg)] shadow-[var(--ide-panel-shadow)]">
+          <div className="h-full overflow-hidden flex flex-col">
+            <ComponentDatas components={components} handleDisable={handleDisable} />
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex-1">
-            <h3 className="text-sm font-bold text-slate-900 mb-4">数据详情</h3>
-            <div className="w-full text-center">
-              <DataSource currentSelected={currentSelected} />
+        </div>
+        <div className="w-[320px] flex-none overflow-hidden">
+          <div className="flex h-full flex-col gap-3 overflow-hidden">
+            <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-control-bg)] p-3 shadow-[var(--ide-panel-shadow)]">
+              <h3 className="text-[12px] font-semibold text-[var(--ide-text)]">
+                组件列表
+              </h3>
+              <div className="mt-2">
+                <ComponentSelect
+                  components={components}
+                  setCurrnetSelected={setCurrentSelected}
+                  currentSelected={Number(currentSelected?.id ?? 0)}
+                />
+              </div>
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-hidden rounded-sm border border-[var(--ide-border)] bg-[var(--ide-control-bg)] p-3 shadow-[var(--ide-panel-shadow)]">
+              <h3 className="text-[12px] font-semibold text-[var(--ide-text)]">
+                数据详情
+              </h3>
+              <div className="mt-2 h-[calc(100%-20px)] overflow-auto">
+                <div className="w-full text-center">
+                  <DataSource currentSelected={currentSelected} />
+                </div>
+              </div>
             </div>
           </div>
         </div>

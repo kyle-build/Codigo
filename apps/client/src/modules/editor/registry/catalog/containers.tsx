@@ -19,6 +19,7 @@ export const containerEditorComponents: EditorComponentMeta[] = [
     icon: <LayoutOutlined />,
     sectionKey: "basic",
     propsEditor: TwoColumnComponentProps,
+    hiddenFromPalette: true,
   },
   {
     type: "viewGroup",
@@ -26,5 +27,6 @@ export const containerEditorComponents: EditorComponentMeta[] = [
     icon: <LayoutOutlined />,
     sectionKey: "basic",
     propsEditor: ViewGroupComponentProps,
+    hiddenFromPalette: true,
   },
 ];

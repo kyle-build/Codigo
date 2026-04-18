@@ -57,8 +57,8 @@ export function EditorTemplateLibraryTrigger({
         icon={<AppstoreOutlined />}
         className={
           variant === "empty"
-            ? "!h-10 !rounded-2xl !border-slate-200 !bg-white !px-4 hover:!border-emerald-300 hover:!text-emerald-600"
-            : "!h-7 !rounded-lg !px-2 !text-[11px] !text-slate-500 hover:!bg-slate-100 hover:!text-slate-900"
+            ? "!h-10 !rounded-sm !border-[var(--ide-control-border)] !bg-[var(--ide-control-bg)] !px-4 !text-[var(--ide-text)] hover:!border-[var(--ide-accent)] hover:!bg-[var(--ide-hover)]"
+            : "!h-7 !rounded-sm !px-2 !text-[11px] !text-[var(--ide-text-muted)] hover:!bg-[var(--ide-hover)] hover:!text-[var(--ide-text)]"
         }
         onClick={() => setOpen(true)}
       >

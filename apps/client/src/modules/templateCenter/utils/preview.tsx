@@ -1,4 +1,4 @@
-import { Empty, Tag } from "antd";
+import { Empty } from "antd";
 import type { CSSProperties, ReactNode } from "react";
 import type { ComponentNode, TComponentTypes } from "@codigo/schema";
 
@@ -241,14 +241,14 @@ export function renderSchemaOutline({
         return (
           <div
             key={node.id}
-            className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4"
+            className="rounded-md border border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] p-3"
             style={cardStyle}
           >
             <div className="flex flex-wrap items-center gap-2">
-              <Tag color="green">
+              <span className="inline-flex items-center rounded-sm border border-[var(--ide-control-border)] bg-[var(--ide-control-bg)] px-2 py-0.5 text-[11px] font-medium text-[var(--ide-accent)]">
                 {componentLabelMap[node.type] ?? node.type ?? "组件"}
-              </Tag>
-              <span className="text-sm font-medium text-slate-700">
+              </span>
+              <span className="text-sm font-medium text-[var(--ide-text)]">
                 {summarizeProps(
                   node.props as Record<string, unknown> | undefined,
                 )}

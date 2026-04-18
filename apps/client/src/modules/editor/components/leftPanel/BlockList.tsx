@@ -9,36 +9,47 @@ import {
   useEditorPermission,
 } from "@/modules/editor/hooks";
 import {
-  editorComponentCatalog,
-  getEditorComponentSections,
-  type EditorComponentMeta,
-} from "@/modules/editor/registry/components";
+  getEditorBlockSections,
+  type EditorBlockMeta,
+} from "@/modules/editor/registry/blocks";
 
-export const components = editorComponentCatalog;
-
-const EditorComponent: FC<EditorComponentMeta> = ({ icon, name, type }) => {
+const EditorBlockCard: FC<EditorBlockMeta> = ({ icon, id, name, anchorType }) => {
   const store = useEditorComponents();
   const { can } = useEditorPermission();
   const allowInsert = can("edit_structure");
 
+  function resolveContainerTarget() {
+    const current = store.getCurrentComponentConfig.get();
+    if (!current) {
+      return null;
+    }
+    const meta = getComponentContainerMeta(current.type);
+    if (!meta.isContainer) {
+      return null;
+    }
+    if (current.type === "viewGroup") {
+      const containers = Array.isArray((current.props as any)?.containers)
+        ? ((current.props as any).containers as Array<Record<string, unknown>>)
+        : [];
+      const ids = containers
+        .map((item) => (typeof item?.id === "string" ? (item.id as string) : ""))
+        .filter(Boolean);
+      const defaultActiveId =
+        typeof (current.props as any)?.defaultActiveId === "string"
+          ? ((current.props as any).defaultActiveId as string)
+          : "";
+      const slot = (defaultActiveId && ids.includes(defaultActiveId)
+        ? defaultActiveId
+        : ids[0]) ?? "default";
+      return { parentId: current.id, slot };
+    }
+    const slotName = store.getAvailableSlots(current.type)[0]?.name ?? "default";
+    return { parentId: current.id, slot: slotName };
+  }
+
   function handleClick() {
     if (!allowInsert) return;
-    const current = store.getCurrentComponentConfig.get();
-    if (current) {
-      const meta = getComponentContainerMeta(current.type);
-      if (meta.isContainer) {
-        const slotName =
-          store.getAvailableSlots(current.type)[0]?.name ?? "default";
-        store.push(
-          type,
-          { left: 24, top: 24 },
-          undefined,
-          { parentId: current.id, slot: slotName },
-        );
-        return;
-      }
-    }
-    store.push(type);
+    store.pushBlock(id, { left: 24, top: 24 }, undefined, resolveContainerTarget() ?? undefined);
   }
 
   function handleDragStart(e: DragEvent) {
@@ -46,7 +57,8 @@ const EditorComponent: FC<EditorComponentMeta> = ({ icon, name, type }) => {
       e.preventDefault();
       return;
     }
-    e.dataTransfer.setData("componentType", type);
+    e.dataTransfer.setData("blockId", id);
+    e.dataTransfer.setData("blockAnchorType", anchorType);
     e.dataTransfer.effectAllowed = "copy";
   }
 
@@ -71,19 +83,19 @@ const EditorComponent: FC<EditorComponentMeta> = ({ icon, name, type }) => {
   );
 };
 
-export default function ComponentList() {
+export default function BlockList() {
   const [keyword, setKeyword] = useState("");
   const { store: storePage } = useEditorPage();
   const normalizedKeyword = keyword.trim().toLowerCase();
 
   const filteredSections = useMemo(
     () =>
-      getEditorComponentSections(storePage.pageCategory)
+      getEditorBlockSections(storePage.pageCategory)
         .map((section) => ({
           ...section,
           items: normalizedKeyword
             ? section.items.filter((item) =>
-                `${item.name} ${item.type}`
+                `${item.name} ${item.description ?? ""} ${item.id}`
                   .toLowerCase()
                   .includes(normalizedKeyword),
               )
@@ -97,7 +109,9 @@ export default function ComponentList() {
     key: section.key,
     label: (
       <div className="flex items-center justify-between pr-2">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">{section.label}</span>
+        <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
+          {section.label}
+        </span>
         <span className="text-[10px] text-[var(--ide-text-muted)]">
           {section.items.length}
         </span>
@@ -106,7 +120,7 @@ export default function ComponentList() {
     children: (
       <div className="grid grid-cols-2 gap-1.5">
         {section.items.map((item) => (
-          <EditorComponent {...item} key={item.type} />
+          <EditorBlockCard {...item} key={item.id} />
         ))}
       </div>
     ),
@@ -118,7 +132,7 @@ export default function ComponentList() {
         <Input
           value={keyword}
           onChange={(event) => setKeyword(event.target.value)}
-          placeholder="搜索物料..."
+          placeholder="搜索区块..."
           prefix={<SearchOutlined className="text-[var(--ide-text-muted)]" />}
           allowClear
           size="small"
@@ -139,7 +153,7 @@ export default function ComponentList() {
           <div className="border border-dashed border-[var(--ide-border)] bg-[var(--ide-hover)] py-10">
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description={<span className="text-[var(--ide-text-muted)]">无匹配物料</span>}
+              description={<span className="text-[var(--ide-text-muted)]">无匹配区块</span>}
             />
           </div>
         )}
@@ -147,3 +161,4 @@ export default function ComponentList() {
     </div>
   );
 }
+

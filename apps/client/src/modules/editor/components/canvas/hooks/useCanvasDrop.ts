@@ -16,6 +16,12 @@ interface UseCanvasDropOptions {
     bounds?: { width: number; height: number },
     target?: { parentId: string; slot: string },
   ) => void;
+  pushBlock: (
+    blockId: string,
+    position: { left: number; top: number },
+    bounds?: { width: number; height: number },
+    target?: { parentId: string; slot: string },
+  ) => void;
 }
 
 /**
@@ -28,6 +34,7 @@ export function useCanvasDrop({
   getComponentById,
   getAvailableSlots,
   push,
+  pushBlock,
 }: UseCanvasDropOptions) {
   const lastSlotZoneRef = useRef<HTMLElement | null>(null);
 
@@ -119,6 +126,25 @@ export function useCanvasDrop({
         return;
       }
 
+      const blockId = event.dataTransfer.getData("blockId");
+      if (blockId) {
+        const anchorType = event.dataTransfer.getData("blockAnchorType") || "card";
+        const placement = resolveCanvasDropResult({
+          clientX: event.clientX,
+          clientY: event.clientY,
+          rawType: anchorType,
+          canvasElement: canvasRef.current,
+          currentComponentId,
+          getComponentById,
+          getAvailableSlots,
+        });
+        if (!placement) {
+          return;
+        }
+        pushBlock(blockId, placement.position, placement.bounds, placement.containerTarget);
+        return;
+      }
+
       const result = resolveCanvasDropResult({
         clientX: event.clientX,
         clientY: event.clientY,
@@ -143,6 +169,7 @@ export function useCanvasDrop({
       getAvailableSlots,
       getComponentById,
       push,
+      pushBlock,
     ],
   );
 

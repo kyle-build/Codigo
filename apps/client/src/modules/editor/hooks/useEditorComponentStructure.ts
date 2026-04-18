@@ -47,7 +47,7 @@ export function createEditorComponentStructure(
     storeComponents,
   });
 
-  const { getAvailableSlots, insertNodeIntoContainer, push } =
+  const { getAvailableSlots, insertNodeIntoContainer, push, pushBlock } =
     createEditorComponentCreation({
       addOperationLog,
       broadcastNodeChange,
@@ -74,6 +74,7 @@ export function createEditorComponentStructure(
     insertNodeTree,
     moveExistingNode,
     push,
+    pushBlock,
     syncLayoutMode,
     syncSchema,
   };

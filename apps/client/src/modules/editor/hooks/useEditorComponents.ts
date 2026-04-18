@@ -34,6 +34,7 @@ type OperationHistoryEntry = {
 };
 
 const UNDOABLE_HISTORY_EVENTS = new Set<string>([
+  "add_block",
   "add_component",
   "move_component",
   "remove_component",
@@ -45,6 +46,8 @@ const UNDOABLE_HISTORY_EVENTS = new Set<string>([
 
 function formatHistoryLabel(event: string, detail: string) {
   switch (event) {
+    case "add_block":
+      return `新增区块：${detail}`;
     case "add_component":
       return `新增：${detail}`;
     case "move_component":
@@ -268,6 +271,7 @@ export function useEditorComponents() {
     insertNodeTree,
     moveExistingNode,
     push,
+    pushBlock,
     syncLayoutMode,
     syncSchema,
   } = createEditorComponentStructure({
@@ -524,6 +528,7 @@ export function useEditorComponents() {
     _replace,
     replaceByCode,
     push,
+    pushBlock,
     getPages,
     getActivePage,
     getComponentById,

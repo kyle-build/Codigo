@@ -109,6 +109,7 @@ const EditorCanvas: FC<{
     syncLayoutMode,
     updateComponentPosition,
     updateComponentSize,
+    pushBlock,
     push,
   } = useEditorComponents();
   const { can } = useEditorPermission();
@@ -179,6 +180,7 @@ const EditorCanvas: FC<{
       getComponentById(id) as ComponentNodeRecord | undefined | null,
     getAvailableSlots,
     push,
+    pushBlock,
   });
 
   function isDirectWrapperHit(event: ReactMouseEvent, id: string) {

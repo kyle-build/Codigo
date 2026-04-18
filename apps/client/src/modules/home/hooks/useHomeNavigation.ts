@@ -6,7 +6,7 @@ import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
 
 const navigationItems = [
   { label: "应用管理", path: "/app-management?tab=published" },
-  { label: "数据看板", path: "/dataCount" },
+  { label: "页面管理", path: "/console" },
   { label: "开发文档", path: "/doc" },
 ] as const;
 
@@ -43,7 +43,7 @@ export function useHomeNavigation() {
     userMenuItems,
     username: store.details?.username,
     openAppManagement: () => navigate("/app-management?tab=published"),
-    openDashboard: () => navigate("/dataCount"),
+    openDashboard: () => navigate("/console"),
     openHome: () => navigate("/"),
     openLogin: () => navigate("/login"),
     openRoute: (path: string) => navigate(path),

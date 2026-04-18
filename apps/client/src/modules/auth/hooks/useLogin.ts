@@ -14,11 +14,10 @@ export function useLogin() {
     onSuccess: async (res) => {
       await login(res.data);
       const redirect = resolveSafeRedirect(searchParams.get("redirect"));
-      nav(redirect ?? "/?tab=developing");
+      nav(redirect ?? "/admin");
     },
   });
 }
-
 
 
 
