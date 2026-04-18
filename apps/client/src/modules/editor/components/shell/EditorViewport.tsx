@@ -1,8 +1,11 @@
 import {
   ApartmentOutlined,
   AppstoreOutlined,
+  DatabaseOutlined,
+  GlobalOutlined,
   LeftOutlined,
   RightOutlined,
+  SendOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
@@ -17,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import EditorLeftPanel from "../leftPanel";
 import EditorRightPanel from "../rightPanel";
 import { EditorOutlineTree } from "../rightPanel/ComponentFields";
+import GlobalFields from "../rightPanel/GlobalFields";
 import EditorCanvas from "../canvas";
 import { SandboxCanvas } from "../canvas/SandboxCanvas";
 import { useEditorPanelLayout } from "./useEditorPanelLayout";
@@ -32,7 +36,12 @@ interface EditorViewportProps {
   canvasRef: RefObject<any>;
 }
 
-type LeftPanelSection = "components" | "outline";
+type LeftPanelSection =
+  | "components"
+  | "outline"
+  | "global"
+  | "requests"
+  | "datasources";
 
 const WORKSPACE_STAGE_PADDING = 64;
 const MOBILE_FRAME_SIZE = 24;
@@ -168,6 +177,21 @@ export const EditorViewport = observer(function EditorViewport(
       key: "outline",
       icon: <ApartmentOutlined className="text-xl" />,
       label: "大纲",
+    },
+    {
+      key: "global",
+      icon: <GlobalOutlined className="text-xl" />,
+      label: "全局",
+    },
+    {
+      key: "requests",
+      icon: <SendOutlined className="text-xl" />,
+      label: "请求",
+    },
+    {
+      key: "datasources",
+      icon: <DatabaseOutlined className="text-xl" />,
+      label: "数据源",
     },
   ];
 
@@ -550,13 +574,45 @@ export const EditorViewport = observer(function EditorViewport(
           {!isLeftPanelCollapsed && (
             <div className="flex min-h-0 flex-1 flex-col">
               <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
-                {activeLeftSection === "components" ? "组件库" : "大纲"}
+                {activeLeftSection === "components"
+                  ? "组件库"
+                  : activeLeftSection === "outline"
+                    ? "大纲"
+                    : activeLeftSection === "global"
+                      ? "全局"
+                      : activeLeftSection === "requests"
+                        ? "请求"
+                        : "数据源"}
               </div>
               <div className="flex-1 overflow-auto">
-                {activeLeftSection === "components" ? (
-                  <EditorLeftPanel embedded />
-                ) : (
-                  <EditorOutlineTree />
+                {activeLeftSection === "components" && <EditorLeftPanel embedded />}
+                {activeLeftSection === "outline" && <EditorOutlineTree />}
+                {activeLeftSection === "global" && (
+                  <GlobalFields store={props.storePage} showHeader={false} />
+                )}
+                {activeLeftSection === "requests" && (
+                  <div className="px-4 py-3">
+                    <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-3">
+                      <div className="text-[12px] font-medium text-[var(--ide-text)]">
+                        请求
+                      </div>
+                      <div className="mt-1 text-[11px] leading-relaxed text-[var(--ide-text-muted)]">
+                        功能后续补充
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {activeLeftSection === "datasources" && (
+                  <div className="px-4 py-3">
+                    <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-3">
+                      <div className="text-[12px] font-medium text-[var(--ide-text)]">
+                        数据源
+                      </div>
+                      <div className="mt-1 text-[11px] leading-relaxed text-[var(--ide-text-muted)]">
+                        功能后续补充
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

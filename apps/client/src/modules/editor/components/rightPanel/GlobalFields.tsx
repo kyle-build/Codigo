@@ -1,25 +1,32 @@
 import {
   BgColorsOutlined,
+  DownOutlined,
   FileTextOutlined,
   GlobalOutlined,
   LayoutOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import { Form, Input, InputNumber, Select, Switch } from "antd";
 import { observer } from "mobx-react-lite";
 import type { FC } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { useEditorPage } from "@/modules/editor/hooks";
 import type { TStorePage } from "@/shared/stores";
 import { getBuiltinEChartsThemeOptions } from "@codigo/materials";
 
-const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
+const GlobalFields: FC<{ store: TStorePage; showHeader?: boolean }> = observer(
+  ({ store, showHeader = true }) => {
   const [searchParams] = useSearchParams();
   const pageId = Number(searchParams.get("id"));
   const { updatePage, setGridDashedLinesVisible } = useEditorPage();
   //todo: 优化图表主题选项 暂时没有统一option
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartThemeOptions = getBuiltinEChartsThemeOptions() as any;
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>(
+    {},
+  );
 
   function handleValuesChange(changedValues: Partial<TStorePage>) {
     const nextValues: Partial<TStorePage> = { ...changedValues };
@@ -185,19 +192,21 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
 
   return (
     <div className="space-y-2 px-3 pb-8">
-      <div className="border-b border-[var(--ide-border)] py-2">
-        <div className="mb-1 flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ide-accent)]">
-            Global Configuration
-          </span>
-          <span className="text-[10px] text-[var(--ide-text-muted)]">
-            {store.deviceType === "mobile" ? "MOBILE" : "DESKTOP"}
-          </span>
+      {showHeader && (
+        <div className="border-b border-[var(--ide-border)] py-2">
+          <div className="mb-1 flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ide-accent)]">
+              Global Configuration
+            </span>
+            <span className="text-[10px] text-[var(--ide-text-muted)]">
+              {store.deviceType === "mobile" ? "MOBILE" : "DESKTOP"}
+            </span>
+          </div>
+          <div className="text-[12px] font-medium text-[var(--ide-text)]">
+            {store.title || "未命名页面"}
+          </div>
         </div>
-        <div className="text-[12px] font-medium text-[var(--ide-text)]">
-          {store.title || "未命名页面"}
-        </div>
-      </div>
+      )}
 
       <Form
         key={`${store.pageCategory}-${store.layoutMode}-${store.deviceType}`}
@@ -207,40 +216,70 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
         className="[&_.ant-form-item]:mb-3 [&_.ant-form-item-label>label]:text-[11px] [&_.ant-form-item-label>label]:text-[var(--ide-text-muted)]"
       >
         <div className="space-y-2">
-          {fieldGroups.map((group) => (
-            <div
-              key={group.key}
-              className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-3"
-            >
-              <div className="mb-2 flex items-start gap-2">
-                <span className="mt-0.5 text-[var(--ide-accent)]">
-                  {group.icon}
-                </span>
-                <div>
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
-                    {group.title}
-                  </div>
-                  {group.description && (
-                    <div className="text-[10px] text-[var(--ide-text-muted)]">
-                      {group.description}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {group.fields.map((field) => (
-                <Form.Item
-                  key={field.name ? String(field.name) : `${group.key}-${field.label}`}
-                  label={field.label}
-                  name={field.name}
-                  hidden={Boolean((field as any).hidden)}
-                  className="!mb-2 last:!mb-0"
+          {fieldGroups.map((group) => {
+            const isCollapsed = Boolean(collapsedGroups[group.key]);
+            return (
+              <div
+                key={group.key}
+                className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)]"
+              >
+                <button
+                  type="button"
+                  aria-expanded={!isCollapsed}
+                  onClick={() => {
+                    setCollapsedGroups((prev) => ({
+                      ...prev,
+                      [group.key]: !prev[group.key],
+                    }));
+                  }}
+                  className="flex w-full items-start justify-between gap-3 p-3 text-left"
                 >
-                  {field.node}
-                </Form.Item>
-              ))}
-            </div>
-          ))}
+                  <div className="flex items-start gap-2">
+                    <span className="mt-0.5 text-[var(--ide-accent)]">
+                      {group.icon}
+                    </span>
+                    <div>
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
+                        {group.title}
+                      </div>
+                      {group.description && (
+                        <div className="text-[10px] text-[var(--ide-text-muted)]">
+                          {group.description}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <span className="mt-0.5 flex h-5 w-5 items-center justify-center text-[var(--ide-text-muted)]">
+                    {isCollapsed ? (
+                      <RightOutlined className="text-[11px]" />
+                    ) : (
+                      <DownOutlined className="text-[11px]" />
+                    )}
+                  </span>
+                </button>
+
+                {!isCollapsed && (
+                  <div className="px-3 pb-3">
+                    {group.fields.map((field) => (
+                      <Form.Item
+                        key={
+                          field.name
+                            ? String(field.name)
+                            : `${group.key}-${field.label}`
+                        }
+                        label={field.label}
+                        name={field.name}
+                        hidden={Boolean((field as any).hidden)}
+                        className="!mb-2 last:!mb-0"
+                      >
+                        {field.node}
+                      </Form.Item>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </Form>
     </div>

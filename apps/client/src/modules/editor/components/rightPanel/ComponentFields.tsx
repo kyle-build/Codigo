@@ -9,7 +9,7 @@ import {
   NodeIndexOutlined,
   ShrinkOutlined,
 } from "@ant-design/icons";
-import type { ActionConfig, ComponentNode } from "@codigo/schema";
+import type { ComponentNode } from "@codigo/schema";
 import type { ReactNode } from "react";
 import {
   findEditorComponent,
@@ -19,7 +19,6 @@ import type { TEditorComponentsStore } from "@/modules/editor/stores";
 import { useEditorComponents } from "@/modules/editor/hooks";
 import { useEditorPage } from "@/modules/editor/hooks";
 import { Collapse, Empty, Form, InputNumber } from "antd";
-import { ActionListEditor } from "./ActionListEditor";
 
 const { Panel } = Collapse;
 
@@ -134,8 +133,6 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
     const {
       getCurrentComponentConfig,
       getAvailableSlots,
-      getPages,
-      updateCurrentComponentEvents,
       updateCurrentComponentStyles,
     } = useEditorComponents();
     const { store: pageStore } = useEditorPage();
@@ -148,11 +145,6 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
     const containerMeta = getComponentContainerMeta(config.type);
     const currentSlots = getAvailableSlots(config.type);
     const childrenCount = config.childIds?.length ?? 0;
-    const eventActions = (toJS(config.events?.onClick) ?? []) as ActionConfig[];
-    const pageOptions = getPages.get().map((page) => ({
-      label: `${page.name} · page:${page.path}`,
-      value: `page:${page.path}`,
-    }));
 
     const handleStyleChange = (_changedValues: any, allValues: any) => {
       const formattedStyles = { ...allValues };
@@ -249,10 +241,6 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
       },
     ];
 
-    const updateEventActions = (actions: ActionConfig[]) => {
-      updateCurrentComponentEvents("onClick", actions);
-    };
-
     return (
       <div className="component-fields-container space-y-2 px-3 pb-8">
         <div className="border-b border-[var(--ide-border)] py-2">
@@ -270,7 +258,7 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
         </div>
 
         <Collapse
-          defaultActiveKey={["props", "events", "structure", "styles"]}
+          defaultActiveKey={["props", "structure", "styles"]}
           ghost
           expandIconPosition="end"
           className="[&_.ant-collapse-item]:mb-1 [&_.ant-collapse-item]:border-b [&_.ant-collapse-item]:border-[var(--ide-border)] [&_.ant-collapse-header]:!px-1 [&_.ant-collapse-header]:!py-2 [&_.ant-collapse-content-box]:!px-1 [&_.ant-collapse-content-box]:!pb-3 [&_.ant-collapse-content-box]:!pt-1"
@@ -291,24 +279,6 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
                   无属性配置
                 </div>
               )}
-            </div>
-          </Panel>
-
-          <Panel
-            header={
-              <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
-                事件链路（Flow）
-              </div>
-            }
-            key="events"
-          >
-            <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-2">
-              <ActionListEditor
-                value={eventActions}
-                onChange={updateEventActions}
-                pageOptions={pageOptions}
-                emptyText="无事件步骤"
-              />
             </div>
           </Panel>
 
