@@ -1,4 +1,4 @@
-import type { MouseEvent as ReactMouseEvent } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { collectSiblingRects } from "../utils/collision";
@@ -11,6 +11,7 @@ interface ResizeComponentState {
   allowPositionChange: boolean;
   minWidth: number;
   minHeight: number;
+  pointerId: number | null;
   startX: number;
   startY: number;
   origLeft: number;
@@ -67,12 +68,15 @@ export function useCanvasResize({
    */
   const handleResizeComponentStart = useCallback(
     (
-      event: ReactMouseEvent,
+      event: ReactPointerEvent<HTMLElement>,
       id: string,
       handle: ResizeComponentState["handle"],
       layout: "absolute" | "flow" | "grid",
     ) => {
-      if (!canEditStructure || event.button !== 0) {
+      if (
+        !canEditStructure ||
+        (event.pointerType === "mouse" && event.button !== 0)
+      ) {
         return;
       }
 
@@ -87,12 +91,14 @@ export function useCanvasResize({
       const positioningRect = getPositioningRect(wrapperElement, canvasRef.current);
       const minSize = resolveMinSizeByType(getComponentTypeById?.(id));
       setCurrentComponent(id);
+      (event.currentTarget as HTMLElement).setPointerCapture?.(event.pointerId);
       setResizingComponent({
         id,
         handle,
         allowPositionChange: layout !== "flow",
         minWidth: minSize.minWidth,
         minHeight: minSize.minHeight,
+        pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
         origLeft: positioningRect ? rect.left - positioningRect.left : 0,
@@ -298,7 +304,13 @@ export function useCanvasResize({
     /**
      * 持续同步缩放中的尺寸预览。
      */
-    const onMouseMove = (event: MouseEvent) => {
+    const onPointerMove = (event: PointerEvent) => {
+      if (
+        resizingComponent.pointerId != null &&
+        event.pointerId !== resizingComponent.pointerId
+      ) {
+        return;
+      }
       const wrapperElement = document.querySelector<HTMLElement>(
         `.component-warpper[data-id="${resizingComponent.id}"]`,
       );
@@ -352,7 +364,13 @@ export function useCanvasResize({
     /**
      * 结束缩放并提交最终尺寸。
      */
-    const onMouseUp = (event: MouseEvent) => {
+    const onPointerUp = (event: PointerEvent) => {
+      if (
+        resizingComponent.pointerId != null &&
+        event.pointerId !== resizingComponent.pointerId
+      ) {
+        return;
+      }
       if (resizeFrameRef.current !== null) {
         window.cancelAnimationFrame(resizeFrameRef.current);
         resizeFrameRef.current = null;
@@ -398,8 +416,9 @@ export function useCanvasResize({
       onResizeFinished();
     };
 
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
 
     return () => {
       if (resizeFrameRef.current !== null) {
@@ -407,8 +426,9 @@ export function useCanvasResize({
         resizeFrameRef.current = null;
       }
       pendingResizeRectRef.current = null;
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
     };
   }, [
     canvasRef,

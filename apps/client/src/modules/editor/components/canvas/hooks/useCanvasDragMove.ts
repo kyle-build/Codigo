@@ -1,5 +1,5 @@
 import type { ComponentNodeRecord, LayoutBlock } from "@codigo/schema";
-import type { MouseEvent as ReactMouseEvent, RefObject } from "react";
+import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getPositioningRect,
@@ -54,8 +54,11 @@ export function useCanvasDragMove({
    * 启动组件拖拽。
    */
   const handleDragComponentStart = useCallback(
-    (event: ReactMouseEvent, id: string) => {
-      if (!canEditStructure || event.button !== 0) {
+    (event: ReactPointerEvent<HTMLDivElement>, id: string) => {
+      if (
+        !canEditStructure ||
+        (event.pointerType === "mouse" && event.button !== 0)
+      ) {
         return;
       }
 
@@ -69,8 +72,10 @@ export function useCanvasDragMove({
       const positioningRect = getPositioningRect(element, canvasRef.current);
 
       setCurrentComponent(id);
+      element.setPointerCapture?.(event.pointerId);
       setMovingComponent({
         id,
+        pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
         origLeft: positioningRect ? rect.left - positioningRect.left : 0,
@@ -102,7 +107,13 @@ export function useCanvasDragMove({
     /**
      * 持续同步拖拽中的组件坐标预览。
      */
-    const onMouseMove = (event: MouseEvent) => {
+    const onPointerMove = (event: PointerEvent) => {
+      if (
+        movingComponent.pointerId != null &&
+        event.pointerId !== movingComponent.pointerId
+      ) {
+        return;
+      }
       const left =
         movingComponent.origLeft + event.clientX - movingComponent.startX;
       const top =
@@ -136,7 +147,13 @@ export function useCanvasDragMove({
     /**
      * 结束拖拽并提交最终位置与容器归属。
      */
-    const onMouseUp = (event: MouseEvent) => {
+    const onPointerUp = (event: PointerEvent) => {
+      if (
+        movingComponent.pointerId != null &&
+        event.pointerId !== movingComponent.pointerId
+      ) {
+        return;
+      }
       if (dragFrameRef.current !== null) {
         window.cancelAnimationFrame(dragFrameRef.current);
         dragFrameRef.current = null;
@@ -206,8 +223,9 @@ export function useCanvasDragMove({
       onDragFinished();
     };
 
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
 
     return () => {
       if (dragFrameRef.current !== null) {
@@ -215,8 +233,9 @@ export function useCanvasDragMove({
         dragFrameRef.current = null;
       }
       pendingDragPositionRef.current = null;
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
     };
   }, [
     canEditStructure,

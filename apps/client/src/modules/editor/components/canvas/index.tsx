@@ -4,6 +4,7 @@ import type {
   CSSProperties,
   FC,
   MouseEvent as ReactMouseEvent,
+  PointerEvent as ReactPointerEvent,
   ReactNode,
 } from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
@@ -32,10 +33,10 @@ interface ComponentWrapperProps {
   isMoving: boolean;
   canDrag: boolean;
   onClick: (event: ReactMouseEvent) => void;
-  onMouseDownCapture: (event: ReactMouseEvent) => void;
-  onMouseDown: (event: ReactMouseEvent) => void;
+  onPointerDownCapture: (event: ReactPointerEvent) => void;
+  onPointerDown: (event: ReactPointerEvent) => void;
   onResizeMouseDown: (
-    event: ReactMouseEvent,
+    event: ReactPointerEvent,
     handle: "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw",
     layout: "absolute" | "flow" | "grid",
   ) => void;
@@ -54,8 +55,8 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
   canDrag,
   isCurrentComponent,
   onClick,
-  onMouseDownCapture,
-  onMouseDown,
+  onPointerDownCapture,
+  onPointerDown,
   onResizeMouseDown,
   style,
 }) => {
@@ -76,70 +77,69 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
     <div
       className={`${layout === "absolute" ? "absolute" : "relative"} ${layout === "flow" ? "mb-4" : ""} group component-warpper ${canDrag ? "cursor-move" : "cursor-pointer"} ${isMoving ? "pointer-events-none" : ""}`}
       onClick={onClick}
-      onMouseDownCapture={onMouseDownCapture}
-      onMouseDown={onMouseDown}
+      onPointerDownCapture={onPointerDownCapture}
+      onPointerDown={onPointerDown}
       style={style}
       data-id={id}
       data-parent-id={parentId ?? "root"}
       data-slot={slot ?? "root"}
     >
       <div className={classNames} />
-      <div className="absolute inset-0 z-[1000] bg-transparent" />
       {isCurrentComponent && canDrag && (
         <>
           <button
             type="button"
             className="absolute -top-1.5 -left-1.5 z-[1001] flex h-3 w-3 items-center justify-center rounded-full border border-white bg-blue-500 shadow-[0_6px_16px_rgba(59,130,246,0.35)] cursor-nw-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "nw", layout)}
+            onPointerDown={(event) => onResizeMouseDown(event, "nw", layout)}
           >
             <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
             className="absolute -top-1.5 left-1/2 z-[1001] -translate-x-1/2 flex h-3 w-3 items-center justify-center rounded-full border border-white bg-blue-500 shadow-[0_6px_16px_rgba(59,130,246,0.35)] cursor-n-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "n", layout)}
+            onPointerDown={(event) => onResizeMouseDown(event, "n", layout)}
           >
             <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
             className="absolute -top-1.5 -right-1.5 z-[1001] flex h-3 w-3 items-center justify-center rounded-full border border-white bg-blue-500 shadow-[0_6px_16px_rgba(59,130,246,0.35)] cursor-ne-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "ne", layout)}
+            onPointerDown={(event) => onResizeMouseDown(event, "ne", layout)}
           >
             <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
             className="absolute top-1/2 -left-1.5 z-[1001] -translate-y-1/2 flex h-3 w-3 items-center justify-center rounded-full border border-white bg-blue-500 shadow-[0_6px_16px_rgba(59,130,246,0.35)] cursor-w-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "w", layout)}
+            onPointerDown={(event) => onResizeMouseDown(event, "w", layout)}
           >
             <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
             className="absolute top-1/2 -right-1.5 z-[1001] -translate-y-1/2 flex h-3 w-3 items-center justify-center rounded-full border border-white bg-blue-500 shadow-[0_6px_16px_rgba(59,130,246,0.35)] cursor-e-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "e", layout)}
+            onPointerDown={(event) => onResizeMouseDown(event, "e", layout)}
           >
             <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
             className="absolute -bottom-1.5 -left-1.5 z-[1001] flex h-3 w-3 items-center justify-center rounded-full border border-white bg-blue-500 shadow-[0_6px_16px_rgba(59,130,246,0.35)] cursor-sw-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "sw", layout)}
+            onPointerDown={(event) => onResizeMouseDown(event, "sw", layout)}
           >
             <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
             className="absolute -bottom-1.5 left-1/2 z-[1001] -translate-x-1/2 flex h-3 w-3 items-center justify-center rounded-full border border-white bg-blue-500 shadow-[0_6px_16px_rgba(59,130,246,0.35)] cursor-s-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "s", layout)}
+            onPointerDown={(event) => onResizeMouseDown(event, "s", layout)}
           >
             <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
             className="absolute -bottom-1.5 -right-1.5 z-[1001] flex h-3 w-3 items-center justify-center rounded-full border border-white bg-blue-500 shadow-[0_6px_16px_rgba(59,130,246,0.35)] cursor-se-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "se", layout)}
+            onPointerDown={(event) => onResizeMouseDown(event, "se", layout)}
           >
             <span className="h-1 w-1 rounded-full bg-white" />
           </button>
@@ -149,6 +149,8 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
     </div>
   );
 };
+
+type CanvasSelectEvent = ReactMouseEvent | ReactPointerEvent;
 
 const EditorCanvas: FC<{
   store: TEditorComponentsStore;
@@ -253,9 +255,7 @@ const EditorCanvas: FC<{
     return null;
   }
 
-  function resolveClosestWrapper(
-    event: ReactMouseEvent,
-  ): HTMLElement | null {
+  function resolveClosestWrapper(event: CanvasSelectEvent): HTMLElement | null {
     const targetElement = resolveEventTargetElement(event.target);
     if (targetElement) {
       const closest = targetElement.closest(".component-warpper") as HTMLElement | null;
@@ -276,6 +276,35 @@ const EditorCanvas: FC<{
     return wrapperInPath instanceof HTMLElement ? wrapperInPath : null;
   }
 
+  function resolveClosestRenderNode(event: CanvasSelectEvent): HTMLElement | null {
+    const targetElement = resolveEventTargetElement(event.target);
+    if (targetElement) {
+      const closest = targetElement.closest("[data-render-node]") as HTMLElement | null;
+      if (closest) {
+        return closest;
+      }
+    }
+
+    const composedPath = (
+      event.nativeEvent as unknown as { composedPath?: () => EventTarget[] }
+    ).composedPath?.();
+    const renderNodeInPath = composedPath?.find((item) => {
+      return item instanceof HTMLElement && item.hasAttribute("data-render-node");
+    });
+    return renderNodeInPath instanceof HTMLElement ? renderNodeInPath : null;
+  }
+
+  function resolveNodeIdFromEvent(event: CanvasSelectEvent): string | null {
+    const wrapper = resolveClosestWrapper(event);
+    const wrapperId = wrapper?.dataset.id;
+    if (wrapperId) {
+      return wrapperId;
+    }
+    const renderNode = resolveClosestRenderNode(event);
+    const renderNodeId = renderNode?.getAttribute("data-render-node");
+    return renderNodeId || null;
+  }
+
   function isDirectWrapperHit(event: ReactMouseEvent, id: string) {
     return resolveClosestWrapper(event)?.dataset.id === id;
   }
@@ -288,11 +317,11 @@ const EditorCanvas: FC<{
     return selected.includes(conf.id);
   }
 
-  function handleComponentMouseDownCapture(event: ReactMouseEvent, conf: { id: string }) {
-    if (event.button !== 0) {
-      return;
-    }
-    if (getComponentById(conf.id)?.type === "container") {
+  function handleComponentPointerDownCapture(
+    event: ReactPointerEvent,
+    conf: { id: string },
+  ) {
+    if (event.pointerType === "mouse" && event.button !== 0) {
       return;
     }
     if (isCurrentComponent(conf)) {
@@ -302,9 +331,6 @@ const EditorCanvas: FC<{
   }
 
   function handleComponentClick(event: ReactMouseEvent, conf: { id: string }) {
-    if (getComponentById(conf.id)?.type === "container") {
-      return;
-    }
     if (isCurrentComponent(conf)) {
       event.stopPropagation();
       return;
@@ -314,24 +340,23 @@ const EditorCanvas: FC<{
   }
 
   function handleCanvasClick(event: ReactMouseEvent<HTMLDivElement>) {
-    const wrapper = resolveClosestWrapper(event);
-    if (!wrapper) {
+    const nodeId = resolveNodeIdFromEvent(event);
+    if (!nodeId) {
       clearCurrentComponent();
       return;
     }
   }
 
-  function handleCanvasMouseDownCapture(event: ReactMouseEvent<HTMLDivElement>) {
-    if (event.button !== 0) {
+  function handleCanvasPointerDownCapture(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.pointerType === "mouse" && event.button !== 0) {
       return;
     }
     canvasRef.current?.focus({ preventScroll: true });
-    const wrapper = resolveClosestWrapper(event);
-    const wrapperId = wrapper?.dataset.id;
-    if (!wrapperId) {
+    const nodeId = resolveNodeIdFromEvent(event);
+    if (!nodeId) {
       return;
     }
-    setCurrentComponent(wrapperId);
+    setCurrentComponent(nodeId);
   }
 
   useEditorComponentKeyPress();
@@ -380,7 +405,7 @@ const EditorCanvas: FC<{
       tabIndex={-1}
       className="relative min-h-[700px] bg-white"
       onClick={handleCanvasClick}
-      onMouseDownCapture={handleCanvasMouseDownCapture}
+      onPointerDownCapture={handleCanvasPointerDownCapture}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -499,10 +524,10 @@ const EditorCanvas: FC<{
             isDragable={isDragging}
             isMoving={movingComponentId === node.id}
             canDrag={canEditStructure}
-            onMouseDownCapture={(event) =>
-              handleComponentMouseDownCapture(event, node)
+            onPointerDownCapture={(event) =>
+              handleComponentPointerDownCapture(event, node)
             }
-            onMouseDown={(event) => handleDragComponentStart(event, node.id)}
+            onPointerDown={(event) => handleDragComponentStart(event, node.id)}
             onResizeMouseDown={(event, handle, wrapperLayout) =>
               handleResizeComponentStart(event, node.id, handle, wrapperLayout)
             }

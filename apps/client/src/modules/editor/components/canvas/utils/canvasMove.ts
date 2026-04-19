@@ -9,6 +9,7 @@ import { findLayoutBlockAt } from "@/modules/editor/utils/layoutBlocks";
 
 export interface MovingComponentState {
   id: string;
+  pointerId?: number | null;
   startX: number;
   startY: number;
   origLeft: number;

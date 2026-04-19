@@ -551,14 +551,7 @@ export const EditorViewport = observer(function EditorViewport(
     }
 
     const wrapper = target.closest(".component-warpper") as HTMLElement | null;
-    if (!wrapper) {
-      return true;
-    }
-    const wrapperId = wrapper.dataset.id;
-    if (!wrapperId) {
-      return false;
-    }
-    return props.storeComps.compConfigs[wrapperId]?.type === "container";
+    return !wrapper;
   }
 
   function handleWorkspaceMouseDown(
