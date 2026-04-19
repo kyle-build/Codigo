@@ -138,7 +138,9 @@ export default function AdminShell({
           type="button"
           onClick={() => onSelectPagePath(page.path)}
           className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
-            isActive ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-100"
+            isActive
+              ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
+              : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
           }`}
           style={{ paddingLeft: 12 + depth * 12 }}
         >
@@ -171,13 +173,15 @@ export default function AdminShell({
       >
         <summary
           className={`list-none flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors cursor-pointer select-none ${
-            isActiveGroup ? "bg-slate-100 text-slate-900" : "text-slate-700 hover:bg-slate-100"
+            isActiveGroup
+              ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
+              : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
           }`}
           style={{ paddingLeft: 12 + depth * 12 }}
         >
           <span className="truncate font-medium">{node.label}</span>
           <span
-            className={`ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-xs text-slate-400 transition-transform ${
+            className={`ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-xs text-[var(--ide-text-muted)] transition-transform ${
               isOpen ? "rotate-90" : ""
             }`}
           >
@@ -191,8 +195,8 @@ export default function AdminShell({
               onClick={() => onSelectPagePath(overviewPage.path)}
               className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
                 isActiveLeaf
-                  ? "bg-slate-900 text-white"
-                  : "text-slate-700 hover:bg-slate-100"
+                  ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
+                  : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
               }`}
               style={{ paddingLeft: 24 + depth * 12 }}
             >
@@ -206,9 +210,9 @@ export default function AdminShell({
   };
 
   return (
-    <div className="h-screen w-full flex bg-slate-50">
-      <aside className="h-screen w-60 shrink-0 border-r border-slate-200 bg-white flex flex-col">
-        <div className="h-14 px-4 flex items-center border-b border-slate-200 font-semibold text-slate-900">
+    <div className="h-screen w-full flex bg-[var(--ide-bg)]">
+      <aside className="h-screen w-60 shrink-0 border-r border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] flex flex-col">
+        <div className="h-14 px-4 flex items-center border-b border-[var(--ide-border)] font-semibold text-[var(--ide-text)] bg-[var(--ide-header-bg)]">
           {title}
         </div>
         <nav className="flex-1 min-h-0 p-2 flex flex-col gap-1 overflow-y-auto">

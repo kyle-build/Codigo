@@ -256,6 +256,62 @@ body,
   box-shadow: none !important;
 }
 
+.studio-root .ant-card {
+  background-color: var(--ide-control-bg) !important;
+  border-color: var(--ide-border) !important;
+  box-shadow: none !important;
+}
+
+.studio-root .ant-card-head {
+  background-color: var(--ide-header-bg) !important;
+  border-color: var(--ide-border) !important;
+}
+
+.studio-root .ant-card-head-title,
+.studio-root .ant-card-extra {
+  color: var(--ide-text) !important;
+}
+
+.studio-root .ant-table-wrapper .ant-table {
+  background-color: transparent !important;
+  color: var(--ide-text) !important;
+}
+
+.studio-root .ant-table-wrapper .ant-table-container {
+  border-color: var(--ide-border) !important;
+}
+
+.studio-root .ant-table-wrapper .ant-table-thead > tr > th {
+  background-color: var(--ide-header-bg) !important;
+  color: var(--ide-text) !important;
+  border-color: var(--ide-border) !important;
+}
+
+.studio-root .ant-table-wrapper .ant-table-tbody > tr > td {
+  background-color: var(--ide-control-bg) !important;
+  color: var(--ide-text) !important;
+  border-color: var(--ide-border) !important;
+}
+
+.studio-root .ant-table-wrapper .ant-table-tbody > tr:hover > td {
+  background-color: var(--ide-hover) !important;
+}
+
+.studio-root .ant-table-wrapper .ant-table-pagination,
+.studio-root .ant-table-wrapper .ant-pagination-item,
+.studio-root .ant-table-wrapper .ant-pagination-prev,
+.studio-root .ant-table-wrapper .ant-pagination-next {
+  color: var(--ide-text) !important;
+}
+
+.studio-root .ant-table-wrapper .ant-pagination-item-active {
+  border-color: var(--ide-accent) !important;
+}
+
+.studio-root .ant-table-wrapper .ant-pagination-item-active a {
+  color: var(--ide-accent) !important;
+}
+
 .studio-root .ant-tabs-nav::before {
   border-bottom: 1px solid var(--ide-border) !important;
 }
