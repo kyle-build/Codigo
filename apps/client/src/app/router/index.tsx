@@ -3,13 +3,11 @@ import Editor from "@/modules/editor";
 import Home from "@/modules/home/index";
 import Release from "@/modules/release";
 import Preview from "@/modules/preview";
-import LoginOrRegister from "@/modules/auth";
 import Flow from "@/modules/flow";
 import DevDoc from "@/modules/devDocument";
 import AppManagement from "@/modules/appManagement/index";
 import { StudioLayout } from "@/app/layouts/StudioLayout";
 import { EditorRouteGuard } from "@/modules/editor/components/EditorRouteGuard";
-import Profile from "@/modules/profile";
 import AdminLayout from "@/modules/adminConsole/components/AdminLayout";
 import { AdminRouteGuard } from "@/modules/adminConsole/components/AdminRouteGuard";
 import AdminDashboard from "@/modules/adminConsole/pages/Dashboard";
@@ -35,11 +33,11 @@ export const router = createHashRouter([
   },
   {
     path: "/login",
-    element: <LoginOrRegister />,
+    element: <Navigate to="/?modal=login" replace />,
   },
   {
     path: "/profile",
-    element: <Profile />,
+    element: <Navigate to="/?modal=profile" replace />,
   },
   {
     path: "/preview",

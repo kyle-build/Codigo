@@ -17,7 +17,7 @@ export const AdminRouteGuard = observer(
         const redirect = encodeURIComponent(
           `${location.pathname}${location.search}`,
         );
-        navigate(`/login?redirect=${redirect}`, { replace: true });
+        navigate(`/?modal=login&redirect=${redirect}`, { replace: true });
         return;
       }
 
@@ -27,7 +27,7 @@ export const AdminRouteGuard = observer(
             const redirect = encodeURIComponent(
               `${location.pathname}${location.search}`,
             );
-            navigate(`/login?redirect=${redirect}`, { replace: true });
+            navigate(`/?modal=login&redirect=${redirect}`, { replace: true });
           }
         });
       }

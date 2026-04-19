@@ -58,6 +58,20 @@ export class RedisModule {
     return result;
   }
 
+  /**
+   * 原子自增 key，并返回自增后的数值。
+   */
+  async incr(key: string) {
+    return this.redis.incr(key);
+  }
+
+  /**
+   * 为 key 设置过期时间（秒）。
+   */
+  async expire(key: string, time: number) {
+    await this.redis.expire(key, time);
+  }
+
   async getCachedData<T = any>(
     key: string,
     fetchFunction: () => Promise<T>,

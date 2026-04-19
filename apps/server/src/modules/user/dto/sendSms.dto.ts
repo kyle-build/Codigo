@@ -1,4 +1,4 @@
-﻿import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class SendCodeDto {
   @IsNotEmpty({ message: 'type限制不为空!' })
@@ -9,7 +9,7 @@ export class SendCodeDto {
   @IsString({ message: 'phone限制为string类型!' })
   phone: string;
 
-  @IsNotEmpty({ message: 'captcha限制不为空!' })
+  @IsOptional()
   @IsString({ message: 'captcha限制为string类型!' })
-  captcha: string;
+  captcha?: string;
 }

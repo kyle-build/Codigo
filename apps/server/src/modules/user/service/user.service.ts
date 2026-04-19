@@ -35,25 +35,62 @@ export class UserService {
   async getCaptcha(key: string, type: string) {
     const svgCaptcha = await this.captchaTool.generateCaptcha();
     await this.redis.set(`${type}:captcha:${key}`, svgCaptcha.text, 60);
-    return { data: svgCaptcha.data, text: svgCaptcha.text };
+    return { data: svgCaptcha.data };
+  }
+
+  /**
+   * 判断当前请求是否需要图形验证码（默认不需要，命中风控才需要）。
+   */
+  private async shouldRequireCaptcha(params: {
+    type: string;
+    phone: string;
+    riskKey: string;
+  }) {
+    const { type, phone, riskKey } = params;
+    const needCaptchaKey = `${type}:sms:need_captcha:key:${riskKey}`;
+    const needCaptchaPhoneKey = `${type}:sms:need_captcha:phone:${phone}`;
+    const alreadyRequired = await Promise.all([
+      this.redis.exists(needCaptchaKey),
+      this.redis.exists(needCaptchaPhoneKey),
+    ]);
+    if (alreadyRequired.some((value) => Boolean(value))) {
+      return true;
+    }
+
+    const phoneCounterKey = `${type}:sms:cnt:phone:${phone}`;
+    const keyCounterKey = `${type}:sms:cnt:key:${riskKey}`;
+    const windowSeconds = 10 * 60;
+
+    const [phoneCount, keyCount] = await Promise.all([
+      this.redis.incr(phoneCounterKey),
+      this.redis.incr(keyCounterKey),
+    ]);
+
+    await Promise.all([
+      phoneCount === 1 ? this.redis.expire(phoneCounterKey, windowSeconds) : Promise.resolve(),
+      keyCount === 1 ? this.redis.expire(keyCounterKey, windowSeconds) : Promise.resolve(),
+    ]);
+
+    const phoneHighRisk = phoneCount > 3;
+    const keyHighRisk = keyCount > 10;
+    if (!phoneHighRisk && !keyHighRisk) {
+      return false;
+    }
+
+    await Promise.all([
+      keyHighRisk ? this.redis.set(needCaptchaKey, '1', windowSeconds) : Promise.resolve(),
+      phoneHighRisk ? this.redis.set(needCaptchaPhoneKey, '1', windowSeconds) : Promise.resolve(),
+    ]);
+    return true;
   }
 
   async sendCode(
     phone: string,
-    captcha: string,
+    captcha: string | undefined,
     type: string,
     key: string,
     randomCode: number,
   ) {
-    // 是否有获取图形验证码
-    if (!(await this.redis.exists(`${type}:captcha:${key}`)))
-      throw new BadRequestException('请先获取图形验证码');
-
-    const captchaRedis = await this.redis.get(`${type}:captcha:${key}`);
-
-    if (!(captcha.toLowerCase() === captchaRedis!.toLowerCase()))
-      throw new BadRequestException('图形验证码不正确');
-
     // 60秒内不能重复获取
     if (await this.redis.exists(`${type}:code:${phone}`)) {
       const dateRdis = dayjs(
@@ -64,13 +101,48 @@ export class UserService {
       }
     }
 
+    const needCaptcha = await this.shouldRequireCaptcha({
+      type,
+      phone,
+      riskKey: key,
+    });
+
+    if (needCaptcha) {
+      const captchaKey = `${type}:captcha:${key}`;
+      if (!captcha) {
+        throw new XException({
+          code: Code.CaptchaRequired,
+          message: '需要图形验证码',
+        });
+      }
+
+      const captchaRedis = await this.redis.get(captchaKey);
+      if (!captchaRedis) {
+        throw new XException({
+          code: Code.CaptchaRequired,
+          message: '请先获取图形验证码',
+        });
+      }
+
+      if (captcha.toLowerCase() !== captchaRedis.toLowerCase()) {
+        throw new XException({
+          code: Code.CaptchaRequired,
+          message: '图形验证码不正确',
+        });
+      }
+    }
+
     // 发送短信验证码
     const codeRes = await this.textMessageTool.sendTextMessage(
       phone,
       randomCode,
     );
 
-    await this.redis.del(`${type}:captcha:${key}`);
+    await Promise.all([
+      this.redis.del(`${type}:captcha:${key}`),
+      this.redis.del(`${type}:sms:need_captcha:key:${key}`),
+      this.redis.del(`${type}:sms:need_captcha:phone:${phone}`),
+    ]);
 
     if (codeRes.code === 200) {
       const randomCodeTime = `${Date.now()}_${randomCode}`;

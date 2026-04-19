@@ -25,7 +25,7 @@ export type RegisterRequestFormValue = RegisterRequest & {
  * 描述发送短信验证码接口的请求参数。
  */
 export type SendCodeRequest = Pick<IUser, "phone"> & {
-  captcha: string;
+  captcha?: string;
 } & CaptchaRequest;
 
 /**

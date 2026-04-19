@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 枚举状态码
  */
 
@@ -25,4 +25,6 @@ export enum Code {
   InvalidParams = 600,
   /** 接口参数缺失 */
   MissingParams = 601,
+  /** 需要图形验证码 */
+  CaptchaRequired = 602,
 }

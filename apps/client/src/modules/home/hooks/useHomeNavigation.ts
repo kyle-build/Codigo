@@ -14,9 +14,14 @@ const navigationItems = [
 ] as const;
 
 /** 提供首页导航与账户入口动作。 */
-export function useHomeNavigation() {
+export function useHomeNavigation(options?: {
+  onOpenProfile?: () => void;
+  onOpenLogin?: () => void;
+}) {
   const navigate = useNavigate();
   const { isLogin, logout, store } = useStoreAuth();
+  const onOpenProfile = options?.onOpenProfile;
+  const onOpenLogin = options?.onOpenLogin;
 
   const userMenuItems = useMemo<MenuProps["items"]>(
     () => [
@@ -24,7 +29,13 @@ export function useHomeNavigation() {
         key: "profile",
         icon: createElement(UserOutlined),
         label: "个人中心",
-        onClick: () => navigate("/profile"),
+        onClick: () => {
+          if (onOpenProfile) {
+            onOpenProfile();
+            return;
+          }
+          navigate("/?modal=profile");
+        },
       },
       {
         key: "logout",
@@ -32,11 +43,11 @@ export function useHomeNavigation() {
         label: "退出登录",
         onClick: () => {
           logout();
-          navigate("/login");
+          navigate("/?modal=login");
         },
       },
     ],
-    [logout, navigate],
+    [logout, navigate, onOpenProfile],
   );
 
   return {
@@ -48,7 +59,13 @@ export function useHomeNavigation() {
     openAppManagement: () => navigate("/app-management?tab=published"),
     openDashboard: () => navigate("/console"),
     openHome: () => navigate("/"),
-    openLogin: () => navigate("/login"),
+    openLogin: () => {
+      if (onOpenLogin) {
+        onOpenLogin();
+        return;
+      }
+      navigate("/?modal=login");
+    },
     openRoute: (path: string) => navigate(path),
   };
 }

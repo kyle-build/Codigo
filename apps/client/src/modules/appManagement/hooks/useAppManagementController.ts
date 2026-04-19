@@ -38,7 +38,7 @@ export function useAppManagementController() {
         key: "profile",
         icon: createElement(UserOutlined),
         label: "个人中心",
-        onClick: () => navigate("/profile"),
+        onClick: () => navigate("/?modal=profile"),
       },
       {
         key: "logout",
@@ -46,14 +46,14 @@ export function useAppManagementController() {
         label: "退出登录",
         onClick: () => {
           logout();
-          navigate("/login");
+          navigate("/?modal=login");
         },
       },
     ],
     [logout, navigate],
   );
 
-  const openLogin = () => navigate("/login");
+  const openLogin = () => navigate("/?modal=login");
 
   const { data: templates = [], loading: templatesLoading } = useRequest(
     fetchTemplateList,

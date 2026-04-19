@@ -32,10 +32,14 @@
 
 | 方法 | 路径 | 鉴权 | 说明 |
 |---|---|---:|---|
-| GET | `/auth/captcha` | 否 | 获取图形验证码 |
-| POST | `/auth/sms-codes` | 否 | 发送短信验证码 |
+| GET | `/auth/captcha` | 否 | 获取图形验证码（SVG） |
+| POST | `/auth/sms-codes` | 否 | 发送短信验证码（默认不需要图形验证码；命中风控才需要） |
 | POST | `/auth/tokens/password` | 否 | 账号密码登录，返回 token |
 | POST | `/auth/tokens/phone` | 否 | 手机验证码登录，返回 token |
+
+补充约定：
+- `/auth/sms-codes` 入参 `captcha` 为可选；当服务端判断需要图形验证码时，会返回业务码 `602`（CaptchaRequired），前端应先调用 `/auth/captcha` 并携带 `captcha` 重试。
+- 图形验证码与风控判断基于来源指纹（ip + user-agent 的 hash）进行绑定。
 
 ### Users（新路径）
 
@@ -136,4 +140,3 @@
   2. 前端逐步切换到新路径；
   3. 后端为 Legacy 增加弃用提示（响应头/日志），并设定移除版本；
   4. 最终删除 Legacy Controller 与路由。
-

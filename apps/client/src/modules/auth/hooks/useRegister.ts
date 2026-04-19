@@ -17,14 +17,13 @@ export function useRegister(form: FormInstance) {
     onSuccess: async (res) => {
       await login(res.data);
       const redirect = resolveSafeRedirect(searchParams.get("redirect"));
-      nav(redirect ?? "/console");
+      nav(redirect ?? "/");
     },
     onFinally: () => {
       refreshCaptcha();
     },
   });
 }
-
 
 
 

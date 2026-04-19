@@ -349,7 +349,7 @@ export default function Release() {
                   <Button
                     type="primary"
                     onClick={() => {
-                      nav(`/login?redirect=${encodeURIComponent(redirectTo)}`);
+                      nav(`/?modal=login&redirect=${encodeURIComponent(redirectTo)}`);
                     }}
                   >
                     去登录

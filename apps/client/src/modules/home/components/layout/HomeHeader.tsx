@@ -1,12 +1,38 @@
 import { observer } from "mobx-react-lite";
 import { MenuOutlined } from "@ant-design/icons";
-import { Dropdown } from "antd";
-import { createElement, useMemo } from "react";
+import { Dropdown, Modal } from "antd";
+import { createElement, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import Profile from "@/modules/profile";
+import LoginOrRegister from "@/modules/auth";
 import { useHomeNavigation } from "../../hooks/useHomeNavigation";
 import { HomeUserEntry } from "./HomeUserEntry";
 
 /** 渲染首页顶部导航条。 */
 export const HomeHeader = observer(() => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+  const modalParam = searchParams.get("modal");
+  const hasProfileModalParam = modalParam === "profile";
+  const hasLoginModalParam = modalParam === "login";
+
+  useEffect(() => {
+    if (hasProfileModalParam) {
+      setIsProfileModalVisible(true);
+      return;
+    }
+    setIsProfileModalVisible(false);
+  }, [hasProfileModalParam]);
+
+  useEffect(() => {
+    if (hasLoginModalParam) {
+      setIsLoginModalVisible(true);
+      return;
+    }
+    setIsLoginModalVisible(false);
+  }, [hasLoginModalParam]);
+
   const {
     avatarUrl,
     isLoggedIn,
@@ -16,7 +42,20 @@ export const HomeHeader = observer(() => {
     openRoute,
     userMenuItems,
     username,
-  } = useHomeNavigation();
+  } = useHomeNavigation({
+    onOpenProfile: () => {
+      setIsProfileModalVisible(true);
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.set("modal", "profile");
+      setSearchParams(nextParams, { replace: true });
+    },
+    onOpenLogin: () => {
+      setIsLoginModalVisible(true);
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.set("modal", "login");
+      setSearchParams(nextParams, { replace: true });
+    },
+  });
 
   const navMenuItems = useMemo(
     () =>
@@ -77,6 +116,55 @@ export const HomeHeader = observer(() => {
           />
         </div>
       </div>
+
+      <Modal
+        title="个人中心"
+        open={isProfileModalVisible}
+        onCancel={() => {
+          setIsProfileModalVisible(false);
+          const nextParams = new URLSearchParams(searchParams);
+          nextParams.delete("modal");
+          setSearchParams(nextParams, { replace: true });
+        }}
+        footer={null}
+        width={600}
+        destroyOnClose
+        centered
+        styles={{
+          body: { padding: 0, maxHeight: "80vh", overflowY: "auto" },
+        }}
+      >
+        <Profile
+          isModal={true}
+          onUpdateSuccess={() => {
+            setIsProfileModalVisible(false);
+            const nextParams = new URLSearchParams(searchParams);
+            nextParams.delete("modal");
+            setSearchParams(nextParams, { replace: true });
+          }}
+        />
+      </Modal>
+
+      <Modal
+        title="登录"
+        open={isLoginModalVisible}
+        onCancel={() => {
+          setIsLoginModalVisible(false);
+          const nextParams = new URLSearchParams(searchParams);
+          nextParams.delete("modal");
+          nextParams.delete("redirect");
+          setSearchParams(nextParams, { replace: true });
+        }}
+        footer={null}
+        width={520}
+        destroyOnClose
+        centered
+        styles={{
+          body: { padding: 0, maxHeight: "80vh", overflowY: "auto" },
+        }}
+      >
+        <LoginOrRegister isModal={true} />
+      </Modal>
     </nav>
   );
 });

@@ -27,7 +27,7 @@ const Profile = observer(
 
     useEffect(() => {
       if (!store.token) {
-        navigate("/login");
+        navigate("/?modal=login");
         return;
       }
       if (store.details) {

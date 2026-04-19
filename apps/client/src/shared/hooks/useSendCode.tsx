@@ -17,6 +17,9 @@ export function useSendCode(form: FormInstance, type: string) {
   // 设置验证码图片源和设置验证码图片源的方法
   const [captchaSrc, setCaptchaSrc] = useState<string>("");
 
+  // 是否需要图形验证码（默认不需要，命中风控才需要）
+  const [captchaRequired, setCaptchaRequired] = useState(false);
+
   // 设置是否禁用和设置是否禁用的方法
   const [isDisable, setIsDisable] = useState(false);
 
@@ -39,8 +42,9 @@ export function useSendCode(form: FormInstance, type: string) {
   );
 
   useEffect(() => {
+    if (!captchaRequired) return;
     refreshCaptcha();
-  }, [refreshCaptcha]);
+  }, [captchaRequired, refreshCaptcha]);
 
   /**
    * 使用useRequest自定义hook来发送sendCode请求
@@ -53,6 +57,14 @@ export function useSendCode(form: FormInstance, type: string) {
       manual: true,
       onSuccess: () => {
         setStartedCountDown(true);
+        setCaptchaRequired(false);
+      },
+      onError: (error: any) => {
+        const code = error?.response?.data?.code;
+        if (code === 602) {
+          setCaptchaRequired(true);
+          form.setFieldsValue({ captcha: "" });
+        }
       },
     }
   );
@@ -93,16 +105,23 @@ export function useSendCode(form: FormInstance, type: string) {
    */
   async function getCode() {
     try {
-      await form.validateFields(["phone", "captcha"]);
+      await form.validateFields(
+        captchaRequired ? ["phone", "captcha"] : ["phone"]
+      );
     } catch {
       return;
     }
     const phone = form.getFieldsValue().phone as string;
-    const captcha = form.getFieldsValue().captcha as string;
-    if (!phone || !captcha) return;
+    const captcha = form.getFieldsValue().captcha as string | undefined;
+    if (!phone) return;
+    if (captchaRequired && !captcha) return;
 
     // 验证码接口请求
-    execSendCode({ phone, captcha, type });
+    execSendCode({
+      phone,
+      type,
+      ...(captchaRequired ? { captcha } : {}),
+    });
   }
 
   /**
@@ -110,20 +129,26 @@ export function useSendCode(form: FormInstance, type: string) {
    */
   const sendCodeTemplate = (
     <>
-      <Form.Item
-        label="图形验证码"
-        name="captcha"
-        rules={[{ required: true, message: "请输入图形验证码!" }]}
-      >
-        <div>
-          <Input className="w-[122px]" disabled={loadingWithGetCaptcha} />
-          <img
-            onClick={refreshCaptcha}
-            src={`data:image/svg+xml;base64,${btoa(captchaSrc)}`}
-            className="w-[102px] h-[32px] inline-block rounded-md"
-          />
-        </div>
-      </Form.Item>
+      {captchaRequired ? (
+        <Form.Item
+          label="图形验证码"
+          name="captcha"
+          rules={[{ required: true, message: "请输入图形验证码!" }]}
+        >
+          <div>
+            <Input className="w-[122px]" disabled={loadingWithGetCaptcha} />
+            <img
+              onClick={refreshCaptcha}
+              src={
+                captchaSrc
+                  ? `data:image/svg+xml;base64,${btoa(captchaSrc)}`
+                  : "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+              }
+              className="w-[102px] h-[32px] inline-block rounded-md bg-slate-100"
+            />
+          </div>
+        </Form.Item>
+      ) : null}
 
       <Form.Item
         label="手机验证码"
@@ -149,8 +174,6 @@ export function useSendCode(form: FormInstance, type: string) {
     sendCodeTemplate,
   };
 }
-
-
 
 
 
