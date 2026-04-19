@@ -12,7 +12,9 @@ import type {
 import type { TEditorComponentsStore } from "@/modules/editor/stores";
 import {
   createEditorPageDefinition,
+  createEditorPageGroupDefinition,
   ensureUniquePagePath,
+  ensureUniquePageGroupPath,
   normalizeFromSchema,
   sanitizePagePath,
   serializeComponentTree,
@@ -85,6 +87,14 @@ export function createEditorComponentPageActions(
   const getPages = computed(() => {
     ensureEditorPages();
     return serializeStore(storeComponents).pages ?? [];
+  });
+
+  /**
+   * 获取编辑器内的全部页面集快照。
+   */
+  const getPageGroups = computed(() => {
+    ensureEditorPages();
+    return serializeStore(storeComponents).pageGroups ?? [];
   });
 
   /**
@@ -163,7 +173,8 @@ export function createEditorComponentPageActions(
   /**
    * 新建一个 editor 页面并切换过去。
    */
-  const createEditorPage = action((options?: { parentPath?: string | null }) => {
+  const createEditorPage = action(
+    (options?: { parentGroupPath?: string | null; switchToNewPage?: boolean }) => {
     if (!ensurePermission("edit_structure", "当前角色不能新增页面")) {
       return null;
     }
@@ -172,16 +183,49 @@ export function createEditorComponentPageActions(
     persistActivePageSnapshot();
     const pages = getPages.get();
     const nextPage = createEditorPageDefinition(pages);
-    if (options?.parentPath) {
-      const parentPath = sanitizePagePath(options.parentPath);
-      const candidatePath = `${parentPath}/${sanitizePagePath(nextPage.path)}`;
-      nextPage.path = ensureUniquePagePath(pages, candidatePath, nextPage.id);
+      if (options?.parentGroupPath) {
+        const parentPath = sanitizePagePath(options.parentGroupPath);
+        const candidatePath = `${parentPath}/${sanitizePagePath(nextPage.path)}`;
+        nextPage.path = ensureUniquePagePath(pages, candidatePath, nextPage.id);
     }
     storeComponents.pages = [...pages, nextPage];
-    hydrateCanvasFromPage(nextPage);
+      if (options?.switchToNewPage !== false) {
+        hydrateCanvasFromPage(nextPage);
+      }
+      broadcastReplaceAll();
+      addOperationLog("update_page", `新增页面:${nextPage.name}`);
+      return nextPage;
+    },
+  );
+
+  /**
+   * 新建一个页面集，仅作为页面分组使用。
+   */
+  const createEditorPageGroup = action((options?: { parentGroupPath?: string | null }) => {
+    if (!ensurePermission("edit_structure", "当前角色不能新增页面集")) {
+      return null;
+    }
+
+    ensureEditorPages();
+    persistActivePageSnapshot();
+    const pageGroups = getPageGroups.get();
+    const pages = getPages.get();
+    const nextGroup = createEditorPageGroupDefinition(pageGroups, pages);
+    if (options?.parentGroupPath) {
+      const parentPath = sanitizePagePath(options.parentGroupPath);
+      const candidatePath = `${parentPath}/${sanitizePagePath(nextGroup.path)}`;
+      nextGroup.path = ensureUniquePageGroupPath(
+        pageGroups,
+        pages,
+        candidatePath,
+        nextGroup.id,
+      );
+    }
+
+    storeComponents.pageGroups = [...pageGroups, nextGroup];
     broadcastReplaceAll();
-    addOperationLog("update_page", `新增页面:${nextPage.name}`);
-    return nextPage;
+    addOperationLog("update_page", `新增页面集:${nextGroup.name}`);
+    return nextGroup;
   });
 
   /**
@@ -272,8 +316,10 @@ export function createEditorComponentPageActions(
   return {
     clearActivePageCanvas,
     createEditorPage,
+    createEditorPageGroup,
     ensureEditorPages,
     getActivePage,
+    getPageGroups,
     getPages,
     hydrateCanvasFromPage,
     persistActivePageSnapshot,

@@ -413,7 +413,7 @@ const PreviewCanvas = observer(() => {
 export default observer(function Preview() {
   const nav = useNavigate();
   const { store } = useStorePage();
-  const { getPages } = useEditorComponents();
+  const { getPages, serializeSchema } = useEditorComponents();
   const [searchParams, setSearchParams] = useSearchParams();
   const pages = getPages.get();
   const requestedPagePath = searchParams.get("page");
@@ -488,6 +488,7 @@ export default observer(function Preview() {
       <div className="h-screen overflow-hidden bg-slate-50">
         <AdminShell
           pages={pages}
+          pageGroups={serializeSchema().pageGroups ?? []}
           activePagePath={activePage?.path ?? null}
           onSelectPagePath={handleSelectPagePath}
           title={store.title || "管理后台"}

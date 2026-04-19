@@ -4,6 +4,7 @@ import type {
   ComponentNode,
   ComponentNodeRecord,
   IEditorPageSchema,
+  IEditorPageGroupSchema,
   IPageSchema,
   PageGridConfig,
   PageLayoutMode,
@@ -135,6 +136,32 @@ export function ensureUniquePagePath(
 }
 
 /**
+ * 生成不重复的页面集路径。
+ */
+export function ensureUniquePageGroupPath(
+  pageGroups: IEditorPageGroupSchema[],
+  pages: IEditorPageSchema[],
+  candidate: string,
+  excludeId?: string | null,
+) {
+  const basePath = sanitizePagePath(candidate);
+  let nextPath = basePath;
+  let suffix = 2;
+
+  const hasConflict = (path: string) =>
+    pageGroups.some(
+      (group) => group.id !== excludeId && sanitizePagePath(group.path) === path,
+    ) || pages.some((page) => sanitizePagePath(page.path) === path);
+
+  while (hasConflict(nextPath)) {
+    nextPath = `${basePath}-${suffix}`;
+    suffix += 1;
+  }
+
+  return nextPath;
+}
+
+/**
  * 生成编辑器页面定义。
  */
 export function createEditorPageDefinition(
@@ -158,9 +185,41 @@ export function createEditorPageDefinition(
 }
 
 /**
+ * 生成编辑器页面集定义。
+ */
+export function createEditorPageGroupDefinition(
+  pageGroups: IEditorPageGroupSchema[],
+  pages: IEditorPageSchema[],
+  options?: Partial<Pick<IEditorPageGroupSchema, "id" | "name" | "path">>,
+): IEditorPageGroupSchema {
+  const groupIndex = pageGroups.length + 1;
+  const name = options?.name?.trim() || `页面集 ${groupIndex}`;
+  const preferredPath = options?.path?.trim() || `group-${groupIndex}`;
+
+  return {
+    id: options?.id ?? ulid(),
+    name,
+    path: ensureUniquePageGroupPath(pageGroups, pages, preferredPath, options?.id ?? null),
+  };
+}
+
+/**
  * 统一整理 schema 中的多页面结构。
  */
 export function normalizeEditorPages(schema?: IPageSchema | null) {
+  const pageGroups = Array.isArray(schema?.pageGroups)
+    ? schema.pageGroups.reduce<IEditorPageGroupSchema[]>((result, group) => {
+        result.push(
+          createEditorPageGroupDefinition(result, schema?.pages ?? [], {
+            id: group.id,
+            name: group.name,
+            path: group.path,
+          }),
+        );
+        return result;
+      }, [])
+    : [];
+
   if (Array.isArray(schema?.pages) && schema.pages.length) {
     const pages = schema.pages.reduce<IEditorPageSchema[]>((result, page) => {
       result.push(
@@ -180,6 +239,7 @@ export function normalizeEditorPages(schema?: IPageSchema | null) {
 
     return {
       pages,
+      pageGroups,
       activePageId,
     };
   }
@@ -193,6 +253,7 @@ export function normalizeEditorPages(schema?: IPageSchema | null) {
 
   return {
     pages: [initialPage],
+    pageGroups,
     activePageId: initialPage.id,
   };
 }
@@ -303,6 +364,10 @@ export function serializeStore(store: TEditorComponentsStore): IPageSchema {
             components: serializeComponentTree(store),
           }),
         ];
+  const pageGroups = (store.pageGroups ?? []).map((group) => ({
+    ...group,
+    path: sanitizePagePath(group.path),
+  }));
 
   return {
     version: 3,
@@ -311,6 +376,7 @@ export function serializeStore(store: TEditorComponentsStore): IPageSchema {
       pages[0]?.components ??
       [],
     pages,
+    pageGroups,
     activePageId:
       pages.find((page) => page.id === store.activePageId)?.id ??
       pages[0]?.id ??

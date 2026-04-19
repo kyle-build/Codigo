@@ -174,7 +174,7 @@ export function createEditorComponentPersistence(
       grid: TStorePage["grid"] | undefined,
       preferredCurrentCompId?: string | null,
     ) => {
-      const { pages, activePageId } = normalizeEditorPages(schema);
+      const { pages, pageGroups, activePageId } = normalizeEditorPages(schema);
       const activePage =
         pages.find((page) => page.id === activePageId) ?? pages[0] ?? null;
       const normalized = normalizeFromSchema(
@@ -187,6 +187,7 @@ export function createEditorComponentPersistence(
       );
 
       storeComponents.pages = pages;
+      storeComponents.pageGroups = pageGroups;
       storeComponents.activePageId = activePage?.id ?? null;
       storeComponents.compConfigs = normalized.compConfigs;
       storeComponents.sortableCompConfig = normalized.sortableCompConfig;

@@ -8,8 +8,11 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import { useEditorComponents } from "@/modules/editor/hooks";
+import {
+  buildShellTree,
+  type ShellTreeNode,
+} from "@/modules/pageShell/utils/tree";
 import { useEffect, useMemo, useState } from "react";
-import type { IEditorPageSchema } from "@codigo/schema";
 
 interface EditorPageManagerProps {
   embedded?: boolean;
@@ -22,17 +25,20 @@ const EditorPageManager =  observer(function ({
 }: EditorPageManagerProps) {
   const {
     getPages,
+    getPageGroups,
     getActivePage,
     createEditorPage,
+    createEditorPageGroup,
     switchEditorPage,
     updateEditorPageMeta,
   } = useEditorComponents();
   const pages = getPages.get();
+  const pageGroups = getPageGroups.get();
   const activePage = getActivePage.get();
   const [keyword, setKeyword] = useState("");
   const [selectedTarget, setSelectedTarget] = useState<
     | { type: "page"; id: string }
-    | { type: "folder"; path: string }
+    | { type: "group"; path: string }
     | null
   >(null);
   const [openPaths, setOpenPaths] = useState<Set<string>>(() => new Set());
@@ -57,104 +63,41 @@ const EditorPageManager =  observer(function ({
     });
   }, [activePage?.id, activePage?.path]);
 
+  const normalizedKeyword = keyword.trim().toLowerCase();
+
   const filteredPages = useMemo(() => {
-    const nextKeyword = keyword.trim().toLowerCase();
-    if (!nextKeyword) {
+    if (!normalizedKeyword) {
       return pages;
     }
     return pages.filter((page) => {
       const name = page.name?.toLowerCase() ?? "";
       const path = page.path?.toLowerCase() ?? "";
-      return name.includes(nextKeyword) || path.includes(nextKeyword);
+      return name.includes(normalizedKeyword) || path.includes(normalizedKeyword);
     });
-  }, [keyword, pages]);
+  }, [normalizedKeyword, pages]);
 
-  type PageTreeNode = {
-    path: string;
-    label: string;
-    page?: IEditorPageSchema;
-    children: PageTreeNode[];
-    order: number;
-  };
-
-  const treeRoots = useMemo<PageTreeNode[]>(() => {
-    const roots = new Map<string, PageTreeNode>();
-    const childrenMap = new Map<string, Map<string, PageTreeNode>>();
-
-    const getChildren = (path: string) => {
-      const existing = childrenMap.get(path);
-      if (existing) return existing;
-      const created = new Map<string, PageTreeNode>();
-      childrenMap.set(path, created);
-      return created;
-    };
-
-    const ensureNode = (
-      parent: string,
-      segment: string,
-      fullPath: string,
-      order: number,
-    ) => {
-      const map = parent ? getChildren(parent) : roots;
-      const existing = map.get(segment);
-      if (existing) {
-        existing.order = Math.min(existing.order, order);
-        return existing;
-      }
-      const created: PageTreeNode = {
-        path: fullPath,
-        label: segment,
-        children: [],
-        order,
-      };
-      map.set(segment, created);
-      return created;
-    };
-
-    filteredPages.forEach((page, index) => {
-      const segments = page.path.split("/").filter(Boolean);
-      if (!segments.length) {
-        return;
-      }
-      let parent = "";
-      let currentNode: PageTreeNode | null = null;
-      for (let i = 0; i < segments.length; i += 1) {
-        const segment = segments[i];
-        const fullPath = parent ? `${parent}/${segment}` : segment;
-        currentNode = ensureNode(parent, segment, fullPath, index);
-        parent = fullPath;
-      }
-      if (currentNode) {
-        currentNode.page = page;
-      }
+  const filteredGroups = useMemo(() => {
+    if (!normalizedKeyword) {
+      return pageGroups;
+    }
+    return pageGroups.filter((group) => {
+      const name = group.name?.toLowerCase() ?? "";
+      const path = group.path?.toLowerCase() ?? "";
+      return name.includes(normalizedKeyword) || path.includes(normalizedKeyword);
     });
+  }, [normalizedKeyword, pageGroups]);
 
-    const materialize = (map: Map<string, PageTreeNode>) => {
-      const nodes = Array.from(map.values());
-      nodes.forEach((node) => {
-        const childMap = childrenMap.get(node.path);
-        if (childMap) {
-          node.children = materialize(childMap);
-          if (node.children.length) {
-            node.order = Math.min(node.order, node.children[0]?.order ?? node.order);
-          }
-        }
-      });
-      return nodes.sort((a, b) => (a.order !== b.order ? a.order - b.order : a.path.localeCompare(b.path)));
-    };
+  const treeRoots = useMemo(
+    () => buildShellTree(filteredPages, filteredGroups),
+    [filteredGroups, filteredPages],
+  );
 
-    return materialize(roots);
-  }, [filteredPages]);
-
-  const selectedParentPath = useMemo(() => {
-    if (selectedTarget?.type === "folder") {
+  const selectedGroupPath = useMemo(() => {
+    if (selectedTarget?.type === "group") {
       return selectedTarget.path;
     }
-    if (selectedTarget?.type === "page") {
-      return pages.find((page) => page.id === selectedTarget.id)?.path ?? null;
-    }
-    return activePage?.path ?? null;
-  }, [activePage?.path, pages, selectedTarget]);
+    return null;
+  }, [selectedTarget]);
 
   const toggleOpen = (path: string) => {
     setOpenPaths((prev) => {
@@ -168,12 +111,13 @@ const EditorPageManager =  observer(function ({
     });
   };
 
-  const renderTreeNode = (node: PageTreeNode, depth: number) => {
+  const renderTreeNode = (node: ShellTreeNode, depth: number) => {
     const isOpen = openPaths.has(node.path);
     const hasChildren = node.children.length > 0;
+    const isGroupNode = Boolean(node.group);
     const isActive = Boolean(activePage && node.page?.id === activePage.id);
     const isSelected =
-      (selectedTarget?.type === "folder" && selectedTarget.path === node.path) ||
+      (selectedTarget?.type === "group" && selectedTarget.path === node.path) ||
       (selectedTarget?.type === "page" && node.page?.id === selectedTarget.id);
 
     const rowClassName = `w-full border-0 px-2 py-1.5 text-left transition-colors ${
@@ -194,7 +138,9 @@ const EditorPageManager =  observer(function ({
               onClick={(event) => {
                 event.stopPropagation();
                 toggleOpen(node.path);
-                setSelectedTarget({ type: "folder", path: node.path });
+                if (isGroupNode) {
+                  setSelectedTarget({ type: "group", path: node.path });
+                }
               }}
               className="flex h-6 w-6 items-center justify-center rounded-sm text-[var(--ide-text-muted)] hover:bg-[var(--ide-hover)] hover:text-[var(--ide-text)]"
               aria-label={isOpen ? "收起" : "展开"}
@@ -207,12 +153,18 @@ const EditorPageManager =  observer(function ({
           <button
             type="button"
             onClick={() => {
+              if (isGroupNode) {
+                setSelectedTarget({ type: "group", path: node.path });
+                if (hasChildren) {
+                  toggleOpen(node.path);
+                }
+                return;
+              }
               if (node.page) {
                 setSelectedTarget({ type: "page", id: node.page.id });
                 switchEditorPage(node.page.id);
                 return;
               }
-              setSelectedTarget({ type: "folder", path: node.path });
               if (hasChildren) {
                 toggleOpen(node.path);
               }
@@ -220,7 +172,7 @@ const EditorPageManager =  observer(function ({
             className={rowClassName}
           >
             <div className="flex items-center gap-2">
-              {hasChildren ? (
+              {isGroupNode || hasChildren ? (
                 isOpen ? (
                   <FolderOpenOutlined className={isActive ? "text-[var(--ide-accent)]" : "text-[var(--ide-text-muted)]"} />
                 ) : (
@@ -231,10 +183,10 @@ const EditorPageManager =  observer(function ({
               )}
               <div className="min-w-0 flex-1">
                 <div className="truncate text-[12px] font-medium">
-                  {node.page?.name ?? node.label}
+                  {node.group?.name ?? node.page?.name ?? node.label}
                 </div>
                 <div className="truncate text-[10px] opacity-60 font-mono">
-                  {node.page?.path ?? node.path}
+                  {isGroupNode ? `group:${node.path}` : (node.page?.path ?? node.path)}
                 </div>
               </div>
             </div>
@@ -266,29 +218,39 @@ const EditorPageManager =  observer(function ({
               type="primary"
               size="small"
               icon={<PlusOutlined />}
-              onClick={() => createEditorPage()}
+              onClick={() =>
+                createEditorPage({
+                  parentGroupPath: selectedGroupPath,
+                  switchToNewPage: !selectedGroupPath,
+                })
+              }
               className="!rounded-sm"
             >
-              新建
+              页面
             </Button>
             <Button
               size="small"
               icon={<PlusOutlined />}
-              disabled={!selectedParentPath}
               onClick={() => {
-                if (!selectedParentPath) {
+                const nextGroup = createEditorPageGroup({
+                  parentGroupPath: selectedGroupPath,
+                });
+                if (!nextGroup) {
                   return;
                 }
-                createEditorPage({ parentPath: selectedParentPath });
+                setSelectedTarget({ type: "group", path: nextGroup.path });
                 setOpenPaths((prev) => {
                   const next = new Set(prev);
-                  next.add(selectedParentPath);
+                  if (selectedGroupPath) {
+                    next.add(selectedGroupPath);
+                  }
+                  next.add(nextGroup.path);
                   return next;
                 });
               }}
               className="!rounded-sm !border-[var(--ide-control-border)] !bg-[var(--ide-control-bg)] !text-[var(--ide-text)] hover:!bg-[var(--ide-hover)]"
             >
-              子页
+              页面集
             </Button>
           </div>
         </div>
@@ -351,15 +313,46 @@ const EditorPageManager =  observer(function ({
         <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
           页面管理
         </div>
-        <Button
-          type="primary"
-          size="small"
-          icon={<PlusOutlined />}
-          onClick={() => createEditorPage()}
-          className="!rounded-sm"
-        >
-          新建
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            type="primary"
+            size="small"
+            icon={<PlusOutlined />}
+            onClick={() =>
+              createEditorPage({
+                parentGroupPath: selectedGroupPath,
+                switchToNewPage: !selectedGroupPath,
+              })
+            }
+            className="!rounded-sm"
+          >
+            页面
+          </Button>
+          <Button
+            size="small"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              const nextGroup = createEditorPageGroup({
+                parentGroupPath: selectedGroupPath,
+              });
+              if (!nextGroup) {
+                return;
+              }
+              setSelectedTarget({ type: "group", path: nextGroup.path });
+              setOpenPaths((prev) => {
+                const next = new Set(prev);
+                if (selectedGroupPath) {
+                  next.add(selectedGroupPath);
+                }
+                next.add(nextGroup.path);
+                return next;
+              });
+            }}
+            className="!rounded-sm !border-[var(--ide-control-border)] !bg-[var(--ide-control-bg)] !text-[var(--ide-text)] hover:!bg-[var(--ide-hover)]"
+          >
+            页面集
+          </Button>
+        </div>
       </div>
 
       <div className="border-b border-[var(--ide-border)] px-3 py-2">
@@ -375,52 +368,7 @@ const EditorPageManager =  observer(function ({
 
       <div className="min-h-0 flex-1 overflow-y-auto px-2 py-2 scrollbar-thin scrollbar-thumb-[var(--ide-border)] hover:scrollbar-thumb-[var(--ide-text-muted)] scrollbar-track-transparent">
         <div className="space-y-1">
-          {filteredPages.map((page, index) => {
-            const isActive = page.id === activePage?.id;
-            return (
-              <button
-                key={page.id}
-                type="button"
-                onClick={() => switchEditorPage(page.id)}
-                className={`flex w-full items-center justify-between gap-2 rounded-sm px-2 py-2 text-left transition-colors ${
-                  isActive
-                    ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
-                    : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
-                }`}
-              >
-                <div className="min-w-0 flex items-center gap-2">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-[var(--ide-border)] bg-[var(--ide-control-bg)]">
-                    <FileTextOutlined
-                      className={
-                        isActive
-                          ? "text-[var(--ide-accent)]"
-                          : "text-[var(--ide-text-muted)]"
-                      }
-                    />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="truncate text-[12px] font-medium">
-                      {page.name}
-                    </div>
-                    <div className="truncate font-mono text-[10px] text-[var(--ide-text-muted)]">
-                      page:{page.path}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 text-[10px] text-[var(--ide-text-muted)]">
-                  <span>#{index + 1}</span>
-                  <span>{page.components.length} 节点</span>
-                  <RightOutlined
-                    className={
-                      isActive
-                        ? "text-[var(--ide-accent)]"
-                        : "opacity-50"
-                    }
-                  />
-                </div>
-              </button>
-            );
-          })}
+          {treeRoots.map((node) => renderTreeNode(node, 0))}
         </div>
       </div>
 

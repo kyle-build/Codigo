@@ -29,6 +29,7 @@ function resolveSchemaFromReleasePayload(
       version: payload.schema.version ?? 3,
       components: payload.schema.components as ComponentNode[],
       pages: payload.schema.pages,
+      pageGroups: payload.schema.pageGroups,
       activePageId: payload.schema.activePageId,
     };
   }
@@ -385,6 +386,7 @@ export default function Release() {
       <div className="h-screen overflow-hidden bg-slate-50">
         <AdminShell
           pages={schema.pages!}
+          pageGroups={schema.pageGroups ?? []}
           activePagePath={activePage?.path ?? null}
           onSelectPagePath={(pagePath) => {
             setSearchParams((prev) => {

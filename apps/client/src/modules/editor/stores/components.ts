@@ -2,6 +2,7 @@ import type {
   ComponentNode,
   ComponentNodeRecord,
   IEditorPageSchema,
+  IEditorPageGroupSchema,
 } from "@codigo/schema";
 import { makeAutoObservable } from "mobx";
 
@@ -13,6 +14,7 @@ interface IStoreComponents {
   copyedCompConig: ComponentNode | ComponentNode[] | null;
   itemsExpandIndex: number;
   pages: IEditorPageSchema[];
+  pageGroups: IEditorPageGroupSchema[];
   activePageId: string | null;
 }
 
@@ -28,6 +30,7 @@ export function createEditorComponentsStore() {
     copyedCompConig: null,
     itemsExpandIndex: 0,
     pages: [],
+    pageGroups: [],
     activePageId: null,
   });
 }

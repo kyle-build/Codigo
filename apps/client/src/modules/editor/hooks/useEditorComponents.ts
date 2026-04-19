@@ -373,8 +373,10 @@ export function useEditorComponents() {
   const {
     clearActivePageCanvas,
     createEditorPage,
+    createEditorPageGroup,
     ensureEditorPages,
     getActivePage,
+    getPageGroups,
     getPages,
     switchEditorPage,
     updateEditorPageMeta,
@@ -440,6 +442,7 @@ export function useEditorComponents() {
       : (value.currentCompConfig ? [value.currentCompConfig] : []);
     storeComponents.itemsExpandIndex = value.itemsExpandIndex;
     storeComponents.pages = value.pages;
+    storeComponents.pageGroups = value.pageGroups ?? [];
     storeComponents.activePageId = value.activePageId;
     syncSchema(value.currentCompConfig);
   });
@@ -576,6 +579,7 @@ export function useEditorComponents() {
       ? [storeComponents.currentCompConfig]
       : [];
     storeComponents.pages = schema.pages ?? [];
+    storeComponents.pageGroups = schema.pageGroups ?? [];
     storeComponents.activePageId = activeTemplatePage.id;
 
     updatePage(nextPageSettings);
@@ -622,6 +626,7 @@ export function useEditorComponents() {
     replaceByCode,
     push,
     pushBlock,
+    getPageGroups,
     getPages,
     getActivePage,
     getComponentById,
@@ -634,6 +639,7 @@ export function useEditorComponents() {
     setSelectedComponents,
     selectAllComponents,
     createEditorPage,
+    createEditorPageGroup,
     switchEditorPage,
     updateEditorPageMeta,
     updateEditorPageLayoutBlocks,

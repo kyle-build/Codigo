@@ -23,7 +23,6 @@ import { EditorOutlineTree } from "../rightPanel/ComponentFields";
 import GlobalFields from "../rightPanel/GlobalFields";
 import EditorCanvas from "../canvas";
 import { SandboxCanvas } from "../canvas/SandboxCanvas";
-import { AdminShell } from "@/modules/pageShell/components/AdminShell";
 import { useEditorPanelLayout } from "./useEditorPanelLayout";
 import { WebIDEFrame } from "./WebIDEFrame";
 import { EditorStatusBarActions } from "./EditorStatusBarActions";
@@ -103,16 +102,6 @@ function EditorStage({
 
   return (
     (() => {
-      const pages = storeComps.pages.map((page) => ({
-        id: page.id,
-        name: page.name,
-        path: page.path,
-      }));
-      const activePagePath =
-        storeComps.pages.find((page) => page.id === storeComps.activePageId)?.path ??
-        storeComps.pages[0]?.path ??
-        null;
-
       const canvas = (
         <div
           className={`editor-canvas-container relative z-0 overflow-hidden bg-white text-left transition-all duration-300 ease-out shadow-lg ${
@@ -139,50 +128,7 @@ function EditorStage({
           <EditorCanvas store={storeComps} onRef={canvasRef} />
         </div>
       );
-
-      if (storePage.shellLayout === "none") {
-        return canvas;
-      }
-
-      const sidebarWidth = 224;
-      const topBarHeight = 56;
-      const breadcrumbHeight = 44;
-      const baseWidth = storePage.canvasWidth;
-      const baseHeight = storePage.canvasHeight;
-      const frameWidth =
-        storePage.shellLayout === "leftRight" ||
-        storePage.shellLayout === "leftTop" ||
-        storePage.shellLayout === "topLeft"
-          ? baseWidth + sidebarWidth
-          : baseWidth;
-      const frameHeight =
-        storePage.shellLayout === "topBottom"
-          ? baseHeight + topBarHeight
-          : storePage.shellLayout === "breadcrumb"
-            ? baseHeight + topBarHeight + breadcrumbHeight
-            : storePage.shellLayout === "leftTop" || storePage.shellLayout === "topLeft"
-              ? baseHeight + topBarHeight
-              : baseHeight;
-
-      return (
-        <div
-          className="relative z-0 overflow-hidden border border-[var(--ide-border)] bg-white text-left shadow-lg"
-          style={{ width: frameWidth, height: frameHeight, maxHeight: "100%" }}
-        >
-          <AdminShell
-            pages={pages}
-            activePagePath={activePagePath}
-            onSelectPagePath={() => {}}
-            title={storePage.title || "管理后台"}
-            layout={storePage.shellLayout}
-            interactive={false}
-          >
-            <div className="h-full w-full flex items-center justify-center bg-transparent">
-              {canvas}
-            </div>
-          </AdminShell>
-        </div>
-      );
+      return canvas;
     })()
   );
 }

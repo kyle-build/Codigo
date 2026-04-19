@@ -123,6 +123,7 @@ async function applyRemoteComponentUpdate(payload: any) {
     store.compConfigs = data.compConfigs;
     store.sortableCompConfig = data.sortableCompConfig;
     store.pages = data.pages ?? store.pages;
+    store.pageGroups = data.pageGroups ?? store.pageGroups;
     store.activePageId = data.activePageId ?? store.activePageId;
     store.currentCompConfig =
       store.currentCompConfig && data.compConfigs?.[store.currentCompConfig]

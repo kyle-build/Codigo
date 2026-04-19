@@ -4,11 +4,12 @@ import type { PageShellLayout } from "@codigo/schema";
 import { BreadcrumbRow } from "./BreadcrumbRow";
 import { SidebarNav } from "./SidebarNav";
 import { TopNav } from "./TopNav";
-import type { AdminShellPage } from "../utils/tree";
+import type { AdminShellPage, AdminShellPageGroup } from "../utils/tree";
 import { buildShellTree, deriveOpenPaths, resolveActiveTopNode } from "../utils/tree";
 
 interface AdminShellProps extends PropsWithChildren {
   pages: AdminShellPage[];
+  pageGroups?: AdminShellPageGroup[];
   activePagePath: string | null;
   onSelectPagePath: (path: string) => void;
   title?: string;
@@ -18,6 +19,7 @@ interface AdminShellProps extends PropsWithChildren {
 
 export function AdminShell({
   pages,
+  pageGroups = [],
   activePagePath,
   onSelectPagePath,
   title = "管理后台",
@@ -25,7 +27,7 @@ export function AdminShell({
   interactive = true,
   children,
 }: AdminShellProps) {
-  const treeRoots = useMemo(() => buildShellTree(pages), [pages]);
+  const treeRoots = useMemo(() => buildShellTree(pages, pageGroups), [pageGroups, pages]);
   const pagePathIndex = useMemo(() => {
     const map = new Map<string, AdminShellPage>();
     pages.forEach((p) => map.set(p.path, p));

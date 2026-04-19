@@ -59,7 +59,7 @@ export function SidebarNav({
     }
 
     const isOpen = openPaths.has(node.path);
-    const overviewPage = node.page;
+    const overviewPage = node.group ? null : node.page;
     const childPages = node.children.map((child) => renderNode(child, depth + 1));
 
     return (
@@ -88,7 +88,9 @@ export function SidebarNav({
           }`}
           style={{ paddingLeft: 12 + depth * 12 }}
         >
-          <span className="truncate font-medium">{node.label}</span>
+          <span className="truncate font-medium">
+            {node.group?.name ?? node.page?.name ?? node.label}
+          </span>
           <span
             className={`ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-xs text-[var(--ide-text-muted)] transition-transform ${
               isOpen ? "rotate-90" : ""

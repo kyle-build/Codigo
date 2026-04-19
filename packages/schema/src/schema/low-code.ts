@@ -79,10 +79,17 @@ export interface IEditorPageSchema {
   layoutBlocks?: LayoutBlock[];
 }
 
+export interface IEditorPageGroupSchema {
+  id: string;
+  name: string;
+  path: string;
+}
+
 export interface IPageSchema {
   version: number;
   components: ComponentNode[];
   pages?: IEditorPageSchema[];
+  pageGroups?: IEditorPageGroupSchema[];
   activePageId?: string;
 }
 

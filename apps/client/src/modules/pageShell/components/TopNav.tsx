@@ -24,6 +24,7 @@ export function TopNav({
 
   const renderTopNavItem = (node: ShellTreeNode) => {
     const hasChildren = node.children.length > 0;
+    const nodeTitle = node.group?.name ?? node.page?.name ?? node.label;
     const isActive = Boolean(
       activePagePath &&
         (activePagePath === node.path || activePagePath.startsWith(`${node.path}/`)),
@@ -76,7 +77,7 @@ export function TopNav({
         activePagePath &&
           (activePagePath === child.path || activePagePath.startsWith(`${child.path}/`)),
       );
-      const overview = child.page;
+      const overview = child.group ? null : child.page;
       return (
         <div key={child.path} className="flex flex-col gap-1">
           <div
@@ -85,7 +86,7 @@ export function TopNav({
             }`}
             style={{ paddingLeft: 12 + depth * 12 }}
           >
-            {child.label}
+            {child.group?.name ?? child.page?.name ?? child.label}
           </div>
           {overview ? (
             <button
@@ -131,7 +132,7 @@ export function TopNav({
               : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
           }`}
         >
-          <span className="truncate">{node.label}</span>
+          <span className="truncate">{nodeTitle}</span>
           <span
             className={`text-xs text-[var(--ide-text-muted)] transition-transform ${isOpen ? "rotate-180" : ""}`}
           >
@@ -139,7 +140,7 @@ export function TopNav({
           </span>
         </summary>
         <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-lg border border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] p-2 shadow-xl">
-          {node.page ? (
+          {node.page && !node.group ? (
             <button
               type="button"
               onClick={() => onSelectPagePath(node.page!.path)}
