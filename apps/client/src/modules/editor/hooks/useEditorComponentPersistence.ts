@@ -61,6 +61,19 @@ function normalizePageLayoutMode(mode?: unknown): TStorePage["layoutMode"] {
   return mode === "grid" || mode === "absolute" ? mode : "absolute";
 }
 
+function resolvePageShellLayout(
+  layout?: unknown,
+): TStorePage["shellLayout"] | null {
+  return layout === "none" ||
+    layout === "leftRight" ||
+    layout === "topBottom" ||
+    layout === "leftTop" ||
+    layout === "breadcrumb" ||
+    layout === "topLeft"
+    ? layout
+    : null;
+}
+
 /**
  * 把草稿中的页面设置恢复回页面 store。
  */
@@ -73,6 +86,7 @@ function hydratePageSettings(
     return;
   }
 
+  const shellLayout = resolvePageShellLayout(settings.shellLayout);
   updatePage({
     title: settings.title ?? "管理系统页面",
     description: settings.description ?? "用于配置管理后台页面的结构与业务说明",
@@ -80,7 +94,7 @@ function hydratePageSettings(
     pageCategory: settings.pageCategory ?? "admin",
     layoutMode: normalizePageLayoutMode(settings.layoutMode),
     grid: settings.grid,
-    shellLayout: settings.shellLayout,
+    ...(shellLayout !== null ? { shellLayout } : {}),
     deviceType: settings.deviceType ?? "pc",
     canvasWidth: settings.canvasWidth ?? 1280,
     canvasHeight: settings.canvasHeight ?? 900,
@@ -239,6 +253,7 @@ export function createEditorComponentPersistence(
 
     const layoutMode = normalizePageLayoutMode(data?.layoutMode);
     hydrateStoreFromSchema(schema, layoutMode, data?.grid);
+    const shellLayout = resolvePageShellLayout(data?.shellLayout);
     updatePage({
       tdk: data?.tdk || "",
       title: data?.page_name,
@@ -246,7 +261,7 @@ export function createEditorComponentPersistence(
       pageCategory: "admin",
       layoutMode,
       grid: data?.grid,
-      shellLayout: data?.shellLayout,
+      ...(shellLayout !== null ? { shellLayout } : {}),
       deviceType: data?.deviceType ?? "pc",
       canvasWidth: data?.canvasWidth ?? 1280,
       canvasHeight: data?.canvasHeight ?? 900,

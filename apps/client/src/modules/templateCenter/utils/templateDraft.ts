@@ -69,7 +69,7 @@ export function createTemplatePageSettings(template: TemplatePreset) {
     pageCategory: template.pageCategory,
     layoutMode: template.layoutMode,
     grid: template.grid,
-    shellLayout: template.shellLayout ?? "leftRight",
+    shellLayout: "none",
     deviceType: template.deviceType,
     canvasWidth: template.canvasWidth,
     canvasHeight: template.canvasHeight,

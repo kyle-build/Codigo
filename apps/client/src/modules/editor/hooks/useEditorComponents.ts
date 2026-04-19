@@ -67,6 +67,53 @@ function formatHistoryLabel(event: string, detail: string) {
   }
 }
 
+function toNumber(value: unknown, fallback: number) {
+  const num = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(num) ? num : fallback;
+}
+
+function isPlainTemplateContainer(props: Record<string, any> | undefined) {
+  const safe = props ?? {};
+  const showChrome =
+    safe.showChrome === true || safe.showChrome === "true" || safe.showChrome === 1;
+  const title = typeof safe.title === "string" ? safe.title.trim() : "";
+  const backgroundColor =
+    typeof safe.backgroundColor === "string" ? safe.backgroundColor.trim() : "";
+  const borderColor = typeof safe.borderColor === "string" ? safe.borderColor.trim() : "";
+  const borderRadius = toNumber(safe.borderRadius, 0);
+  const padding = toNumber(safe.padding, 0);
+  const minHeight = toNumber(safe.minHeight, 0);
+
+  return (
+    !showChrome &&
+    !title &&
+    (backgroundColor === "" || backgroundColor === "transparent") &&
+    (borderColor === "" || borderColor === "transparent") &&
+    borderRadius === 0 &&
+    padding === 0 &&
+    minHeight === 0
+  );
+}
+
+function stripPlainTemplateContainers(
+  components: IEditorPageSchema["components"],
+): IEditorPageSchema["components"] {
+  const walk = (node: IEditorPageSchema["components"][number]) => {
+    const children = (node.children ?? []).flatMap(walk);
+    if (node.type === "container" && isPlainTemplateContainer(node.props)) {
+      return children;
+    }
+    return [
+      {
+        ...node,
+        children: children.length ? children : undefined,
+      },
+    ];
+  };
+
+  return components.flatMap(walk);
+}
+
 const operationHistoryStore = makeAutoObservable(
   {
     entries: [] as OperationHistoryEntry[],
@@ -516,7 +563,7 @@ export function useEditorComponents() {
     const normalized = normalizeFromSchema(
       {
         version: schema.version,
-        components: activeTemplatePage.components,
+        components: stripPlainTemplateContainers(activeTemplatePage.components),
       },
       nextPageSettings.layoutMode,
       nextPageSettings.grid,

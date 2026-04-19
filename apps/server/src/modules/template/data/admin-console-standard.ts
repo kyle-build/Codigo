@@ -621,6 +621,546 @@ function createSettingsPage(): TemplatePagePreset {
   });
 }
 
+function placeAbs(
+  component: TemplateComponent,
+  options: {
+    left: number;
+    top: number;
+    width?: number | string;
+    height?: number | string;
+  },
+): TemplateComponent {
+  return withStyles(component, {
+    position: 'absolute',
+    left: options.left,
+    top: options.top,
+    ...(options.width !== undefined ? { width: options.width } : null),
+    ...(options.height !== undefined ? { height: options.height } : null),
+  });
+}
+
+function createStandardOverviewPage(): TemplatePagePreset {
+  const revenueData = [
+    { month: 'Jan', value: 3.2 },
+    { month: 'Feb', value: 4.1 },
+    { month: 'Mar', value: 3.6 },
+    { month: 'Apr', value: 4.8 },
+    { month: 'May', value: 4.0 },
+    { month: 'Jun', value: 5.4 },
+  ];
+  const breakupData = [
+    { name: 'Direct', value: 46358 },
+    { name: 'Referral', value: 18220 },
+    { name: 'Search', value: 13840 },
+    { name: 'External', value: 8640 },
+  ];
+
+  return {
+    name: '运营概览',
+    path: '/overview',
+    components: [
+      placeAbs(
+        {
+          type: 'breadcrumbBar',
+          props: {
+            items: [
+              { id: 'overview-breadcrumb-1', label: 'Home' },
+              { id: 'overview-breadcrumb-2', label: 'Dashboard' },
+            ],
+            separator: '/',
+          },
+        },
+        { left: 24, top: 24, width: 'calc(100% - 48px)', height: 48 },
+      ),
+      placeAbs(
+        {
+          type: 'pageHeader',
+          props: {
+            title: 'Dashboard',
+            subtitle: '关键指标概览、趋势与区域分布',
+            tagsText: 'admin,overview',
+            extraText: '更新于今天',
+          },
+        },
+        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 96 },
+      ),
+      placeAbs(
+        {
+          type: 'cardGrid',
+          props: {
+            columns: 4,
+            items: [
+              {
+                id: 'overview-stat-1',
+                title: 'Open invoices',
+                subtitle: 'Total',
+                value: '$35,548',
+                extra: '+1.4% since last month',
+              },
+              {
+                id: 'overview-stat-2',
+                title: 'Ongoing project',
+                subtitle: 'Active',
+                value: '15',
+                extra: '+2.5% since last month',
+              },
+              {
+                id: 'overview-stat-3',
+                title: 'Employees',
+                subtitle: 'Current',
+                value: '25',
+                extra: '+2.3% since last month',
+              },
+              {
+                id: 'overview-stat-4',
+                title: 'New profit',
+                subtitle: 'Monthly',
+                value: '27%',
+                extra: '+4.5% since last month',
+              },
+            ],
+          },
+        },
+        { left: 24, top: 194, width: 'calc(100% - 48px)', height: 140 },
+      ),
+      placeAbs(
+        {
+          type: 'barChart',
+          props: {
+            title: 'Revenue report',
+            dataText: JSON.stringify(revenueData, null, 2),
+            optionText: JSON.stringify(
+              {
+                grid: {
+                  left: 44,
+                  right: 18,
+                  top: 56,
+                  bottom: 30,
+                  containLabel: true,
+                },
+                yAxis: { splitLine: { lineStyle: { color: '#eef2f7' } } },
+              },
+              null,
+              2,
+            ),
+            xAxisKey: 'month',
+            yAxisKey: 'value',
+            nameKey: 'month',
+            valueKey: 'value',
+            color: '#2563eb',
+          },
+          styles: {
+            backgroundColor: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: 18,
+            padding: 8,
+            boxSizing: 'border-box',
+          },
+        },
+        { left: 24, top: 350, width: 820, height: 320 },
+      ),
+      placeAbs(
+        {
+          type: 'pieChart',
+          props: {
+            title: 'Yearly breakup',
+            dataText: JSON.stringify(breakupData, null, 2),
+            optionText: JSON.stringify(
+              {
+                legend: { bottom: 8 },
+                series: [
+                  {
+                    radius: ['54%', '78%'],
+                    label: { show: false },
+                  },
+                ],
+              },
+              null,
+              2,
+            ),
+            xAxisKey: 'name',
+            yAxisKey: 'value',
+            nameKey: 'name',
+            valueKey: 'value',
+            color: '#2563eb',
+          },
+          styles: {
+            backgroundColor: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: 18,
+            padding: 8,
+            boxSizing: 'border-box',
+          },
+        },
+        { left: 860, top: 350, width: 396, height: 320 },
+      ),
+      placeAbs(
+        {
+          type: 'dataTable',
+          props: {
+            title: 'Recent activities',
+            size: 'middle',
+            bordered: true,
+            pagination: false,
+            pageSize: 8,
+            emptyText: '暂无数据',
+            columnsText: JSON.stringify(
+              [
+                { title: 'Action', dataIndex: 'action' },
+                { title: 'Owner', dataIndex: 'owner' },
+                { title: 'Time', dataIndex: 'time' },
+              ],
+              null,
+              2,
+            ),
+            dataText: JSON.stringify(
+              [
+                { key: 'act-1', action: '发布成功', owner: 'Mike', time: '10:12' },
+                { key: 'act-2', action: '成员加入', owner: 'Anna', time: '09:30' },
+                { key: 'act-3', action: '权限变更', owner: 'Kevin', time: '昨天' },
+              ],
+              null,
+              2,
+            ),
+          },
+          styles: {
+            backgroundColor: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: 18,
+            padding: 0,
+            boxSizing: 'border-box',
+          },
+        },
+        { left: 24, top: 686, width: 'calc(100% - 48px)', height: 190 },
+      ),
+    ],
+  };
+}
+
+function createStandardProjectsPage(): TemplatePagePreset {
+  return {
+    name: '项目中心',
+    path: '/projects',
+    components: [
+      placeAbs(
+        {
+          type: 'breadcrumbBar',
+          props: {
+            items: [
+              { id: 'projects-breadcrumb-1', label: '后台系统' },
+              { id: 'projects-breadcrumb-2', label: '项目中心' },
+            ],
+            separator: '/',
+          },
+        },
+        { left: 24, top: 24, width: 'calc(100% - 48px)', height: 48 },
+      ),
+      placeAbs(
+        {
+          type: 'pageHeader',
+          props: {
+            title: '项目中心',
+            subtitle: '统一查看项目归属、环境状态和最近一次交付结果。',
+            tagsText: 'admin,project',
+            extraText: '共 32 个项目',
+          },
+        },
+        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 96 },
+      ),
+      placeAbs(
+        {
+          type: 'queryFilter',
+          props: {
+            columns: 4,
+            searchText: '搜索',
+            resetText: '重置',
+            showSearchButton: true,
+            showResetButton: true,
+            fields: [
+              {
+                id: 'project-filter-1',
+                label: '项目名称',
+                field: 'keyword',
+                type: 'input',
+                placeholder: '请输入项目名称',
+                optionsText: '',
+              },
+              {
+                id: 'project-filter-2',
+                label: '所属团队',
+                field: 'team',
+                type: 'select',
+                placeholder: '请选择团队',
+                optionsText: '全部,平台组,中台组,业务组',
+              },
+              {
+                id: 'project-filter-3',
+                label: '当前状态',
+                field: 'status',
+                type: 'select',
+                placeholder: '请选择状态',
+                optionsText: '全部,开发中,待上线,运行中',
+              },
+            ],
+          },
+        },
+        { left: 24, top: 194, width: 'calc(100% - 48px)', height: 120 },
+      ),
+      placeAbs(
+        {
+          type: 'dataTable',
+          props: {
+            title: '项目清单',
+            size: 'middle',
+            bordered: true,
+            pagination: true,
+            pageSize: 8,
+            emptyText: '暂无项目数据',
+            columnsText: JSON.stringify(
+              [
+                { title: '项目', dataIndex: 'name' },
+                { title: '团队', dataIndex: 'team' },
+                { title: '环境', dataIndex: 'env' },
+                { title: '状态', dataIndex: 'status' },
+                { title: '负责人', dataIndex: 'owner' },
+              ],
+              null,
+              2,
+            ),
+            dataText: JSON.stringify(
+              [
+                {
+                  key: 'project-row-1',
+                  name: 'Workspace Console',
+                  team: '平台组',
+                  env: 'Production',
+                  status: '运行中',
+                  owner: 'Mike He',
+                },
+                {
+                  key: 'project-row-2',
+                  name: 'Auth Portal',
+                  team: '中台组',
+                  env: 'Staging',
+                  status: '待上线',
+                  owner: 'Olivia',
+                },
+                {
+                  key: 'project-row-3',
+                  name: 'Setting Center',
+                  team: '业务组',
+                  env: 'Production',
+                  status: '开发中',
+                  owner: 'Kevin',
+                },
+              ],
+              null,
+              2,
+            ),
+          },
+        },
+        { left: 24, top: 330, width: 'calc(100% - 48px)', height: 546 },
+      ),
+    ],
+  };
+}
+
+function createStandardUsersPage(): TemplatePagePreset {
+  return {
+    name: '用户管理',
+    path: '/users',
+    components: [
+      placeAbs(
+        {
+          type: 'breadcrumbBar',
+          props: {
+            items: [
+              { id: 'users-breadcrumb-1', label: '后台系统' },
+              { id: 'users-breadcrumb-2', label: '用户管理' },
+            ],
+            separator: '/',
+          },
+        },
+        { left: 24, top: 24, width: 'calc(100% - 48px)', height: 48 },
+      ),
+      placeAbs(
+        {
+          type: 'pageHeader',
+          props: {
+            title: '用户管理',
+            subtitle: '统一管理账号、角色与状态。',
+            tagsText: 'admin,user',
+            extraText: '共 128 个成员',
+          },
+        },
+        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 96 },
+      ),
+      placeAbs(
+        {
+          type: 'dataTable',
+          props: {
+            title: '成员列表',
+            size: 'middle',
+            bordered: true,
+            pagination: true,
+            pageSize: 10,
+            emptyText: '暂无成员数据',
+            columnsText: JSON.stringify(
+              [
+                { title: 'ID', dataIndex: 'id' },
+                { title: 'Name', dataIndex: 'name' },
+                { title: 'Role', dataIndex: 'role' },
+                { title: 'Status', dataIndex: 'status' },
+              ],
+              null,
+              2,
+            ),
+            dataText: JSON.stringify(
+              [
+                { id: 1, name: 'Alice', role: 'Admin', status: 'Active' },
+                { id: 2, name: 'Bob', role: 'User', status: 'Active' },
+                { id: 3, name: 'Carol', role: 'User', status: 'Pending' },
+              ],
+              null,
+              2,
+            ),
+          },
+        },
+        { left: 24, top: 194, width: 'calc(100% - 48px)', height: 682 },
+      ),
+    ],
+  };
+}
+
+function createStandardSettingsPage(): TemplatePagePreset {
+  return {
+    name: '系统设置',
+    path: '/settings',
+    components: [
+      placeAbs(
+        {
+          type: 'breadcrumbBar',
+          props: {
+            items: [
+              { id: 'setting-breadcrumb-1', label: '后台系统' },
+              { id: 'setting-breadcrumb-2', label: '系统设置' },
+              { id: 'setting-breadcrumb-3', label: '基础配置' },
+            ],
+            separator: '/',
+          },
+        },
+        { left: 24, top: 24, width: 'calc(100% - 48px)', height: 48 },
+      ),
+      placeAbs(
+        {
+          type: 'pageHeader',
+          props: {
+            title: '系统设置',
+            subtitle: '集中维护平台名称、通知策略和默认发布配置。',
+            tagsText: 'admin,setting',
+            extraText: '设置变更后需重新发布',
+          },
+        },
+        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 96 },
+      ),
+      placeAbs(
+        {
+          type: 'titleText',
+          props: { title: '基础配置', size: 'lg' },
+        },
+        { left: 24, top: 194, width: 320, height: 40 },
+      ),
+      placeAbs(
+        withStyles(
+          {
+            type: 'input',
+            props: {
+              title: '平台名称',
+              placeholder: '请输入平台名称',
+              text: 'Codigo Admin Console',
+            },
+          },
+          {
+            backgroundColor: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: 16,
+            padding: 12,
+            boxSizing: 'border-box',
+          },
+        ),
+        { left: 24, top: 244, width: 560, height: 56 },
+      ),
+      placeAbs(
+        withStyles(
+          {
+            type: 'input',
+            props: {
+              title: '默认域名',
+              placeholder: '请输入默认域名',
+              text: 'admin.codigo.local',
+            },
+          },
+          {
+            backgroundColor: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: 16,
+            padding: 12,
+            boxSizing: 'border-box',
+          },
+        ),
+        { left: 24, top: 312, width: 560, height: 56 },
+      ),
+      placeAbs(
+        withStyles(
+          {
+            type: 'radio',
+            props: {
+              title: '默认发布环境',
+              defaultRadio: 'prod',
+              options: [
+                { id: 'prod', value: 'Production' },
+                { id: 'staging', value: 'Staging' },
+              ],
+            },
+          },
+          {
+            backgroundColor: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: 16,
+            padding: 12,
+            boxSizing: 'border-box',
+          },
+        ),
+        { left: 24, top: 380, width: 560, height: 68 },
+      ),
+      placeAbs(
+        withStyles(
+          {
+            type: 'checkbox',
+            props: {
+              title: '通知方式',
+              defaultChecked: ['mail', 'bot'],
+              options: [
+                { id: 'mail', value: '邮件通知' },
+                { id: 'sms', value: '短信提醒' },
+                { id: 'bot', value: '机器人通知' },
+              ],
+            },
+          },
+          {
+            backgroundColor: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: 16,
+            padding: 12,
+            boxSizing: 'border-box',
+          },
+        ),
+        { left: 24, top: 460, width: 560, height: 92 },
+      ),
+    ],
+  };
+}
+
 export const adminConsoleStandardTemplate: TemplatePreset = {
   key: 'admin-console-standard',
   name: '通用后台管理模板（标准版）',
@@ -633,5 +1173,10 @@ export const adminConsoleStandardTemplate: TemplatePreset = {
   canvasWidth: CANVAS_WIDTH,
   canvasHeight: CANVAS_HEIGHT,
   activePagePath: '/overview',
-  pages: [createOverviewPage(), createProjectsPage(), createUsersPage(), createSettingsPage()],
+  pages: [
+    createStandardOverviewPage(),
+    createStandardProjectsPage(),
+    createStandardUsersPage(),
+    createStandardSettingsPage(),
+  ],
 };

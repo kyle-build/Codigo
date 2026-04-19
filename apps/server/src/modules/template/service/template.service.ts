@@ -22,7 +22,8 @@ export class TemplateService {
   ) {}
 
   private readonly defaultTemplateVersions: Record<string, number> = {
-    'admin-console-standard': 2,
+    'admin-console-standard': 3,
+    'admin-console-basic': 2,
   };
 
   async ensureDefaults() {
