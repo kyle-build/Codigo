@@ -6,6 +6,20 @@ import type {
   TemplatePreset,
 } from '@codigo/schema';
 
+const templatePresetTransformer = {
+  /**
+   * Persists large template payloads as LONGTEXT instead of MySQL TEXT-backed simple-json.
+   */
+  to(value: TemplatePreset | null | undefined) {
+    return JSON.stringify(value ?? {});
+  },
+  from(value: string | TemplatePreset | null): TemplatePreset {
+    if (!value) return {} as TemplatePreset;
+    if (typeof value !== 'string') return value as TemplatePreset;
+    return JSON.parse(value) as TemplatePreset;
+  },
+};
+
 @Entity({ name: 'template' })
 export class Template {
   @PrimaryGeneratedColumn()
@@ -56,7 +70,7 @@ export class Template {
   @Column({ type: 'int', default: 1 })
   version: number = 1;
 
-  @Column({ type: 'simple-json' })
+  @Column({ type: 'longtext', transformer: templatePresetTransformer })
   preset: TemplatePreset = {} as TemplatePreset;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -69,4 +83,3 @@ export class Template {
   })
   updated_at: Date;
 }
-

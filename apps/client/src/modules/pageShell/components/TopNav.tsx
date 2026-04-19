@@ -38,10 +38,10 @@ export function TopNav({
           key={node.path}
           type="button"
           onClick={() => onSelectPagePath(page.path)}
-          className={`h-9 px-3 rounded-md text-sm transition-colors ${
+          className={`h-10 rounded-2xl px-4 text-sm font-medium transition-all ${
             page.path === activePagePath
-              ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
-              : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
+              ? "bg-[#f3efff] text-[#6f52ed]"
+              : "text-slate-600 hover:bg-slate-100"
           }`}
         >
           {page.name}
@@ -63,8 +63,8 @@ export function TopNav({
             onClick={() => onSelectPagePath(page.path)}
             className={`w-full text-left rounded-md px-3 py-2 text-sm transition-colors ${
               active
-                ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
-                : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
+                ? "bg-[#f3efff] text-[#6f52ed]"
+                : "text-slate-700 hover:bg-slate-100"
             }`}
             style={{ paddingLeft: 12 + depth * 12 }}
           >
@@ -82,7 +82,7 @@ export function TopNav({
         <div key={child.path} className="flex flex-col gap-1">
           <div
             className={`px-3 py-2 text-[11px] font-semibold uppercase tracking-wider ${
-              activeGroup ? "text-[var(--ide-text)]" : "text-[var(--ide-text-muted)]"
+              activeGroup ? "text-slate-800" : "text-slate-400"
             }`}
             style={{ paddingLeft: 12 + depth * 12 }}
           >
@@ -94,8 +94,8 @@ export function TopNav({
               onClick={() => onSelectPagePath(overview.path)}
               className={`w-full text-left rounded-md px-3 py-2 text-sm transition-colors ${
                 overview.path === activePagePath
-                  ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
-                  : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
+                  ? "bg-[#f3efff] text-[#6f52ed]"
+                  : "text-slate-700 hover:bg-slate-100"
               }`}
               style={{ paddingLeft: 24 + depth * 12 }}
             >
@@ -126,28 +126,24 @@ export function TopNav({
         className="relative"
       >
         <summary
-          className={`list-none h-9 px-3 rounded-md text-sm transition-colors cursor-pointer flex items-center gap-2 ${
+          className={`list-none flex h-10 cursor-pointer items-center gap-2 rounded-2xl px-4 text-sm font-medium transition-all ${
             isActive
-              ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
-              : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
+              ? "bg-[#f3efff] text-[#6f52ed]"
+              : "text-slate-600 hover:bg-slate-100"
           }`}
         >
           <span className="truncate">{nodeTitle}</span>
-          <span
-            className={`text-xs text-[var(--ide-text-muted)] transition-transform ${isOpen ? "rotate-180" : ""}`}
-          >
-            ▾
-          </span>
+          <span className={`text-[10px] text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""}`}>v</span>
         </summary>
-        <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-lg border border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] p-2 shadow-xl">
+        <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
           {node.page && !node.group ? (
             <button
               type="button"
               onClick={() => onSelectPagePath(node.page!.path)}
               className={`mb-1 w-full text-left rounded-md px-3 py-2 text-sm transition-colors ${
                 node.page!.path === activePagePath
-                  ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
-                  : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
+                ? "bg-[#f3efff] text-[#6f52ed]"
+                : "text-slate-700 hover:bg-slate-100"
               }`}
             >
               {node.page!.name}
@@ -165,21 +161,21 @@ export function TopNav({
 
   return (
     <header
-      className={`h-14 shrink-0 border-b border-[var(--ide-border)] bg-[var(--ide-header-bg)] ${navInteractiveClass}`}
+      className={`shrink-0 border-b border-slate-200 bg-white/90 backdrop-blur ${navInteractiveClass}`}
     >
-      <div className="h-full px-4 flex items-center justify-between gap-3">
+      <div className="flex min-h-[68px] items-center justify-between gap-3 px-5 md:px-8">
         <div className="min-w-0 flex items-center gap-3">
-          <div className="shrink-0 h-8 w-8 rounded-lg bg-[var(--ide-accent)] text-[var(--ide-statusbar-text)] flex items-center justify-center font-semibold">
-            C
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8b7cff] to-[#6f52ed] text-sm font-bold text-white shadow-[0_16px_32px_rgba(111,82,237,0.22)]">
+            VA
           </div>
           <div className="min-w-0">
-            <div className="truncate text-sm font-semibold text-[var(--ide-text)]">{title}</div>
-            <div className="truncate text-[11px] text-[var(--ide-text-muted)]">Workspace</div>
+            <div className="truncate text-sm font-semibold text-slate-900">{title}</div>
+            <div className="truncate text-[11px] uppercase tracking-[0.22em] text-slate-400">Workspace</div>
           </div>
         </div>
-        <nav className="hidden md:flex items-center gap-1">{roots.map(renderTopNavItem)}</nav>
+        <nav className="hidden md:flex items-center gap-2">{roots.map(renderTopNavItem)}</nav>
       </div>
-      <div className="md:hidden border-t border-[var(--ide-border)] px-3 py-2">
+      <div className="border-t border-slate-100 px-3 py-3 md:hidden">
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
           {roots.map(renderTopNavItem)}
         </div>

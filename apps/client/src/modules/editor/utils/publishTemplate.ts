@@ -1,9 +1,11 @@
 import type {
   ComponentNode,
   IEditorPageSchema,
+  IEditorPageGroupSchema,
   IPageSchema,
   PageGridConfig,
   PageLayoutMode,
+  PageShellLayout,
   TemplateComponent,
   TemplatePreset,
 } from "@codigo/schema";
@@ -45,6 +47,14 @@ function toTemplatePages(pages: IEditorPageSchema[] | undefined, schema: IPageSc
   ];
 }
 
+function toTemplatePageGroups(pageGroups?: IEditorPageGroupSchema[]) {
+  return (pageGroups ?? []).map((group) => ({
+    id: group.id,
+    name: group.name,
+    path: group.path,
+  }));
+}
+
 /**
  * 基于输入标题生成模板 key 建议值。
  */
@@ -71,6 +81,7 @@ export function buildTemplatePresetFromEditor(params: {
   pageCategory: "admin";
   layoutMode: PageLayoutMode;
   grid?: PageGridConfig;
+  shellLayout?: PageShellLayout;
   deviceType: "pc" | "mobile";
   canvasWidth: number;
   canvasHeight: number;
@@ -91,10 +102,12 @@ export function buildTemplatePresetFromEditor(params: {
     pageCategory: params.pageCategory,
     layoutMode: params.layoutMode,
     grid: params.grid,
+    shellLayout: params.shellLayout,
     deviceType: params.deviceType,
     canvasWidth: params.canvasWidth,
     canvasHeight: params.canvasHeight,
     activePagePath,
+    pageGroups: toTemplatePageGroups(params.schema.pageGroups),
     pages,
   };
 }

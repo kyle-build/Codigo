@@ -97,7 +97,15 @@ export default function ButtonComponent(_props: ButtonRuntimeProps) {
       danger={visualState.danger}
       block={props.block}
       onClick={handleClick}
-      style={runtimeStyle}
+      style={{
+        borderRadius: 16,
+        boxShadow:
+          visualState.type === "primary"
+            ? "0 16px 32px rgba(111, 82, 237, 0.24)"
+            : undefined,
+        fontWeight: 600,
+        ...runtimeStyle,
+      }}
     >
       {props.text}
     </Button>

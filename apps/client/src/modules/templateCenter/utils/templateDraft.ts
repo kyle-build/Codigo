@@ -1,4 +1,4 @@
-import type { ComponentNode } from "@codigo/schema";
+import type { ComponentNode, IEditorPageGroupSchema } from "@codigo/schema";
 import type { TemplateComponent, TemplatePreset } from "../types/templates";
 import type { TemplatePreviewSchema } from "./preview";
 
@@ -49,11 +49,17 @@ export function buildTemplateSchema(template: TemplatePreset): TemplatePreviewSc
   }));
   const activePage =
     pages.find((page) => page.path === template.activePagePath) ?? pages[0] ?? null;
+  const pageGroups: IEditorPageGroupSchema[] = (template.pageGroups ?? []).map((group, index) => ({
+    id: group.id || createId(`tpl_group_${index}`, index),
+    name: group.name,
+    path: group.path,
+  }));
 
   return {
     version: 3,
     components: activePage?.components ?? [],
     pages,
+    pageGroups,
     activePageId: activePage?.id ?? null,
   };
 }
@@ -69,7 +75,7 @@ export function createTemplatePageSettings(template: TemplatePreset) {
     pageCategory: template.pageCategory,
     layoutMode: template.layoutMode,
     grid: template.grid,
-    shellLayout: "none",
+    shellLayout: template.shellLayout ?? "none",
     deviceType: template.deviceType,
     canvasWidth: template.canvasWidth,
     canvasHeight: template.canvasHeight,
@@ -92,6 +98,7 @@ export function writeTemplateToDraft(template: TemplatePreset) {
       version: schema.version,
       components: schema.components,
       pages: schema.pages,
+      pageGroups: schema.pageGroups,
       activePageId: schema.activePageId,
     }),
   );

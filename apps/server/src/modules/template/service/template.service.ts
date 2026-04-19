@@ -22,7 +22,7 @@ export class TemplateService {
   ) {}
 
   private readonly defaultTemplateVersions: Record<string, number> = {
-    'admin-console-standard': 4,
+    'admin-console-standard': 5,
     'admin-console-basic': 3,
   };
 

@@ -29,8 +29,8 @@ export function BreadcrumbRow({
   }, [activePagePath, pagePathIndex]);
 
   return (
-    <div className={`shrink-0 border-b border-slate-200 bg-white ${navInteractiveClass}`}>
-      <div className="h-11 px-4 flex items-center gap-2 text-sm text-slate-600">
+    <div className={`shrink-0 border-b border-slate-200/80 bg-white/80 backdrop-blur ${navInteractiveClass}`}>
+      <div className="flex h-12 items-center gap-2 px-5 text-sm text-slate-500 md:px-8">
         {breadcrumb.length ? (
           <div className="flex items-center gap-1">
             {breadcrumb.map((item, index) => {
@@ -44,9 +44,9 @@ export function BreadcrumbRow({
                       if (!item.canNavigate || isLast) return;
                       onSelectPagePath(item.path);
                     }}
-                    className={`max-w-40 truncate rounded px-2 py-1 transition-colors ${
+                    className={`max-w-40 truncate rounded-full px-3 py-1 transition-colors ${
                       isLast
-                        ? "text-slate-900 font-medium"
+                        ? "bg-[#f3efff] text-[#6f52ed] font-medium"
                         : item.canNavigate
                           ? "hover:bg-slate-100"
                           : "opacity-60"
@@ -66,4 +66,3 @@ export function BreadcrumbRow({
     </div>
   );
 }
-

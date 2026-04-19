@@ -34,10 +34,11 @@ export default function PageHeaderComponent(_props: IPageHeaderComponentProps) {
   return (
     <div
       style={{
-        borderRadius: 20,
+        borderRadius: 28,
         background: "#ffffff",
-        padding: 24,
-        border: "1px solid #e5e7eb",
+        padding: 28,
+        border: "1px solid #eef1f6",
+        boxShadow: "0 24px 60px rgba(15, 23, 42, 0.06)",
       }}
     >
       <div
@@ -50,14 +51,24 @@ export default function PageHeaderComponent(_props: IPageHeaderComponentProps) {
         }}
       >
         <Space direction="vertical" size={6}>
-          <Title level={3} style={{ margin: 0 }}>
+          <Title level={2} style={{ margin: 0, fontSize: 28, lineHeight: 1.15 }}>
             {props.title}
           </Title>
-          <Text type="secondary">{props.subtitle}</Text>
+          <Text type="secondary" style={{ fontSize: 15 }}>
+            {props.subtitle}
+          </Text>
           {!!tags.length && (
             <Space wrap>
               {tags.map((tag) => (
-                <Tag key={tag} color="blue">
+                <Tag
+                  key={tag}
+                  color="processing"
+                  style={{
+                    borderRadius: 999,
+                    paddingInline: 10,
+                    fontWeight: 600,
+                  }}
+                >
                   {tag}
                 </Tag>
               ))}
@@ -65,7 +76,9 @@ export default function PageHeaderComponent(_props: IPageHeaderComponentProps) {
           )}
         </Space>
 
-        <Text type="secondary">{props.extraText}</Text>
+        <Text type="secondary" style={{ fontSize: 13 }}>
+          {props.extraText}
+        </Text>
       </div>
     </div>
   );

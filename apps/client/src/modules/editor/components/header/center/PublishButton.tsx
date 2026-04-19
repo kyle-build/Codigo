@@ -217,6 +217,7 @@ export const PublishButton = observer(function PublishButton() {
       pageCategory: store.pageCategory,
       layoutMode: store.layoutMode,
       grid: store.grid,
+      shellLayout: store.shellLayout,
       deviceType: store.deviceType,
       canvasWidth: store.canvasWidth,
       canvasHeight: store.canvasHeight,

@@ -720,6 +720,7 @@ export default function ComponentRender({
   return (
     <AdminShell
       pages={runtimeSchema.pages}
+      pageGroups={runtimeSchema.pageGroups ?? []}
       activePagePath={activePage?.path ?? null}
       onSelectPagePath={(path) => setCurrentPagePath(path)}
       title={localData.page_name || "管理后台"}

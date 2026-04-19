@@ -1,5 +1,6 @@
 import type { ComponentEventMap, ComponentMeta, TComponentTypes } from "../schema/components";
 import type {
+  IEditorPageGroupSchema,
   PageCategory,
   PageGridConfig,
   PageLayoutMode,
@@ -39,5 +40,6 @@ export interface TemplatePreset {
   canvasWidth: number;
   canvasHeight: number;
   activePagePath: string;
+  pageGroups?: Pick<IEditorPageGroupSchema, "id" | "name" | "path">[];
   pages: TemplatePagePreset[];
 }

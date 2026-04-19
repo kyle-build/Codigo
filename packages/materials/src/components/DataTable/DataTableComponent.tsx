@@ -52,13 +52,14 @@ export default function DataTableComponent(_props: DataTableRuntimeProps) {
         minHeight: hasRuntimeHeight ? 0 : undefined,
         display: hasRuntimeHeight ? "flex" : undefined,
         flexDirection: hasRuntimeHeight ? "column" : undefined,
-        borderRadius: 20,
+        borderRadius: 28,
         background: "#ffffff",
         padding: 24,
-        border: "1px solid #e5e7eb",
+        border: "1px solid #eef1f6",
+        boxShadow: "0 24px 60px rgba(15, 23, 42, 0.06)",
       }}
     >
-      <Title level={4} style={{ marginTop: 0 }}>
+      <Title level={4} style={{ marginTop: 0, marginBottom: 18 }}>
         {props.title}
       </Title>
       <div
@@ -73,6 +74,9 @@ export default function DataTableComponent(_props: DataTableRuntimeProps) {
           dataSource={dataSource}
           size={props.size}
           bordered={props.bordered}
+          rowClassName={(_, index) =>
+            index % 2 === 0 ? "bg-white" : "bg-[#fafbff]"
+          }
           pagination={
             props.pagination
               ? {

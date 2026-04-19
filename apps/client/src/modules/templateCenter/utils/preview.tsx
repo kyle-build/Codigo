@@ -1,6 +1,6 @@
 import { Empty } from "antd";
 import type { CSSProperties, ReactNode } from "react";
-import type { ComponentNode, TComponentTypes } from "@codigo/schema";
+import type { ComponentNode, IEditorPageGroupSchema, TComponentTypes } from "@codigo/schema";
 
 export interface TemplatePreviewPage {
   id: string;
@@ -14,6 +14,7 @@ export interface TemplatePreviewSchema {
   activePageId?: string | null;
   components: ComponentNode[];
   pages: TemplatePreviewPage[];
+  pageGroups?: IEditorPageGroupSchema[];
 }
 
 const componentLabelMap: Record<TComponentTypes | string, string> = {

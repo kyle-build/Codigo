@@ -24,16 +24,23 @@ export default function CardGridComponent(_props: ICardGridComponentProps) {
         <Col span={span} key={item.id}>
           <Card
             style={{
-              borderRadius: 18,
+              borderRadius: 24,
+              borderColor: "#eef1f6",
+              boxShadow: "0 22px 48px rgba(15, 23, 42, 0.06)",
             }}
+            styles={{ body: { padding: 22 } }}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <Title level={5} style={{ margin: 0 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <Text type="secondary" style={{ fontSize: 12, fontWeight: 600, letterSpacing: 0.4 }}>
                 {item.title}
+              </Text>
+              <Title level={5} style={{ margin: 0, fontSize: 16 }}>
+                {item.subtitle}
               </Title>
-              <Text type="secondary">{item.subtitle}</Text>
-              <div style={{ fontSize: 28, fontWeight: 600 }}>{item.value}</div>
-              <Text type="secondary">{item.extra}</Text>
+              <div style={{ fontSize: 32, fontWeight: 700, lineHeight: 1.1 }}>{item.value}</div>
+              <Text type="secondary" style={{ fontSize: 13 }}>
+                {item.extra}
+              </Text>
             </div>
           </Card>
         </Col>

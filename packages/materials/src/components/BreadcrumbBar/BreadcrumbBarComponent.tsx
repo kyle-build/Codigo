@@ -22,10 +22,11 @@ export default function BreadcrumbBarComponent(
   return (
     <div
       style={{
-        borderRadius: 16,
+        borderRadius: 999,
         background: "#ffffff",
-        padding: "14px 18px",
-        border: "1px solid #e5e7eb",
+        padding: "12px 18px",
+        border: "1px solid #eef1f6",
+        boxShadow: "0 18px 44px rgba(15, 23, 42, 0.05)",
       }}
     >
       <Breadcrumb
