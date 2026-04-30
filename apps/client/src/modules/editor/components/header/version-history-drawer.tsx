@@ -15,7 +15,7 @@ interface Props {
   onClose: () => void;
 }
 
-export const VersionHistoryDrawer = observer(({ open, onClose }: Props) => {
+function VersionHistoryDrawer({ open, onClose }: Props) {
   const [searchParams] = useSearchParams();
   const pageId = Number(searchParams.get("id"));
   const { initPageData } = useEditorComponents();
@@ -68,7 +68,7 @@ export const VersionHistoryDrawer = observer(({ open, onClose }: Props) => {
       placement="right"
       onClose={onClose}
       open={open}
-      width={360}
+      size="default"
     >
       <List
         loading={loading}
@@ -107,4 +107,8 @@ export const VersionHistoryDrawer = observer(({ open, onClose }: Props) => {
       />
     </Drawer>
   );
-});
+}
+
+const VersionHistoryDrawerComponent = observer(VersionHistoryDrawer);
+
+export { VersionHistoryDrawerComponent as VersionHistoryDrawer };

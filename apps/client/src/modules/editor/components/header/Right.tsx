@@ -13,7 +13,7 @@ import { useStoreAuth } from "@/shared/hooks";
 import Profile from "@/modules/profile";
 import { useEditorPermission } from "@/modules/editor/hooks";
 
-export default observer(function Right() {
+function Right() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { store: storeAuth, logout } = useStoreAuth();
@@ -208,4 +208,8 @@ export default observer(function Right() {
       </Modal>
     </>
   );
-});
+}
+
+const RightComponent = observer(Right);
+
+export default RightComponent;

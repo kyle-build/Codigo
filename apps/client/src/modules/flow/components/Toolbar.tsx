@@ -3,7 +3,7 @@ import { flowStore } from "../stores/flow-store";
 import { NODE_TYPES, NODE_COLORS } from "../constants";
 import type { NodeType } from "../types";
 
-export const Toolbar = observer(() => {
+function Toolbar() {
   return (
     <div className="flex min-h-12 items-center justify-between gap-3 border-b border-slate-200 bg-white/60 backdrop-blur-md px-4 py-2 relative z-10">
       <div className="flex items-center gap-2">
@@ -47,4 +47,8 @@ export const Toolbar = observer(() => {
       </div>
     </div>
   );
-});
+}
+
+const ToolbarComponent = observer(Toolbar);
+
+export { ToolbarComponent as Toolbar };

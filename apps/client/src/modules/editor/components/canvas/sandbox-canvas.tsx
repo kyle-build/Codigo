@@ -63,7 +63,7 @@ async function bundleSchema(
 
 const { Text } = Typography;
 
-export const SandboxCanvas = observer(() => {
+function SandboxCanvas() {
   const { store, getComponentTree, replaceByCode } = useEditorComponents();
   const { store: pageStore } = useEditorPage();
   const { can, ensurePermission, addOperationLog } = useEditorPermission();
@@ -285,4 +285,8 @@ export const SandboxCanvas = observer(() => {
       </div>
     </div>
   );
-});
+}
+
+const SandboxCanvasComponent = observer(SandboxCanvas);
+
+export { SandboxCanvasComponent as SandboxCanvas };

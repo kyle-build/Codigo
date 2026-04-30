@@ -32,7 +32,7 @@
     "mobx-react-lite": "^4.1.1",
     "mobx-shallow-undo": "^1.1.0",
     "postcss": "^8.5.8",
-    "react-quill": "^2.0.0",
+    "react-quill-new": "^3.6.0",
     "react-router-dom": "^7.13.1",
     "socket.io-client": "^4.8.3",
     "tailwindcss": "^4.2.2",

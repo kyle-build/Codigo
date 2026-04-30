@@ -18,7 +18,7 @@ interface DrawingEdgeState {
   curY: number;
 }
 
-export const Canvas = observer(() => {
+function Canvas() {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   const [movingNode, setMovingNode] = useState<MovingNodeState | null>(null);
@@ -287,4 +287,8 @@ export const Canvas = observer(() => {
       </div>
     </div>
   );
-});
+}
+
+const CanvasComponent = observer(Canvas);
+
+export { CanvasComponent as Canvas };

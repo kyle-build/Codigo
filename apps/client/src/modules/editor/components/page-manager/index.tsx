@@ -19,7 +19,7 @@ interface EditorPageManagerProps {
   variant?: "sidebar" | "dropdown";
 }
 
-const EditorPageManager =  observer(function ({
+function EditorPageManager({
   embedded = false,
   variant = "sidebar",
 }: EditorPageManagerProps) {
@@ -426,7 +426,8 @@ const EditorPageManager =  observer(function ({
       ) : null}
     </div>
   );
-});
+}
 
+const EditorPageManagerComponent = observer(EditorPageManager);
 
-export default EditorPageManager;
+export default EditorPageManagerComponent;

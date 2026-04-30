@@ -7,7 +7,7 @@ import SidebarLayoutSectionRow from "./sidebar-layout-section-row";
 /**
  * 渲染单页面侧栏布局的快捷配置工具。
  */
-const SidebarLayoutTools = observer(function SidebarLayoutTools() {
+function SidebarLayoutTools() {
   const [nextLabel, setNextLabel] = useState("");
   const {
     appendSidebarSection,
@@ -131,6 +131,8 @@ const SidebarLayoutTools = observer(function SidebarLayoutTools() {
       </div>
     </section>
   );
-});
+}
 
-export default SidebarLayoutTools;
+const SidebarLayoutToolsComponent = observer(SidebarLayoutTools);
+
+export default SidebarLayoutToolsComponent;

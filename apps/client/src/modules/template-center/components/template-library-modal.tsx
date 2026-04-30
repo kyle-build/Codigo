@@ -74,7 +74,7 @@ export function TemplateLibraryModal({
   return (
     <>
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={null}
         open={open}
         title={

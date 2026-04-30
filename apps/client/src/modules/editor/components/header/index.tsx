@@ -4,7 +4,7 @@ import Left from "./left";
 import Center from "./center";
 import Right from "./right";
 
-const Header = observer(() => {
+function Header() {
   const { store: storePage } = useEditorPage();
   return (
     <div className="flex w-full items-center gap-2.5 px-0.5 text-[13px]">
@@ -19,6 +19,8 @@ const Header = observer(() => {
       </div>
     </div>
   );
-});
+}
 
-export default Header;
+const HeaderComponent = observer(Header);
+
+export default HeaderComponent;

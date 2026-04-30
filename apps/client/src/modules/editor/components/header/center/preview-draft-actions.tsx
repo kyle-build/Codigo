@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import { useEditorComponents, useEditorPermission } from "@/modules/editor/hooks";
 
-export const PreviewDraftActions = observer(function PreviewDraftActions() {
+function PreviewDraftActions() {
   const navigate = useNavigate();
   const { storeInLocalStorage } = useEditorComponents();
   const { can } = useEditorPermission();
@@ -36,4 +36,8 @@ export const PreviewDraftActions = observer(function PreviewDraftActions() {
       </Button>
     </>
   );
-});
+}
+
+const PreviewDraftActionsComponent = observer(PreviewDraftActions);
+
+export { PreviewDraftActionsComponent as PreviewDraftActions };

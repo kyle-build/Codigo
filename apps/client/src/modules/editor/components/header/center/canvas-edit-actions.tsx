@@ -7,7 +7,7 @@ import { Button, Popconfirm } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEditorComponents, useEditorPage, useEditorPermission } from "@/modules/editor/hooks";
 
-export const CanvasEditActions = observer(function CanvasEditActions() {
+function CanvasEditActions() {
   const { store } = useEditorPage();
   const {
     clearActivePageCanvas,
@@ -60,4 +60,8 @@ export const CanvasEditActions = observer(function CanvasEditActions() {
       </Button>
     </>
   );
-});
+}
+
+const CanvasEditActionsComponent = observer(CanvasEditActions);
+
+export { CanvasEditActionsComponent as CanvasEditActions };

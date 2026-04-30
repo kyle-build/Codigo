@@ -5,7 +5,7 @@ import { Toolbar } from "./components/toolbar";
 import { Canvas } from "./components/canvas";
 import { PropsPanel } from "./components/props-panel";
 
-export default observer(() => {
+function Flow() {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (
@@ -32,4 +32,8 @@ export default observer(() => {
       </div>
     </div>
   );
-});
+}
+
+const FlowComponent = observer(Flow);
+
+export default FlowComponent;

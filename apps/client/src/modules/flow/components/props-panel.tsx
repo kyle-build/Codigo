@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import { flowStore } from "../stores/flow-store";
 import { NODE_TYPES, NODE_COLORS } from "../constants";
 
-export const PropsPanel = observer(() => {
+function PropsPanel() {
   return (
     <aside className="flex w-[220px] flex-shrink-0 flex-col border-l border-zinc-200 bg-white">
       <div className="flex h-[38px] flex-shrink-0 items-center border-b border-zinc-200 bg-zinc-50 px-[14px] text-[11px] font-semibold uppercase tracking-[0.07em] text-zinc-600">
@@ -169,4 +169,8 @@ export const PropsPanel = observer(() => {
       )}
     </aside>
   );
-});
+}
+
+const PropsPanelComponent = observer(PropsPanel);
+
+export { PropsPanelComponent as PropsPanel };

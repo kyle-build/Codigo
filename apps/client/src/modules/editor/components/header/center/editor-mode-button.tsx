@@ -9,7 +9,7 @@ import {
 } from "@/modules/editor/api/low-code";
 import { useEditorPage } from "@/modules/editor/hooks";
 
-export const EditorModeButton = observer(function EditorModeButton() {
+function EditorModeButton() {
   const [searchParams] = useSearchParams();
   const pageId = Number(searchParams.get("id"));
   const {
@@ -92,4 +92,8 @@ export const EditorModeButton = observer(function EditorModeButton() {
       )}
     </Button>
   );
-});
+}
+
+const EditorModeButtonComponent = observer(EditorModeButton);
+
+export { EditorModeButtonComponent as EditorModeButton };

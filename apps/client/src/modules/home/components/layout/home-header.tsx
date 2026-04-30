@@ -9,7 +9,7 @@ import { useHomeNavigation } from "../../hooks/use-home-navigation";
 import { HomeUserEntry } from "./home-user-entry";
 
 /** 渲染首页顶部导航条。 */
-export const HomeHeader = observer(() => {
+function HomeHeader() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
@@ -167,4 +167,8 @@ export const HomeHeader = observer(() => {
       </Modal>
     </nav>
   );
-});
+}
+
+const HomeHeaderComponent = observer(HomeHeader);
+
+export { HomeHeaderComponent as HomeHeader };

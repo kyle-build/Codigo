@@ -29,7 +29,7 @@ import {
 import { createTemplate } from "@/modules/template-center/api/templates";
 import { useStoreAuth } from "@/shared/hooks/use-store-auth";
 
-export const PublishButton = observer(function PublishButton() {
+function PublishButton() {
   const { serializeSchema } = useEditorComponents();
   const { store } = useEditorPage();
   const { addOperationLog, can, ensurePermission } = useEditorPermission();
@@ -303,4 +303,8 @@ export const PublishButton = observer(function PublishButton() {
       />
     </>
   );
-});
+}
+
+const PublishButtonComponent = observer(PublishButton);
+
+export { PublishButtonComponent as PublishButton };

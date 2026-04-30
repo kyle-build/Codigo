@@ -236,7 +236,7 @@ function buildDraftByPrompt(prompt: string): DraftComponent[] {
   return next;
 }
 
-const AIChatPanel = observer(function AIChatPanel() {
+function AIChatPanel() {
   const { store, getComponentById, replaceByCode } = useEditorComponents();
   const [prompt, setPrompt] = useState("");
   const [appendMode, setAppendMode] = useState(false);
@@ -616,6 +616,8 @@ const AIChatPanel = observer(function AIChatPanel() {
       </div>
     </div>
   );
-});
+}
 
-export default AIChatPanel;
+const AIChatPanelComponent = observer(AIChatPanel);
+
+export default AIChatPanelComponent;

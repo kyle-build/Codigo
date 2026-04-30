@@ -8,7 +8,7 @@ import AppManagementHero from "./components/layout/app-management-hero";
 import AppManagementWorkspace from "./components/layout/app-management-workspace";
 import AppManagementSectionContent from "./components/sections/app-management-section-content";
 
-const AppManagement = observer(() => {
+function AppManagement() {
   const navigate = useNavigate();
   const {
     currentTab,
@@ -75,6 +75,8 @@ const AppManagement = observer(() => {
       />
     </TopNavLayout>
   );
-});
+}
 
-export default AppManagement;
+const AppManagementComponent = observer(AppManagement);
+
+export default AppManagementComponent;

@@ -1,4 +1,3 @@
-import type { FC } from "react";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
 import { getComponentContainerMeta } from "@codigo/materials";
@@ -17,7 +16,11 @@ import { LayoutSpacingFields as LayoutSpacingFieldsComponent } from "./layout-sp
 
 const { Panel } = Collapse;
 
-export const EditorOutlineTree = observer(function EditorOutlineTree() {
+type ComponentFieldsProps = {
+  store: TEditorComponentsStore;
+};
+
+function EditorOutlineTree() {
   const {
     getComponentTree,
     getCurrentComponentConfig,
@@ -99,86 +102,87 @@ export const EditorOutlineTree = observer(function EditorOutlineTree() {
       </div>
     </div>
   );
-});
+}
 
-const componentFields: FC<{ store: TEditorComponentsStore }> = observer(
-  ({ store }) => {
-    if (!store.currentCompConfig)
-      return (
-        <div className="p-4">
-          <div className="border border-dashed border-[var(--ide-border)] bg-[var(--ide-hover)] p-5 text-center">
-            <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-sm bg-[var(--ide-active)] text-xl text-[var(--ide-text-muted)]">
-              <AppstoreOutlined />
-            </div>
-            <div className="mb-1.5 text-xs font-semibold text-[var(--ide-text)]">
-              暂未选中组件
-            </div>
-            <div className="mb-4 text-[11px] leading-relaxed text-[var(--ide-text-muted)]">
-              在画布中点击组件进行配置
-            </div>
-            <Empty
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description={false}
-              className="!mb-0 !mt-2"
-            />
+const EditorOutlineTreeComponent = observer(EditorOutlineTree);
+
+function ComponentFields({ store }: ComponentFieldsProps) {
+  if (!store.currentCompConfig)
+    return (
+      <div className="p-4">
+        <div className="border border-dashed border-[var(--ide-border)] bg-[var(--ide-hover)] p-5 text-center">
+          <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-sm bg-[var(--ide-active)] text-xl text-[var(--ide-text-muted)]">
+            <AppstoreOutlined />
           </div>
+          <div className="mb-1.5 text-xs font-semibold text-[var(--ide-text)]">
+            暂未选中组件
+          </div>
+          <div className="mb-4 text-[11px] leading-relaxed text-[var(--ide-text-muted)]">
+            在画布中点击组件进行配置
+          </div>
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={false}
+            className="!mb-0 !mt-2"
+          />
         </div>
-      );
+      </div>
+    );
 
-    const {
-      getCurrentComponentConfig,
-      getAvailableSlots,
-      updateCurrentComponentStyles,
-    } = useEditorComponents();
-    const { store: pageStore } = useEditorPage();
-    const config = getCurrentComponentConfig.get();
+  const {
+    getCurrentComponentConfig,
+    getAvailableSlots,
+    updateCurrentComponentStyles,
+  } = useEditorComponents();
+  const { store: pageStore } = useEditorPage();
+  const config = getCurrentComponentConfig.get();
 
-    if (!config) return null;
+  if (!config) return null;
 
-    const ComponentProps = getComponentPropsByType(config.type);
-    const styles = config.styles || {};
-    const containerMeta = getComponentContainerMeta(config.type);
-    const currentSlots = getAvailableSlots(config.type);
-    const childrenCount = config.childIds?.length ?? 0;
+  const ComponentProps = getComponentPropsByType(config.type);
+  const styles = config.styles || {};
+  const containerMeta = getComponentContainerMeta(config.type);
+  const currentSlots = getAvailableSlots(config.type);
+  const childrenCount = config.childIds?.length ?? 0;
 
-    const handleStyleChange = (_changedValues: any, allValues: any) => {
-      const formattedStyles = { ...allValues };
-      const pxKeys = new Set([
-        "left",
-        "top",
-        "width",
-        "height",
-        "marginTop",
-        "marginBottom",
-        "marginLeft",
-        "marginRight",
-        "paddingTop",
-        "paddingBottom",
-        "paddingLeft",
-        "paddingRight",
-      ]);
-      Object.keys(formattedStyles).forEach((key) => {
-        if (typeof formattedStyles[key] === "number" && pxKeys.has(key)) {
-          formattedStyles[key] = `${formattedStyles[key]}px`;
-        }
-      });
-      updateCurrentComponentStyles(formattedStyles);
-    };
-
-    const initialValues: Record<string, any> = { ...styles };
-    Object.keys(initialValues).forEach((key) => {
-      if (
-        typeof initialValues[key] === "string" &&
-        initialValues[key].endsWith("px")
-      ) {
-        initialValues[key] = parseFloat(initialValues[key]);
+  const handleStyleChange = (_changedValues: any, allValues: any) => {
+    const formattedStyles = { ...allValues };
+    const pxKeys = new Set([
+      "left",
+      "top",
+      "width",
+      "height",
+      "marginTop",
+      "marginBottom",
+      "marginLeft",
+      "marginRight",
+      "paddingTop",
+      "paddingBottom",
+      "paddingLeft",
+      "paddingRight",
+    ]);
+    Object.keys(formattedStyles).forEach((key) => {
+      if (typeof formattedStyles[key] === "number" && pxKeys.has(key)) {
+        formattedStyles[key] = `${formattedStyles[key]}px`;
       }
     });
+    updateCurrentComponentStyles(formattedStyles);
+  };
 
-    const isGridRoot = pageStore.layoutMode === "grid" && !config.parentId;
+  const initialValues: Record<string, any> = { ...styles };
+  Object.keys(initialValues).forEach((key) => {
+    if (
+      typeof initialValues[key] === "string" &&
+      initialValues[key].endsWith("px")
+    ) {
+      initialValues[key] = parseFloat(initialValues[key]);
+    }
+  });
 
-    return (
-      <div className="componentFields-container space-y-2 px-3 pb-8">
+  const isGridRoot = pageStore.layoutMode === "grid" && !config.parentId;
+
+  return (
+    <div className="componentFields-container space-y-2 px-3 pb-8">
         <div className="border-b border-[var(--ide-border)] py-2">
           <div className="mb-1 flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ide-accent)]">
@@ -279,9 +283,12 @@ const componentFields: FC<{ store: TEditorComponentsStore }> = observer(
             </Form>
           </Panel>
         </Collapse>
-      </div>
-    );
-  },
-);
+    </div>
+  );
+}
 
-export default componentFields;
+export { EditorOutlineTreeComponent as EditorOutlineTree };
+
+const ComponentFieldsComponent = observer(ComponentFields);
+
+export default ComponentFieldsComponent;

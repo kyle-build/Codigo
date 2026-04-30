@@ -10,6 +10,8 @@ import {
   buildComponentTree,
   flattenComponentTree,
   type ComponentNode,
+  type IEditorPageGroupSchema,
+  type IEditorPageSchema,
   type IPageSchema,
   type PostReleaseRequest,
   type UpdateReleaseConfigRequest,
@@ -22,6 +24,7 @@ import {
 } from 'src/modules/flow/entity/low-code.entity';
 import { PageVersion } from 'src/modules/flow/entity/page-version.entity';
 import { User } from 'src/modules/user/entity/user.entity';
+import { randomUUID } from 'crypto';
 import { DataSource, Repository } from 'typeorm';
 
 function objectOmit<T extends Record<string, any>, K extends keyof T>(
@@ -49,18 +52,91 @@ export class PageReleaseService {
     private readonly pageVersionRepository: Repository<PageVersion>,
   ) {}
 
+  /**
+   * 为发布链路补齐缺失的 schema 节点标识，避免模板草稿缺少 id 时落库失败。
+   */
+  private createSchemaNodeId(prefix: string) {
+    return `${prefix}_${randomUUID()}`;
+  }
+
+  /**
+   * 递归补齐组件树节点 id，并深拷贝出可安全落库的节点结构。
+   */
+  private normalizeReleaseNodes(
+    nodes: ComponentNode[] | undefined,
+    prefix: string,
+  ): ComponentNode[] {
+    return (nodes ?? []).map((node, index) => {
+      const currentId =
+        typeof node.id === 'string' && node.id.trim().length > 0
+          ? node.id
+          : this.createSchemaNodeId(`${prefix}_${node.type}_${index}`);
+
+      return {
+        ...node,
+        id: currentId,
+        children: this.normalizeReleaseNodes(
+          node.children ?? [],
+          `${prefix}_${index}`,
+        ),
+      };
+    });
+  }
+
   private resolveReleaseSchema(body: PostReleaseRequest): IPageSchema {
-    if (body.schema?.components?.length) {
+    if (
+      body.schema?.components?.length ||
+      body.schema?.pages?.length ||
+      body.schema?.pageGroups?.length
+    ) {
+      const normalizedPages = Array.isArray(body.schema.pages)
+        ? body.schema.pages.map<IEditorPageSchema>((page, index) => {
+            const pageId =
+              typeof page.id === 'string' && page.id.trim().length > 0
+                ? page.id
+                : this.createSchemaNodeId(`page_${index}`);
+
+            return {
+              ...page,
+              id: pageId,
+              components: this.normalizeReleaseNodes(
+                page.components ?? [],
+                `page_${index}`,
+              ),
+            };
+          })
+        : undefined;
+      const normalizedPageGroups = Array.isArray(body.schema.pageGroups)
+        ? body.schema.pageGroups.map<IEditorPageGroupSchema>((group, index) => ({
+            ...group,
+            id:
+              typeof group.id === 'string' && group.id.trim().length > 0
+                ? group.id
+                : this.createSchemaNodeId(`page_group_${index}`),
+          }))
+        : undefined;
+      const activePageId =
+        normalizedPages?.find((page) => page.id === body.schema?.activePageId)
+          ?.id ??
+        normalizedPages?.[0]?.id ??
+        body.schema.activePageId;
+      const activePageComponents =
+        normalizedPages?.find((page) => page.id === activePageId)?.components ??
+        body.schema.components;
+
       return {
         version: body.schema.version ?? 2,
-        components: body.schema.components,
-        pages: body.schema.pages,
-        activePageId: body.schema.activePageId,
+        components: this.normalizeReleaseNodes(activePageComponents, 'root'),
+        pages: normalizedPages,
+        pageGroups: normalizedPageGroups,
+        activePageId,
       };
     }
 
     const components = (body.components ?? []).map((component) => ({
-      id: component.node_id ?? String(component.id),
+      id:
+        component.node_id ??
+        (component.id ? String(component.id) : this.createSchemaNodeId('legacy')),
       type: component.type,
       name: component.name,
       props: component.options ?? {},
@@ -128,6 +204,7 @@ export class PageReleaseService {
             ? schemaFromVersion.components
             : schemaFromDb.components,
           pages: schemaFromVersion.pages,
+          pageGroups: schemaFromVersion.pageGroups,
           activePageId: schemaFromVersion.activePageId,
         }
       : schemaFromDb;
@@ -178,8 +255,18 @@ export class PageReleaseService {
   }
 
   async release(body: PostReleaseRequest, user: TCurrentUser) {
-    const { schema, components, schema_version, ...otherBody } = body;
     const resolvedSchema = this.resolveReleaseSchema(body);
+    const normalizedBody: PostReleaseRequest = body.schema
+      ? {
+          ...body,
+          schema: resolvedSchema,
+        }
+      : {
+          ...body,
+          schema: resolvedSchema,
+          schema_version: resolvedSchema.version,
+        };
+    const { schema, components, schema_version, ...otherBody } = normalizedBody;
     const flattenedNodes = flattenComponentTree(resolvedSchema.components);
     const rootIds = resolvedSchema.components.map((item) => item.id);
     let id = 0;
@@ -274,7 +361,7 @@ export class PageReleaseService {
         account_id: user.id,
         version: nextVersion,
         desc: `Version ${nextVersion}`,
-        schema_data: body as any,
+        schema_data: normalizedBody as any,
       });
 
       await queryRunner.commitTransaction();

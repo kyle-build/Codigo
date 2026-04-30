@@ -103,7 +103,7 @@ function MiniLayoutPreview({ layout }: { layout: PageShellLayout }) {
   );
 }
 
-export default observer(function EditorLayoutManager({
+function EditorLayoutManager({
   embedded = true,
   variant = "dropdown",
 }: EditorLayoutManagerProps) {
@@ -176,4 +176,8 @@ export default observer(function EditorLayoutManager({
       </div>
     </div>
   );
-});
+}
+
+const EditorLayoutManagerComponent = observer(EditorLayoutManager);
+
+export default EditorLayoutManagerComponent;

@@ -3,8 +3,6 @@ const stats = [
   { label: "企业团队", value: "2,600+" },
   { label: "月活编辑页", value: "12.8w" },
 ];
-
-/** 渲染首页右侧的产品数据预览卡片。 */
 export function HomePreviewCard() {
   return (
     <div className="relative">

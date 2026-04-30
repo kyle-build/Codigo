@@ -8,7 +8,7 @@ import { PublishButton } from "./center/publish-button";
 import { TemplateLibraryAction } from "./center/template-library-action";
 import { VersionHistoryAction } from "./center/version-history-action";
 
-const Center = observer(() => {
+function Center() {
   return (
     <div className="flex items-center gap-2 rounded-sm border border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] px-1 py-0.5 shadow-[var(--ide-panel-shadow)]">
       <DeviceModeSwitch />
@@ -26,6 +26,8 @@ const Center = observer(() => {
       <PublishButton />
     </div>
   );
-});
+}
 
-export default Center;
+const CenterComponent = observer(Center);
+
+export default CenterComponent;

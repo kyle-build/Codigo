@@ -30,7 +30,7 @@ function ShortcutKeys({ combos }: { combos: string[][] }) {
   );
 }
 
-const ShortcutsModal = observer(function ShortcutsModal({
+function ShortcutsModal({
   open,
   onClose,
 }: {
@@ -95,9 +95,11 @@ const ShortcutsModal = observer(function ShortcutsModal({
       </div>
     </Modal>
   );
-});
+}
 
-const OperationHistoryModal = observer(function OperationHistoryModal({
+const ShortcutsModalComponent = observer(ShortcutsModal);
+
+function OperationHistoryModal({
   open,
   onClose,
 }: {
@@ -162,9 +164,11 @@ const OperationHistoryModal = observer(function OperationHistoryModal({
       </div>
     </Modal>
   );
-});
+}
 
-export const EditorStatusBarActions = observer(function EditorStatusBarActions() {
+const OperationHistoryModalComponent = observer(OperationHistoryModal);
+
+function EditorStatusBarActions() {
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const navigate = useNavigate();
@@ -202,8 +206,18 @@ export const EditorStatusBarActions = observer(function EditorStatusBarActions()
         </button>
       </div>
 
-      <ShortcutsModal open={isShortcutsOpen} onClose={() => setIsShortcutsOpen(false)} />
-      <OperationHistoryModal open={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
+      <ShortcutsModalComponent
+        open={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
+      />
+      <OperationHistoryModalComponent
+        open={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+      />
     </>
   );
-});
+}
+
+const EditorStatusBarActionsComponent = observer(EditorStatusBarActions);
+
+export { EditorStatusBarActionsComponent as EditorStatusBarActions };

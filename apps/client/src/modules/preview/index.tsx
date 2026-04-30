@@ -29,7 +29,7 @@ function resolvePreviewPage(
   );
 }
 
-const PreviewCanvas = observer(() => {
+function PreviewCanvas() {
   const { getPages, loadPageData } = useEditorComponents();
   const { store } = useStorePage();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -409,9 +409,11 @@ const PreviewCanvas = observer(() => {
   })();
 
   return canvas;
-});
+}
 
-export default observer(function Preview() {
+const ObservedPreviewCanvas = observer(PreviewCanvas);
+
+function Preview() {
   const nav = useNavigate();
   const { store } = useStorePage();
   const { getPages, serializeSchema } = useEditorComponents();
@@ -445,7 +447,7 @@ export default observer(function Preview() {
         className="min-h-full"
         style={{ minWidth: store.canvasWidth, minHeight: store.canvasHeight }}
       >
-        <PreviewCanvas />
+        <ObservedPreviewCanvas />
       </div>
     </div>
   ) : (
@@ -478,7 +480,7 @@ export default observer(function Preview() {
               </div>
             </div>
           )}
-          <PreviewCanvas />
+          <ObservedPreviewCanvas />
         </div>
       </div>
     </div>
@@ -512,4 +514,7 @@ export default observer(function Preview() {
       <FloatButton icon={<CaretLeftOutlined />} onClick={() => nav(-1)} />
     </div>
   );
-});
+}
+
+const PreviewComponent = observer(Preview);
+export default PreviewComponent;

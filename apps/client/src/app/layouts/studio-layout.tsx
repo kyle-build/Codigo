@@ -49,7 +49,7 @@ export const studioAntdTheme = {
   },
 } as const;
 
-export const StudioLayout = observer(() => {
+function StudioLayout() {
   return (
     <ConfigProvider
       theme={studioAntdTheme}
@@ -69,4 +69,8 @@ export const StudioLayout = observer(() => {
       </div>
     </ConfigProvider>
   );
-});
+}
+
+const StudioLayoutComponent = observer(StudioLayout);
+
+export { StudioLayoutComponent as StudioLayout };

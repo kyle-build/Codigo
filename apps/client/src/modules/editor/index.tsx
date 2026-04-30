@@ -15,7 +15,7 @@ import { fetchTemplateDetail } from "@/modules/template-center/api/templates";
 import { writeTemplateToDraft } from "@/modules/template-center/utils/template-draft";
 import { getLowCodePage } from "@/modules/editor/api/low-code";
 
-const Editor = observer(() => {
+function Editor() {
   useTitle("codigo - 页面编辑");
   const [searchParams, setSearchParams] = useSearchParams();
   const pageId = Number(searchParams.get("id"));
@@ -76,6 +76,8 @@ const Editor = observer(() => {
       canvasRef={canvasRef}
     />
   );
-});
+}
 
-export default Editor;
+const EditorComponent = observer(Editor);
+
+export default EditorComponent;

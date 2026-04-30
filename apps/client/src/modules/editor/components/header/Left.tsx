@@ -83,7 +83,7 @@ export default function Left(props: { title: string }) {
                     setMenuTab("pages");
                   }
                 }}
-                dropdownRender={() => (
+                popupRender={() => (
                   <div
                     className="p-2"
                     onClick={(event) => event.stopPropagation()}

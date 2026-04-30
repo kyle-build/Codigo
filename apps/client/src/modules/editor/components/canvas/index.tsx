@@ -152,12 +152,14 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
 
 type CanvasSelectEvent = ReactMouseEvent | ReactPointerEvent;
 
-const EditorCanvas: FC<{
+type EditorCanvasProps = {
   store: TEditorComponentsStore;
   // any 类型解释： 是为了兼容旧版的 React 组件，这些组件没有定义类型。
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onRef: any;
-}> = observer(({ store, onRef }) => {
+};
+
+function EditorCanvas({ store, onRef }: EditorCanvasProps) {
   const {
     getComponentById,
     getComponentTree,
@@ -579,6 +581,8 @@ const EditorCanvas: FC<{
       })}
     </div>
   );
-});
+}
 
-export default EditorCanvas;
+const EditorCanvasComponent = observer(EditorCanvas);
+
+export default EditorCanvasComponent;

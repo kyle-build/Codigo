@@ -149,36 +149,8 @@ export function AdminShell({
               <div className="flex items-center gap-3">
                 <div className="flex items-end gap-1.5">
                   <div className="text-[19px] font-extrabold uppercase tracking-[0.36em] text-[#2356d8]">
-                    VUESTIC
+                    CODIGO
                   </div>
-                  <span className="mb-[2px] hidden text-[10px] font-bold uppercase tracking-[0.12em] text-[#2356d8] md:inline-flex">
-                    ADMIN
-                  </span>
-                </div>
-              </div>
-              <div className="hidden items-center gap-8 text-[14px] font-medium text-slate-800 lg:flex">
-                <button type="button" className="transition-colors hover:text-[#2356d8]">
-                  Support &amp; Consulting
-                </button>
-                <button type="button" className="transition-colors hover:text-[#2356d8]">
-                  About Vuestic Admin
-                </button>
-              </div>
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="hidden h-8 w-8 items-center justify-center rounded-full text-slate-700 md:inline-flex">
-                  <span className="text-[18px]">◔</span>
-                </div>
-                <div className="hidden h-8 w-8 items-center justify-center rounded-full text-slate-700 md:inline-flex">
-                  <span className="text-[16px]">◎</span>
-                </div>
-                <div className="relative inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-700">
-                  <span className="text-[16px]">◌</span>
-                  <span className="absolute -right-1 -top-1 inline-flex min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
-                    2+
-                  </span>
-                </div>
-                <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#ffd75f] text-base">
-                  🙂
                 </div>
               </div>
             </div>

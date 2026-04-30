@@ -13,9 +13,7 @@ function normalizeBaseUrl(value: string) {
   return value.endsWith("/") ? value.slice(0, -1) : value;
 }
 
-export const WebIdeFrame = observer(function WebIdeFrame(
-  props: WebIdeFrameProps,
-) {
+function WebIdeFrame(props: WebIdeFrameProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { store: storeAuth } = useStoreAuth();
   const [searchParams] = useSearchParams();
@@ -114,4 +112,8 @@ export const WebIdeFrame = observer(function WebIdeFrame(
       allow="clipboard-read; clipboard-write"
     />
   );
-});
+}
+
+const WebIdeFrameComponent = observer(WebIdeFrame);
+
+export { WebIdeFrameComponent as WebIdeFrame };

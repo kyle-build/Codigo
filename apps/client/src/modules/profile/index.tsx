@@ -10,14 +10,15 @@ import { updateProfile, updatePassword } from "@/modules/auth/api/user";
 import { useNavigate } from "react-router-dom";
 import { ProfilePageHeader } from "./components/profile-page-header";
 
-const Profile = observer(
-  ({
-    isModal = false,
-    onUpdateSuccess,
-  }: {
-    isModal?: boolean;
-    onUpdateSuccess?: () => void;
-  }) => {
+type ProfileProps = {
+  isModal?: boolean;
+  onUpdateSuccess?: () => void;
+};
+
+function Profile({
+  isModal = false,
+  onUpdateSuccess,
+}: ProfileProps) {
     const { store, fetchUserInfo, updateLocalUserInfo } = useStoreAuth();
     const [profileForm] = Form.useForm();
     const [passwordForm] = Form.useForm();
@@ -256,7 +257,8 @@ const Profile = observer(
         </div>
       </div>
     );
-  },
-);
+}
 
-export default Profile;
+const ProfileComponent = observer(Profile);
+
+export default ProfileComponent;

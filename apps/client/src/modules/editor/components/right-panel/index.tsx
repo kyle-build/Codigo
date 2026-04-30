@@ -11,7 +11,7 @@ import { ActionListEditor } from "./action-list-editor";
 import { useEditorComponents, useEditorPage } from "@/modules/editor/hooks";
 import { observer } from "mobx-react-lite";
 
-const ComponentEventsPanel = observer(function ComponentEventsPanel() {
+function ComponentEventsPanel() {
   const { getCurrentComponentConfig, getPages, updateCurrentComponentEvents } =
     useEditorComponents();
   const config = getCurrentComponentConfig.get();
@@ -52,7 +52,9 @@ const ComponentEventsPanel = observer(function ComponentEventsPanel() {
       </div>
     </div>
   );
-});
+}
+
+const ComponentEventsPanelComponent = observer(ComponentEventsPanel);
 
 export default function EditorRightPanel() {
   const { store: pageStore } = useEditorPage();
@@ -80,7 +82,7 @@ export default function EditorRightPanel() {
           </div>
         </Tooltip>
       ),
-      children: <ComponentEventsPanel />,
+      children: <ComponentEventsPanelComponent />,
     },
   ];
 

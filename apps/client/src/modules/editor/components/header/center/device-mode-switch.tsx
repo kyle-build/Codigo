@@ -3,7 +3,7 @@ import { Button } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEditorPage, useEditorPermission } from "@/modules/editor/hooks";
 
-export const DeviceModeSwitch = observer(function DeviceModeSwitch() {
+function DeviceModeSwitch() {
   const { store, setDeviceType } = useEditorPage();
   const { ensurePermission } = useEditorPermission();
 
@@ -37,4 +37,8 @@ export const DeviceModeSwitch = observer(function DeviceModeSwitch() {
       </Button>
     </div>
   );
-});
+}
+
+const DeviceModeSwitchComponent = observer(DeviceModeSwitch);
+
+export { DeviceModeSwitchComponent as DeviceModeSwitch };

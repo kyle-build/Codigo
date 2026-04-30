@@ -137,9 +137,7 @@ function EditorStage({
   );
 }
 
-export const EditorViewport = observer(function EditorViewport(
-  props: EditorViewportProps,
-) {
+function EditorViewport(props: EditorViewportProps) {
   const navigate = useNavigate();
   const {
     isLeftPanelCollapsed,
@@ -761,4 +759,8 @@ export const EditorViewport = observer(function EditorViewport(
       </div>
     </div>
   );
-});
+}
+
+const EditorViewportComponent = observer(EditorViewport);
+
+export { EditorViewportComponent as EditorViewport };
